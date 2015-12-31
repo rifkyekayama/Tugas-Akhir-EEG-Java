@@ -8,17 +8,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -39,6 +42,7 @@ public class KelolaDataLatih extends JPanel {
 	protected JTable tableDataLatih;
 	protected JScrollPane scrollTableDataLatih;
 	protected DefaultTableCellRenderer centerTable;
+	protected JFileChooser inputDataEEG;
 	protected String[] kelas = {"Pilih salah satu...", "Rileks", "Non-Rileks"};
 	protected String[] kanal = {"Pilih salah satu...", "AF3", "F7", "F3", "FC5", "T7", "P7", "O1", "O2", "P8", "T8", "FC6", "F4", "F8", "AF4"};
 	protected DatabaseAction dbAction;
@@ -84,7 +88,7 @@ public class KelolaDataLatih extends JPanel {
 		panelFormDataLatih.add(btnPilihDataEEG);
 		
 		lblFileDataEEG = new JLabel("No file chosen");
-		lblFileDataEEG.setBounds(140, 60, 100, 30);
+		lblFileDataEEG.setBounds(140, 60, 300, 30);
 		panelFormDataLatih.add(lblFileDataEEG);
 		
 		JLabel lblKetDataEEG = new JLabel("<html>Data yang dimasukan harus bertipe .CSV dan terdiri dari<br>14 kanal.</html>");
@@ -393,6 +397,17 @@ public class KelolaDataLatih extends JPanel {
 					cmbKanal2.setEnabled(false);
 				}else{
 					cmbKanal2.setEnabled(true);
+				}
+			}else if(e.getActionCommand().equals("pilihDataEEG")){
+				FileNameExtensionFilter filterFile = new FileNameExtensionFilter("CSV FILE", "csv");
+				inputDataEEG = new JFileChooser();
+				inputDataEEG.setFileFilter(filterFile);
+				inputDataEEG.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				inputDataEEG.setMultiSelectionEnabled(true);
+				if(inputDataEEG.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
+					File file1[] = inputDataEEG.getSelectedFiles();
+					String fullName = (String)file1[0].getName();
+					lblFileDataEEG.setText(fullName);
 				}
 			}
 		}
