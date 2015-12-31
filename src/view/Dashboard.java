@@ -14,6 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import mysql.DatabaseAction;
+
 public class Dashboard extends JPanel {
 	
 	/**
@@ -21,12 +23,20 @@ public class Dashboard extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	protected JLabel lblJumNaracoba, lblJumSegmentasi, lblJumRileks, lblJumNonRileks;
+	protected DatabaseAction dbAction;
 	
 	public Dashboard(){
 		setSize(1200, 650);
 		setLayout(null);
 		add(getContent());
 		add(layouts());
+		
+		dbAction = new DatabaseAction();
+		
+		lblJumNaracoba.setText(dbAction.getJumNaracoba());
+		lblJumSegmentasi.setText(dbAction.getJumSegmentasi());
+		lblJumRileks.setText(dbAction.getJumRileks());
+		lblJumNonRileks.setText(dbAction.getJumNonRileks());
 	}
 	
 	public JPanel getContent(){
@@ -48,7 +58,7 @@ public class Dashboard extends JPanel {
 		panelWidgetNaracoba.setLayout(null);
 		panelWidgetNaracoba.setBounds(0, 120, 220, 130);
 		
-		lblJumNaracoba = new JLabel("4");
+		lblJumNaracoba = new JLabel("0");
 		lblJumNaracoba.setFont(lblJumNaracoba.getFont().deriveFont(40f));
 		lblJumNaracoba.setForeground(Color.white);
 		lblJumNaracoba.setBounds(10, -15, 90, 100);
@@ -76,7 +86,7 @@ public class Dashboard extends JPanel {
 		panelWidgetSegmentasi.setLayout(null);
 		panelWidgetSegmentasi.setBounds(230, 120, 220, 130);
 		
-		lblJumSegmentasi = new JLabel("152");
+		lblJumSegmentasi = new JLabel("0");
 		lblJumSegmentasi.setFont(lblJumSegmentasi.getFont().deriveFont(40f));
 		lblJumSegmentasi.setForeground(Color.white);
 		lblJumSegmentasi.setBounds(10, -15, 90, 100);
@@ -104,7 +114,7 @@ public class Dashboard extends JPanel {
 		panelWidgetRileks.setLayout(null);
 		panelWidgetRileks.setBounds(460, 120, 220, 130);
 		
-		lblJumRileks = new JLabel("1");
+		lblJumRileks = new JLabel("0");
 		lblJumRileks.setFont(lblJumRileks.getFont().deriveFont(40f));
 		lblJumRileks.setForeground(Color.white);
 		lblJumRileks.setBounds(10, -15, 90, 100);
@@ -132,7 +142,7 @@ public class Dashboard extends JPanel {
 		panelWidgetNonRileks.setLayout(null);
 		panelWidgetNonRileks.setBounds(panelContent.getWidth()-220, 120, 220, 130);
 		
-		lblJumNonRileks = new JLabel("3");
+		lblJumNonRileks = new JLabel("0");
 		lblJumNonRileks.setFont(lblJumNonRileks.getFont().deriveFont(40f));
 		lblJumNonRileks.setForeground(Color.white);
 		lblJumNonRileks.setBounds(10, -15, 90, 100);

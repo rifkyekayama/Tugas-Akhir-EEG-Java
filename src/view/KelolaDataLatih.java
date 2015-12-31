@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.GridBagLayout;
@@ -14,8 +15,14 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
+import mysql.DatabaseAction;
 
 public class KelolaDataLatih extends JPanel {
 	
@@ -28,12 +35,21 @@ public class KelolaDataLatih extends JPanel {
 	protected JLabel lblFileDataEEG;
 	protected JComboBox<?> cmbKelas, cmbKanal1, cmbKanal2;
 	protected JTextField txtSegmentasi, txtSamplingrate;
+	protected DefaultTableModel tableModel;
+	protected JTable tableDataLatih;
+	protected JScrollPane scrollTableDataLatih;
+	protected DefaultTableCellRenderer centerTable;
 	protected String[] kelas = {"Pilih salah satu...", "Rileks", "Non-Rileks"};
 	protected String[] kanal = {"Pilih salah satu...", "AF3", "F7", "F3", "FC5", "T7", "P7", "O1", "O2", "P8", "T8", "FC6", "F4", "F8", "AF4"};
-
+	protected DatabaseAction dbAction;
+	
 	public KelolaDataLatih(){
 		setSize(1200, 650);
 		setLayout(null);
+		dbAction = new DatabaseAction();
+		tableModel = dbAction.getListDataLatih();
+		centerTable = new DefaultTableCellRenderer();
+		centerTable.setHorizontalAlignment(SwingConstants.CENTER);
 		add(getContent());
 		add(layouts());
 	}
@@ -138,6 +154,24 @@ public class KelolaDataLatih extends JPanel {
 		lblTitleTableDataLatih.setForeground(new Color(68, 68, 68));
 		lblTitleTableDataLatih.setBounds(15, 0, 150, 30);
 		panelLihatDataLatih.add(lblTitleTableDataLatih);
+		
+		JPanel panelTableDataLatih = new JPanel();
+		panelTableDataLatih.setLayout(new BorderLayout());
+		panelTableDataLatih.setBackground(Color.white);
+		panelTableDataLatih.setBounds(15, 30, panelLihatDataLatih.getWidth()-30, 480);
+		panelLihatDataLatih.add(panelTableDataLatih);
+		
+		tableDataLatih = new JTable(tableModel);
+		tableDataLatih.setRowSelectionAllowed(false);
+		tableDataLatih.setPreferredScrollableViewportSize(getSize());
+		tableDataLatih.setFillsViewportHeight(true);
+		tableDataLatih.getColumnModel().getColumn(0).setCellRenderer(centerTable);
+		tableDataLatih.getColumnModel().getColumn(2).setCellRenderer(centerTable);
+		tableDataLatih.getColumnModel().getColumn(3).setCellRenderer(centerTable);
+		
+		scrollTableDataLatih = new JScrollPane(tableDataLatih);
+		scrollTableDataLatih.setVisible(true);
+		panelTableDataLatih.add(scrollTableDataLatih, BorderLayout.CENTER);
 		
 		panelContent.add(panelFormDataLatih);
 		panelContent.add(panelLihatDataLatih);

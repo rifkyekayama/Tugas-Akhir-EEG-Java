@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.GridBagLayout;
@@ -12,8 +13,14 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
+import mysql.DatabaseAction;
 
 public class PelatihanSistem extends JPanel {
 	
@@ -23,10 +30,19 @@ public class PelatihanSistem extends JPanel {
 	private static final long serialVersionUID = 1L;
 	protected JTextField txtMaksimumEpoch, txtMinimumError, txtLearningRate, txtPenguranganLR;
 	protected JButton btnPelatihan;
+	protected DefaultTableModel tableModel;
+	protected JTable tableBobot;
+	protected JScrollPane scrollTableBobot;
+	protected DefaultTableCellRenderer centerTable;
+	protected DatabaseAction dbAction;
 	
 	public PelatihanSistem(){
 		setSize(1200, 650);
 		setLayout(null);
+		dbAction = new DatabaseAction();
+		tableModel = dbAction.getListDataBobot();
+		centerTable = new DefaultTableCellRenderer();
+		centerTable.setHorizontalAlignment(SwingConstants.CENTER);
 		add(getContent());
 		add(layouts());
 	}
@@ -101,6 +117,24 @@ public class PelatihanSistem extends JPanel {
 		lblTitleTabelPelatihan.setForeground(new Color(68, 68, 68));
 		lblTitleTabelPelatihan.setBounds(15, 0, 250, 30);
 		panelTabelPelatihan.add(lblTitleTabelPelatihan);
+		
+		JPanel panelTableDataBobot = new JPanel();
+		panelTableDataBobot.setLayout(new BorderLayout());
+		panelTableDataBobot.setBackground(Color.white);
+		panelTableDataBobot.setBounds(15, 30, panelTabelPelatihan.getWidth()-30, 480);
+		panelTabelPelatihan.add(panelTableDataBobot);
+		
+		tableBobot = new JTable(tableModel);
+		tableBobot.setRowSelectionAllowed(false);
+		tableBobot.setPreferredScrollableViewportSize(getSize());
+		tableBobot.setFillsViewportHeight(true);
+		tableBobot.getColumnModel().getColumn(0).setCellRenderer(centerTable);
+		tableBobot.getColumnModel().getColumn(1).setCellRenderer(centerTable);
+		tableBobot.getColumnModel().getColumn(2).setCellRenderer(centerTable);
+		
+		scrollTableBobot = new JScrollPane(tableBobot);
+		scrollTableBobot.setVisible(true);
+		panelTableDataBobot.add(scrollTableBobot, BorderLayout.CENTER);
 		
 		panelContent.add(panelFormPelatihan);
 		panelContent.add(panelTabelPelatihan);
