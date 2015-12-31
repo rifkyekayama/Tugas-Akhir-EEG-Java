@@ -24,7 +24,7 @@ public class PengujianSistem extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	protected JButton btnPilihDataEEG;
+	protected JButton btnPilihDataEEG, btnSubmitDataEEG;
 	protected JLabel lblFileDataEEG;
 	protected JComboBox<?> cmbKelas, cmbKanal1, cmbKanal2;
 	protected JTextField txtSegmentasi, txtSamplingrate;
@@ -88,46 +88,58 @@ public class PengujianSistem extends JPanel {
 		
 		JLabel lblSegmentasi = new JLabel("Segmentasi (per detik) :");
 		lblSegmentasi.setFont(lblSegmentasi.getFont().deriveFont(15f));
-		lblSegmentasi.setBounds(15, 210, 250, 30);
+		lblSegmentasi.setBounds(15, 210, 205, 30);
 		panelFormDataLatih.add(lblSegmentasi);
 		
 		txtSegmentasi = new JTextField("60");
-		txtSegmentasi.setBounds(15, 240, 420, 30);
+		txtSegmentasi.setBounds(15, 240, 205, 30);
 		panelFormDataLatih.add(txtSegmentasi);
 		
 		JLabel lblSamplingRate = new JLabel("Sampling rate (Hertz) :");
 		lblSamplingRate.setFont(lblSamplingRate.getFont().deriveFont(15f));
-		lblSamplingRate.setBounds(15, 280, 250, 30);
+		lblSamplingRate.setBounds(panelFormDataLatih.getWidth()-220, 210, 205, 30);
 		panelFormDataLatih.add(lblSamplingRate);
 		
 		txtSamplingrate = new JTextField("128");
-		txtSamplingrate.setBounds(15, 310, 420, 30);
+		txtSamplingrate.setBounds(panelFormDataLatih.getWidth()-220, 240, 205, 30);
 		panelFormDataLatih.add(txtSamplingrate);
+		
+		JCheckBox cbGunakanKanal2 = new JCheckBox("Gunakan Kanal 2", false);
+		cbGunakanKanal2.setBackground(Color.white);
+		cbGunakanKanal2.setBounds(panelFormDataLatih.getWidth()-220, 280, 205, 30);
+		cbGunakanKanal2.setActionCommand("cekKanal2");
+		cbGunakanKanal2.addActionListener(new ButtonController());
+		panelFormDataLatih.add(cbGunakanKanal2);
 		
 		JLabel lblKanal1 = new JLabel("Kanal 1 :");
 		lblKanal1.setFont(lblKanal1.getFont().deriveFont(15f));
-		lblKanal1.setBounds(15, 350, 250, 30);
+		lblKanal1.setBounds(15, 310, 205, 30);
 		panelFormDataLatih.add(lblKanal1);
 		
 		cmbKanal1 = new JComboBox<>(kanal);
 		cmbKanal1.setBackground(Color.white);
-		cmbKanal1.setBounds(15, 380, 420, 30);
+		cmbKanal1.setBounds(15, 340, 205, 30);
 		panelFormDataLatih.add(cmbKanal1);
-		
-		JCheckBox cbGunakanKanal2 = new JCheckBox("Gunakan Kanal 2", false);
-		cbGunakanKanal2.setBackground(Color.white);
-		cbGunakanKanal2.setBounds(15, 420, 250, 30);
-		panelFormDataLatih.add(cbGunakanKanal2);
 		
 		JLabel lblKanal2 = new JLabel("Kanal 2 :");
 		lblKanal2.setFont(lblKanal2.getFont().deriveFont(15f));
-		lblKanal2.setBounds(15, 450, 250, 30);
+		lblKanal2.setBounds(panelFormDataLatih.getWidth()-220, 310, 205, 30);
 		panelFormDataLatih.add(lblKanal2);
 		
 		cmbKanal2 = new JComboBox<>(kanal);
 		cmbKanal2.setBackground(Color.white);
-		cmbKanal2.setBounds(15, 480, 420, 30);
+		cmbKanal2.setBounds(panelFormDataLatih.getWidth()-220, 340, 205, 30);
+		cmbKanal2.setEnabled(false);
 		panelFormDataLatih.add(cmbKanal2);
+		
+		btnSubmitDataEEG = new JButton("Submit");
+		btnSubmitDataEEG.setForeground(Color.white);
+		btnSubmitDataEEG.setBackground(new Color(60, 137, 185));
+		btnSubmitDataEEG.setActionCommand("submitDataEEG");
+		btnSubmitDataEEG.setBounds(15, 390, 420, 50);
+		btnSubmitDataEEG.addMouseListener(new MouseController());
+		btnSubmitDataEEG.addActionListener(new ButtonController());
+		panelFormDataLatih.add(btnSubmitDataEEG);
 		
 		JPanel panelLihatDataLatih = new JPanel();
 		panelLihatDataLatih.setLayout(null);
@@ -342,6 +354,12 @@ public class PengujianSistem extends JPanel {
 				Home.changeCard("panelPelatihanSistem");
 			}else if(e.getActionCommand().equals("btnPengujian")){
 				Home.changeCard("panelPengujianSistem");
+			}else if(e.getActionCommand().equals("cekKanal2")){
+				if(cmbKanal2.isEnabled() == true){
+					cmbKanal2.setEnabled(false);
+				}else{
+					cmbKanal2.setEnabled(true);
+				}
 			}
 		}
 	}
