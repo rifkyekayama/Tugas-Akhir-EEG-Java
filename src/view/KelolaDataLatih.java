@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -16,6 +17,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -26,6 +28,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import mysql.DatabaseAction;
+import wavelet.Wavelet;
 
 public class KelolaDataLatih extends JPanel {
 	
@@ -46,6 +49,8 @@ public class KelolaDataLatih extends JPanel {
 	protected String[] kelas = {"Pilih salah satu...", "Rileks", "Non-Rileks"};
 	protected String[] kanal = {"Pilih salah satu...", "AF3", "F7", "F3", "FC5", "T7", "P7", "O1", "O2", "P8", "T8", "FC6", "F4", "F8", "AF4"};
 	protected DatabaseAction dbAction;
+	protected Wavelet wavelet;
+	protected String[] fullPathDataEEG;
 	
 	public KelolaDataLatih(){
 		setSize(1200, 650);
@@ -407,7 +412,41 @@ public class KelolaDataLatih extends JPanel {
 				if(inputDataEEG.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
 					File file1[] = inputDataEEG.getSelectedFiles();
 					String fullName = (String)file1[0].getName();
-					lblFileDataEEG.setText(fullName);
+					fullPathDataEEG = new String[file1.length];
+					if(file1.length > 1){
+						lblFileDataEEG.setText(file1.length+" files");
+						for(int i=0; i<file1.length; i++){
+							fullPathDataEEG[i] = (String)file1[i].getAbsolutePath();
+						}
+					}else{
+						lblFileDataEEG.setText(fullName);
+						fullPathDataEEG[0] = (String)file1[0].getAbsolutePath();
+					}
+				}
+			}else if(e.getActionCommand().equals("submitDataEEG")){
+				if(fullPathDataEEG == null){
+					JOptionPane.showMessageDialog(null, "Sinyal EEG belum dipilih", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				}else if((String)cmbKelas.getSelectedItem() == "Pilih salah satu..."){
+					JOptionPane.showMessageDialog(null, "Pilihan kelas tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				}else if(txtSegmentasi == null){
+					JOptionPane.showMessageDialog(null, "Segmentasi tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				}else if(txtSamplingrate == null){
+					JOptionPane.showMessageDialog(null, "Sampling Rate tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				}else if((String)cmbKanal1.getSelectedItem() == "Pilih salah satu..."){
+					JOptionPane.showMessageDialog(null, "Pilihan Kanal 1 tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				}else if(cmbKanal2.isEnabled() == true && (String)cmbKanal2.getSelectedItem() == "Pilih salah satu..."){
+					JOptionPane.showMessageDialog(null, "Pilihan Kanal 2 tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				}else{
+					try {
+						if(cmbKanal2.isEnabled() == false){
+							wavelet = new Wavelet(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem());
+						}else{
+							wavelet = new Wavelet(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), (String)cmbKanal2.getSelectedItem());
+						}
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		}
