@@ -5,7 +5,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Wavelet {
 	
@@ -33,6 +32,7 @@ public class Wavelet {
 		ekstraksi(pathFile, kanal1, kanal2, segmentasi, samplingRate);
 	}
 	
+	@SuppressWarnings("unused")
 	public void ekstraksi(String[] pathFile, String kanal1, String kanal2, int segmentasi, int samplingRate) throws IOException{
 		ArrayList<Object> sinyalKanal1 = null, sinyalKanal2;
 		for(int i=0; i<pathFile.length; i++){
@@ -83,6 +83,7 @@ public class Wavelet {
 		return lines;
 	}
 
+	@SuppressWarnings("unused")
 	public ArrayList<Object> segmentasiEEG(List lineOfSinyal, int kanal, int segmentasi, int sampling){
 		String[] temp = new String[lineOfSinyal.getItemCount()-1];
 		ArrayList<Object> segmen = new ArrayList<Object>();

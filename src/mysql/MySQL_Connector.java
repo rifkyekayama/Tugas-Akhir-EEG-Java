@@ -6,11 +6,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.rmi.server.ServerNotActiveException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Properties;
 
 import javax.swing.JLabel;
@@ -18,8 +16,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-
-import com.mysql.fabric.xmlrpc.base.Array;
 
 public class MySQL_Connector {
 	private Connection connect;

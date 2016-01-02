@@ -4,9 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 
-import javax.swing.DefaultListModel;
 import javax.swing.table.DefaultTableModel;
 
 public class DatabaseAction {
@@ -90,7 +88,8 @@ public class DatabaseAction {
 		DefaultTableModel listDataLatih = new DefaultTableModel(){
 			private static final long serialVersionUID = 1L;
 
-		    @Override
+		    @SuppressWarnings({ "rawtypes", "unchecked" })
+			@Override
 		    public Class getColumnClass(int column) {
 		        return getValueAt(0, column).getClass();
 		    }
@@ -131,7 +130,8 @@ public class DatabaseAction {
 		DefaultTableModel listDataBobot = new DefaultTableModel(){
 			private static final long serialVersionUID = 1L;
 
-		    @Override
+		    @SuppressWarnings({ "rawtypes", "unchecked" })
+			@Override
 		    public Class getColumnClass(int column) {
 		        return getValueAt(0, column).getClass();
 		    }
