@@ -27,8 +27,7 @@ public class MySQL_Connector {
 	private String jdbc = "jdbc:mysql://";
 	private String host; // Bisa Menggunakan IP Anda, Cnth : 192.168.100.100  
 	private String port; // Port ini port MySQL  
-	private String database; // Ini Database yang akan digunakan  
-	//private String url = jdbc + host + port + database;  
+	private String database; // Ini Database yang akan digunakan   
 	private String username; // username default mysql  
 	private String password;
 	
@@ -37,12 +36,12 @@ public class MySQL_Connector {
 	
 	public Connection getKoneksi() throws SQLException {
 		loadParams();
-		String url = this.jdbc + getHost() + ":" + getPort()+ "/" + getDatabase();
+		String url = this.jdbc + this.host + ":" + this.port + "/" + this.database;
 		if (connect == null){
 			try{
 				Class.forName(driverName);
 				try{
-					connect = DriverManager.getConnection(url, getUsername(), getPassword());
+					connect = DriverManager.getConnection(url, this.username, this.password);
 					}catch (SQLException se){
 						JOptionPane.showMessageDialog(null, "Koneksi Database Gagal : " + se, "Peringatan", JOptionPane.WARNING_MESSAGE);
 						setConfigDatabase();
@@ -98,46 +97,6 @@ public class MySQL_Connector {
 	    }
 	}
 	
-	public void setHost(String host){
-		this.host = host;
-	}
-	
-	public String getHost(){
-		return this.host;
-	}
-	
-	public void setUsername(String username){
-		this.username = username;
-	}
-	
-	public String getUsername(){
-		return this.username;
-	}
-	
-	public void setPassword(String password){
-		this.password = password;
-	}
-	
-	public String getPassword(){
-		return this.password;
-	}
-	
-	public void setPort(String port){
-		this.port = port;
-	}
-	
-	public String getPort(){
-		return this.port;
-	}
-	
-	public void setDatabase(String database){
-		this.database = database;
-	}
-	
-	public String getDatabase(){
-		return this.database;
-	}
-	
 	@SuppressWarnings("deprecation")
 	public void setConfigDatabase(){
 		txtHost = new JTextField(this.host);
@@ -161,12 +120,7 @@ public class MySQL_Connector {
 		int result = JOptionPane.showConfirmDialog(null, panelDatabase, 
                "Setting Konfigurasi Database", JOptionPane.OK_CANCEL_OPTION);
 		if (result == JOptionPane.OK_OPTION) {
-			setHost(txtHost.getText());
-			setUsername(txtUsername.getText());
-			setPassword(txtPassword.getText());
-			setDatabase(txtDatabase.getText());
-			setPort(txtPort.getText());
-			saveParamChanges(getHost(), getUsername(), getPassword(), getPort(), getDatabase());
+			saveParamChanges(txtHost.getText(), txtUsername.getText(), txtPassword.getText(), txtPort.getText(), txtDatabase.getText());
 			try {
 				if(getKoneksi() == null){
 					setConfigDatabase();

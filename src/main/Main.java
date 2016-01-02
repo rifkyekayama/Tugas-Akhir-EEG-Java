@@ -9,7 +9,7 @@ import view.*;
 public class Main {
 	public static void main(String[] args) {
 		try {
-			UIManager.setLookAndFeel(UIManager.getLookAndFeel());
+			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

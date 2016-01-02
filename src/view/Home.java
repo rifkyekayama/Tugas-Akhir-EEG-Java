@@ -3,6 +3,7 @@ package view;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -13,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import mysql.MySQL_Connector;
 
@@ -53,22 +55,37 @@ public class Home extends JFrame {
 		panelAwal.setLayout(null);
 		panelAwal.setBackground(new Color(210, 214, 222));
 		
-		String judul = "Identifikasi Kondisi Rileks Berdasarkan Sinyal EEG menggunakan";
-		String judul2 = "Ekstraksi Wavelet dan LVQ";
-		labelJudul = new JLabel("<html><center><span style='font-size:20px'>"+judul+"<br>"+judul2+"</span></center></html>");
-		labelJudul.setForeground(new Color(68, 68, 77));
-		labelJudul.setBounds((getWidth()/4)-170, (getHeight()/2)-200, 1200, 100);
+		JPanel panelJudulAwal = new JPanel();
+		panelJudulAwal.setLayout(new GridBagLayout());
+		panelJudulAwal.setBackground(new Color(210, 214, 222));
+		panelJudulAwal.setBounds((getWidth()/4)-190, (getHeight()/2)-210, 1010, 100);
 		
-		buttonAwal = new JButton("<html><font color='white'>Masuk ke Sistem</color></html>");
+		String judul = "Identifikasi Kondisi Rileks Berdasarkan Sinyal Elektroensephalogram";
+		String judul2 = "Menggunakan Ekstraksi Wavelet dan Learning Vector Quantization";
+		labelJudul = new JLabel("<html><center>"+judul+"<br>"+judul2+"</center><html>");
+		labelJudul.setFont(labelJudul.getFont().deriveFont(25f));
+		labelJudul.setHorizontalAlignment(SwingConstants.CENTER);
+		labelJudul.setForeground(new Color(68, 68, 77));
+		labelJudul.setBounds((getWidth()/4)-190, (getHeight()/2)-210, 1200, 100);
+		panelJudulAwal.add(labelJudul);
+		
+		JPanel panelButtonAwal = new JPanel();
+		panelButtonAwal.setLayout(null);
+		panelButtonAwal.setBackground(Color.white);
+		panelButtonAwal.setBounds((getWidth()/4)-170, (getHeight()/2)-80, 970, 70);
+		
+		buttonAwal = new JButton("Masuk ke Sistem");
+		buttonAwal.setForeground(Color.white);
 		buttonAwal.setBackground(new Color(54, 127, 169));
-		buttonAwal.setBounds((getWidth()/4)-170, (getHeight()/2)-80, 970, 50);
+		buttonAwal.setBounds(15, 15, 940, 40);
 		buttonAwal.setBorderPainted(false);
 		buttonAwal.setActionCommand("btnMasukSistem");
 		buttonAwal.addActionListener(new ButtonController());
 		buttonAwal.addMouseListener(new MouseController());
+		panelButtonAwal.add(buttonAwal);
 		
-		panelAwal.add(buttonAwal);
-		panelAwal.add(labelJudul);
+		panelAwal.add(panelJudulAwal);
+		panelAwal.add(panelButtonAwal);
 		
 		return panelAwal;
 	}
