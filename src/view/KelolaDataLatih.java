@@ -295,6 +295,7 @@ public class KelolaDataLatih extends JPanel {
 						if(wavelet != null){
 							JOptionPane.showMessageDialog(null, "Proses Segmentasi Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
 						}
+						new KelolaDataLatih();
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();

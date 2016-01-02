@@ -34,10 +34,10 @@ public class Dashboard extends JPanel {
 		
 		dbAction = new DatabaseAction();
 		
-		lblJumNaracoba.setText(dbAction.getJumNaracoba());
-		lblJumSegmentasi.setText(dbAction.getJumSegmentasi());
-		lblJumRileks.setText(dbAction.getJumRileks());
-		lblJumNonRileks.setText(dbAction.getJumNonRileks());
+		lblJumNaracoba.setText(Integer.toString(dbAction.getJumNaracoba()));
+		lblJumSegmentasi.setText(Integer.toString(dbAction.getJumSegmentasi()));
+		lblJumRileks.setText(Integer.toString(dbAction.getJumRileks()));
+		lblJumNonRileks.setText(Integer.toString(dbAction.getJumNonRileks()));
 	}
 	
 	public JPanel getContent(){

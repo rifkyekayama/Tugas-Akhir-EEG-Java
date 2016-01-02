@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class DatabaseAction {
@@ -19,67 +21,67 @@ public class DatabaseAction {
 			koneksi = konektor.getKoneksi();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
 		}
 	}
 	
-	public String getJumNaracoba(){
-		String maxNaracoba = null;
+	public int getJumNaracoba(){
+		int maxNaracoba = 0;
 		
 		try {
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT MAX(naracoba) FROM Data_Latih");
 			if(rs.next()){
-				maxNaracoba = rs.getString(1);
+				maxNaracoba = rs.getInt(1);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
 		}
 		return maxNaracoba;
 	}
 	
-	public String getJumSegmentasi(){
-		String jumSegmentasi = null;
+	public int getJumSegmentasi(){
+		int jumSegmentasi = 0;
 		
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT COUNT(*) AS total FROM Data_Latih");
 			if(rs.next()){
-				jumSegmentasi = rs.getString(1);
+				jumSegmentasi = rs.getInt(1);
 			}
 		}catch(SQLException e){
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
 		}
 		return jumSegmentasi;
 	}
 	
-	public String getJumRileks(){
-		String jumRileks = null;
+	public int getJumRileks(){
+		int jumRileks = 0;
 		
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM Data_Latih WHERE kelas=1");
 			if(rs.next()){
-				jumRileks = rs.getString(1);
+				jumRileks = rs.getInt(1);
 			}
 		}catch(SQLException e){
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
 		}
 		return jumRileks;
 	}
 	
-	public String getJumNonRileks(){
-		String jumNonRileks = null;
+	public int getJumNonRileks(){
+		int jumNonRileks = 0;
 		
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM Data_Latih WHERE kelas=-1");
 			if(rs.next()){
-				jumNonRileks = rs.getString(1);
+				jumNonRileks = rs.getInt(1);
 			}
 		}catch(SQLException e){
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
 		}
 		return jumNonRileks;
 	}
@@ -121,7 +123,7 @@ public class DatabaseAction {
 				listDataLatih.addRow(data);
 			}
 		}catch(SQLException e){
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
 		}
 		return listDataLatih;
 	}
@@ -157,9 +159,20 @@ public class DatabaseAction {
 				listDataBobot.addRow(data);
 			}
 		}catch(SQLException e){
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
 		}
 		
 		return listDataBobot;
+	}
+	
+	public void inputSegmentasiSinyal(String[][] sinyal, int kelas, int naracoba, int samplingRate, String kanal){
+		try{
+			for(int i=0;i<sinyal.length;i++){
+				stmt = koneksi.createStatement();
+				stmt.executeUpdate("INSERT INTO Data_Latih (data_eeg, kelas, naracoba, sampling_rate, kanal) VALUES ('"+Arrays.deepToString(sinyal[i])+"', '"+kelas+"', '"+naracoba+"', '"+samplingRate+"', '"+kanal+"')");
+			}
+		}catch(SQLException e){
+			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
+		}
 	}
 }
