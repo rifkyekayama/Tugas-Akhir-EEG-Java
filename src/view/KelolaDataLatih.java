@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -19,6 +18,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -46,6 +46,7 @@ public class KelolaDataLatih extends JPanel {
 	protected JScrollPane scrollTableDataLatih;
 	protected DefaultTableCellRenderer centerTable;
 	protected JFileChooser inputDataEEG;
+	protected JProgressBar progressSubmitDataEEG;
 	protected String[] kelas = {"Pilih salah satu...", "Rileks", "Non-Rileks"};
 	protected String[] kanal = {"Pilih salah satu...", "AF3", "F7", "F3", "FC5", "T7", "P7", "O1", "O2", "P8", "T8", "FC6", "F4", "F8", "AF4"};
 	protected DatabaseAction dbAction;
@@ -71,7 +72,7 @@ public class KelolaDataLatih extends JPanel {
 		JPanel panelFormDataLatih = new JPanel();
 		panelFormDataLatih.setLayout(null);
 		panelFormDataLatih.setBackground(Color.white);
-		panelFormDataLatih.setBounds(0, 0, 450, 530);
+		panelFormDataLatih.setBounds(0, 0, 450, 460);
 		
 		JLabel lblTitleInputDataLatih = new JLabel("Input Data latih");
 		lblTitleInputDataLatih.setForeground(new Color(68, 68, 68));
@@ -164,7 +165,15 @@ public class KelolaDataLatih extends JPanel {
 		btnSubmitDataEEG.setBounds(15, 390, 420, 50);
 		btnSubmitDataEEG.addMouseListener(new MouseController());
 		btnSubmitDataEEG.addActionListener(new ButtonController());
+		btnSubmitDataEEG.setVisible(true);
 		panelFormDataLatih.add(btnSubmitDataEEG);
+		
+		progressSubmitDataEEG = new JProgressBar();
+		progressSubmitDataEEG.setBounds(15, 480, 420, 30);
+		progressSubmitDataEEG.setForeground(new Color(44, 195, 107));
+		progressSubmitDataEEG.setBackground(new Color(251, 252, 252));
+		progressSubmitDataEEG.setStringPainted(true);
+		progressSubmitDataEEG.setVisible(true);
 		
 		JPanel panelLihatDataLatih = new JPanel();
 		panelLihatDataLatih.setLayout(null);
@@ -174,7 +183,6 @@ public class KelolaDataLatih extends JPanel {
 		JLabel lblTitleTableDataLatih = new JLabel("Tabel Data Latih");
 		lblTitleTableDataLatih.setForeground(new Color(68, 68, 68));
 		lblTitleTableDataLatih.setBounds(15, 0, 150, 30);
-		panelLihatDataLatih.add(lblTitleTableDataLatih);
 		
 		JPanel panelTableDataLatih = new JPanel();
 		panelTableDataLatih.setLayout(new BorderLayout());
@@ -194,6 +202,7 @@ public class KelolaDataLatih extends JPanel {
 		scrollTableDataLatih.setVisible(true);
 		panelTableDataLatih.add(scrollTableDataLatih, BorderLayout.CENTER);
 		
+		panelContent.add(progressSubmitDataEEG);
 		panelContent.add(panelFormDataLatih);
 		panelContent.add(panelLihatDataLatih);
 		return panelContent;
@@ -437,16 +446,16 @@ public class KelolaDataLatih extends JPanel {
 				}else if(cmbKanal2.isEnabled() == true && (String)cmbKanal2.getSelectedItem() == "Pilih salah satu..."){
 					JOptionPane.showMessageDialog(null, "Pilihan Kanal 2 tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else{
-					try {
-						if(cmbKanal2.isEnabled() == false){
-							wavelet = new Wavelet(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem());
-						}else{
-							wavelet = new Wavelet(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), (String)cmbKanal2.getSelectedItem());
-						}
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+//					try {
+//						if(cmbKanal2.isEnabled() == false){
+//							wavelet = new Wavelet(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem());
+//						}else{
+//							wavelet = new Wavelet(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), (String)cmbKanal2.getSelectedItem());
+//						}
+//					} catch (IOException e1) {
+//						// TODO Auto-generated catch block
+//						e1.printStackTrace();
+//					}
 				}
 			}
 		}

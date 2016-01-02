@@ -85,7 +85,6 @@ public class Wavelet {
 
 	public ArrayList<Object> segmentasiEEG(List lineOfSinyal, int kanal, int segmentasi, int sampling){
 		String[] temp = new String[lineOfSinyal.getItemCount()-1];
-		//String[][] segmen = new String[(int)Math.floor(lineOfSinyal.getItemCount()/sampling)][];
 		ArrayList<Object> segmen = new ArrayList<Object>();
 		int fs=0, waktu=0, i, j=0, k=0;
 		for(i=1; i<lineOfSinyal.getItemCount()-1; i++){
@@ -100,7 +99,6 @@ public class Wavelet {
 				j=0;
 				waktu=0;
 				segmen.add(temp);
-				System.out.println(k);
 				k++;
 			}
 		}

@@ -7,11 +7,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import mysql.MySQL_Connector;
 
 public class Home extends JFrame {
 	
@@ -24,7 +27,7 @@ public class Home extends JFrame {
 	public JButton buttonAwal;
 	public JLabel labelJudul;
 	
-	public Home(){
+	public Home() throws SQLException{
 		super("Identifikasi Kondisi Rileks - 3411121013 Rifky Ekayama");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
@@ -33,13 +36,16 @@ public class Home extends JFrame {
 		setVisible(true);
 		setDefaultLookAndFeelDecorated(false);
 		
-		mainPanel = new JPanel(new CardLayout());
-		mainPanel.add(getPanelHome(), "panelAwal");
-		mainPanel.add(new Dashboard(), "panelDashboard");
-		mainPanel.add(new KelolaDataLatih(), "panelKelolaDataLatih");
-		mainPanel.add(new PelatihanSistem(), "panelPelatihanSistem");
-		mainPanel.add(new PengujianSistem(), "panelPengujianSistem");
-		add(mainPanel);
+		MySQL_Connector koneksi = new MySQL_Connector();
+		if(koneksi.getKoneksi() != null){
+			mainPanel = new JPanel(new CardLayout());
+			mainPanel.add(getPanelHome(), "panelAwal");
+			mainPanel.add(new Dashboard(), "panelDashboard");
+			mainPanel.add(new KelolaDataLatih(), "panelKelolaDataLatih");
+			mainPanel.add(new PelatihanSistem(), "panelPelatihanSistem");
+			mainPanel.add(new PengujianSistem(), "panelPengujianSistem");
+			add(mainPanel);
+		}
 	}
 	
 	public JPanel getPanelHome(){
