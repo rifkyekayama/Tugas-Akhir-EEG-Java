@@ -12,11 +12,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 import mysql.DatabaseAction;
-import view.KelolaDataLatih.ButtonController;
-import view.KelolaDataLatih.MouseController;
 
 public class Dashboard extends JPanel {
 	
@@ -79,7 +76,9 @@ public class Dashboard extends JPanel {
 		btnNaracoba.setForeground(Color.white);
 		btnNaracoba.setBackground(new Color(221, 140, 41));
 		btnNaracoba.setBorderPainted(false);
+		btnNaracoba.setActionCommand("btnViewNaracoba");
 		btnNaracoba.addMouseListener(new MouseController());
+		btnNaracoba.addActionListener(new ButtonController());
 		btnNaracoba.setBounds(0, panelWidgetNaracoba.getHeight()-25, panelWidgetNaracoba.getWidth(), 25);
 		panelWidgetNaracoba.add(btnNaracoba);
 		
@@ -107,7 +106,9 @@ public class Dashboard extends JPanel {
 		btnSegmentasi.setForeground(Color.white);
 		btnSegmentasi.setBackground(new Color(0, 158, 87));
 		btnSegmentasi.setBorderPainted(false);
+		btnSegmentasi.setActionCommand("btnViewSegmentasi");
 		btnSegmentasi.addMouseListener(new MouseController());
+		btnSegmentasi.addActionListener(new ButtonController());
 		btnSegmentasi.setBounds(0, panelWidgetSegmentasi.getHeight()-25, panelWidgetSegmentasi.getWidth(), 25);
 		panelWidgetSegmentasi.add(btnSegmentasi);
 		
@@ -135,7 +136,9 @@ public class Dashboard extends JPanel {
 		btnRileks.setForeground(Color.white);
 		btnRileks.setBackground(new Color(0, 171, 213));
 		btnRileks.setBorderPainted(false);
+		btnRileks.setActionCommand("btnViewRileks");
 		btnRileks.addMouseListener(new MouseController());
+		btnRileks.addActionListener(new ButtonController());
 		btnRileks.setBounds(0, panelWidgetRileks.getHeight()-25, panelWidgetRileks.getWidth(), 25);
 		panelWidgetRileks.add(btnRileks);
 		
@@ -163,7 +166,9 @@ public class Dashboard extends JPanel {
 		btnNonRileks.setForeground(Color.white);
 		btnNonRileks.setBackground(new Color(204, 50, 55));
 		btnNonRileks.setBorderPainted(false);
+		btnNonRileks.setActionCommand("btnViewNonRileks");
 		btnNonRileks.addMouseListener(new MouseController());
+		btnNonRileks.addActionListener(new ButtonController());
 		btnNonRileks.setBounds(0, panelWidgetNonRileks.getHeight()-25, panelWidgetNonRileks.getWidth(), 25);
 		panelWidgetNonRileks.add(btnNonRileks);
 		
@@ -214,7 +219,15 @@ public class Dashboard extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			
+			if(e.getActionCommand().equals("btnViewNaracoba")){
+				Home.changeCard("panelKelolaDataLatih");
+			}else if(e.getActionCommand().equals("btnViewSegmentasi")){
+				Home.changeCard("panelKelolaDataLatih");
+			}else if(e.getActionCommand().equals("btnViewRileks")){
+				Home.changeCard("panelKelolaDataLatih");
+			}else if(e.getActionCommand().equals("btnViewNonRileks")){
+				Home.changeCard("panelKelolaDataLatih");
+			}
 		}
 	}
 }

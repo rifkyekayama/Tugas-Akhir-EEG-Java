@@ -3,6 +3,7 @@ package view;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -64,6 +65,7 @@ public class Home extends JFrame {
 		String judul2 = "Menggunakan Ekstraksi Wavelet dan Learning Vector Quantization";
 		labelJudul = new JLabel("<html><center>"+judul+"<br>"+judul2+"</center><html>");
 		labelJudul.setFont(labelJudul.getFont().deriveFont(25f));
+		labelJudul.setFont(labelJudul.getFont().deriveFont(Font.BOLD));
 		labelJudul.setHorizontalAlignment(SwingConstants.CENTER);
 		labelJudul.setForeground(new Color(68, 68, 77));
 		labelJudul.setBounds((getWidth()/4)-190, (getHeight()/2)-210, 1200, 100);
