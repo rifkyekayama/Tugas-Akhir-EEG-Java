@@ -2,6 +2,7 @@ package view;
 
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,7 +28,7 @@ public class Layout extends JPanel {
 				  iconLVQDrop, lblFooterCopyright, lblFooterNama, lblFooterKelas;
 	public JButton btnDashboard, btnKelolaDataLatih, btnPelatihan, btnPengujian;
 
-	public Layout(){
+	public Layout(String title){
 		setSize(1200,650);
 		setLayout(null);
 		setBackground(new Color(236, 240, 245));
@@ -46,8 +47,8 @@ public class Layout extends JPanel {
 		panelHeaderJudul2.setBounds(0, 0, 1200, 50);
 		panelHeaderJudul2.setBackground(new Color(60, 141, 188));
 		
-		titlePage = new JLabel("Kelola Data Latih");
-		titlePage.setFont(getFont().deriveFont(28f));
+		titlePage = new JLabel(title);
+		titlePage.setFont(getFont().deriveFont(Font.BOLD, 25f));
 		titlePage.setForeground(Color.white);
 		titlePage.setBounds(280, (panelHeaderJudul2.getHeight()/2)-25, 300, 50);
 		panelHeaderJudul2.add(titlePage);

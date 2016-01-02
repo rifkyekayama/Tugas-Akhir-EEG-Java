@@ -2,6 +2,7 @@ package view;
 
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -36,7 +37,7 @@ public class PengujianSistem extends JPanel {
 		setSize(1200, 650);
 		setLayout(null);
 		add(getContent());
-		add(new Layout());
+		add(new Layout("Pengujian Sistem"));
 	}
 	
 	public JPanel getContent(){
@@ -55,7 +56,7 @@ public class PengujianSistem extends JPanel {
 		panelFormDataLatih.add(lblTitleInputDataLatih);
 		
 		JLabel lblPilihDataEEG = new JLabel("Pilih Data EEG");
-		lblPilihDataEEG.setFont(lblPilihDataEEG.getFont().deriveFont(15f));
+		lblPilihDataEEG.setFont(lblPilihDataEEG.getFont().deriveFont(Font.BOLD, 15f));
 		lblPilihDataEEG.setBounds(15, 30, 150, 30);
 		panelFormDataLatih.add(lblPilihDataEEG);
 		
@@ -78,7 +79,7 @@ public class PengujianSistem extends JPanel {
 		panelFormDataLatih.add(lblKetDataEEG);
 			
 		JLabel lblKelas = new JLabel("Kelas :");
-		lblKelas.setFont(lblKelas.getFont().deriveFont(15f));
+		lblKelas.setFont(lblKelas.getFont().deriveFont(Font.BOLD, 15f));
 		lblKelas.setBounds(15, 140, 100, 30);
 		panelFormDataLatih.add(lblKelas);
 		
@@ -88,7 +89,7 @@ public class PengujianSistem extends JPanel {
 		panelFormDataLatih.add(cmbKelas);
 		
 		JLabel lblSegmentasi = new JLabel("Segmentasi (per detik) :");
-		lblSegmentasi.setFont(lblSegmentasi.getFont().deriveFont(15f));
+		lblSegmentasi.setFont(lblSegmentasi.getFont().deriveFont(Font.BOLD, 15f));
 		lblSegmentasi.setBounds(15, 210, 205, 30);
 		panelFormDataLatih.add(lblSegmentasi);
 		
@@ -97,7 +98,7 @@ public class PengujianSistem extends JPanel {
 		panelFormDataLatih.add(txtSegmentasi);
 		
 		JLabel lblSamplingRate = new JLabel("Sampling rate (Hertz) :");
-		lblSamplingRate.setFont(lblSamplingRate.getFont().deriveFont(15f));
+		lblSamplingRate.setFont(lblSamplingRate.getFont().deriveFont(Font.BOLD, 15f));
 		lblSamplingRate.setBounds(panelFormDataLatih.getWidth()-220, 210, 205, 30);
 		panelFormDataLatih.add(lblSamplingRate);
 		
@@ -113,7 +114,7 @@ public class PengujianSistem extends JPanel {
 		panelFormDataLatih.add(cbGunakanKanal2);
 		
 		JLabel lblKanal1 = new JLabel("Kanal 1 :");
-		lblKanal1.setFont(lblKanal1.getFont().deriveFont(15f));
+		lblKanal1.setFont(lblKanal1.getFont().deriveFont(Font.BOLD, 15f));
 		lblKanal1.setBounds(15, 310, 205, 30);
 		panelFormDataLatih.add(lblKanal1);
 		
@@ -123,7 +124,7 @@ public class PengujianSistem extends JPanel {
 		panelFormDataLatih.add(cmbKanal1);
 		
 		JLabel lblKanal2 = new JLabel("Kanal 2 :");
-		lblKanal2.setFont(lblKanal2.getFont().deriveFont(15f));
+		lblKanal2.setFont(lblKanal2.getFont().deriveFont(Font.BOLD, 15f));
 		lblKanal2.setBounds(panelFormDataLatih.getWidth()-220, 310, 205, 30);
 		panelFormDataLatih.add(lblKanal2);
 		

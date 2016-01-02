@@ -2,6 +2,8 @@ package view;
 
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,7 +30,7 @@ public class Dashboard extends JPanel {
 		setSize(1200, 650);
 		setLayout(null);
 		add(getContent());
-		add(new Layout());
+		add(new Layout("Dashboard"));
 		
 		dbAction = new DatabaseAction();
 		
@@ -48,8 +50,8 @@ public class Dashboard extends JPanel {
 		panelJudul.setLayout(new GridBagLayout());
 		panelJudul.setBounds(0, 0, panelContent.getWidth(), 100);
 		
-		JLabel lblJudul = new JLabel("<html><center><b>IDENTIFIKASI KONDISI RILEKS BERDASARKAN SINYAL ELECTROENSEPHALOGRAM MENGGUNAKAN <br> EKSTRAKSI WAVELET DAN LEARNING VECTOR QUANTIZATION</b></center></html>");
-		lblJudul.setFont(lblJudul.getFont().deriveFont(16f));
+		JLabel lblJudul = new JLabel("<html><center>IDENTIFIKASI KONDISI RILEKS BERDASARKAN SINYAL ELEKTROENSEPHALOGRAM <br> MENGGUNAKAN EKSTRAKSI WAVELET DAN LEARNING VECTOR QUANTIZATION</center></html>");
+		lblJudul.setFont(lblJudul.getFont().deriveFont(Font.BOLD, 18f));
 		panelJudul.add(lblJudul);
 		
 		JPanel panelWidgetNaracoba = new JPanel();
@@ -172,6 +174,38 @@ public class Dashboard extends JPanel {
 		btnNonRileks.setBounds(0, panelWidgetNonRileks.getHeight()-25, panelWidgetNonRileks.getWidth(), 25);
 		panelWidgetNonRileks.add(btnNonRileks);
 		
+		JPanel panelPowered = new JPanel();
+		panelPowered.setLayout(new FlowLayout());
+		panelPowered.setBackground(new Color(238, 238, 238));
+		panelPowered.setBounds(470, 490, 450, 50);
+		
+		JLabel lblPowered = new JLabel("Powered by:");
+		lblPowered.setFont(lblPowered.getFont().deriveFont(Font.BOLD, 15f));
+		lblPowered.setBounds(370, 490, 110, 15);
+		
+		JLabel lblIconJava = new JLabel(new ImageIcon(getClass().getResource("/resource/iconJava.png")));
+		panelPowered.add(lblIconJava);
+		
+		JLabel lblSeparator = new JLabel("  ");
+		panelPowered.add(lblSeparator);
+		
+		JLabel lblIconEclipse = new JLabel(new ImageIcon(getClass().getResource("/resource/iconEclipse.png")));
+		panelPowered.add(lblIconEclipse);
+		
+		lblSeparator = new JLabel("  ");
+		panelPowered.add(lblSeparator);
+		
+		JLabel lblIconBitbucket = new JLabel(new ImageIcon(getClass().getResource("/resource/iconBitbucket.png")));
+		panelPowered.add(lblIconBitbucket);
+		
+		lblSeparator = new JLabel("  ");
+		panelPowered.add(lblSeparator);
+		
+		JLabel lblIconUbuntu = new JLabel(new ImageIcon(getClass().getResource("/resource/iconUbuntu.png")));
+		panelPowered.add(lblIconUbuntu);
+		
+		panelContent.add(lblPowered);
+		panelContent.add(panelPowered);
 		panelContent.add(panelJudul);
 		panelContent.add(panelWidgetNaracoba);
 		panelContent.add(panelWidgetSegmentasi);

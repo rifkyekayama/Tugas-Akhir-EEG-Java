@@ -3,6 +3,7 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -42,7 +43,7 @@ public class PelatihanSistem extends JPanel {
 		centerTable = new DefaultTableCellRenderer();
 		centerTable.setHorizontalAlignment(SwingConstants.CENTER);
 		add(getContent());
-		add(new Layout());
+		add(new Layout("Pelatihan Sistem"));
 	}
 	
 	public JPanel getContent(){
@@ -61,7 +62,7 @@ public class PelatihanSistem extends JPanel {
 		panelFormPelatihan.add(lblTitleFormPelatihan);
 		
 		JLabel lblMaksimumEpoch = new JLabel("Maksimum Epoch:");
-		lblMaksimumEpoch.setFont(lblMaksimumEpoch.getFont().deriveFont(15f));
+		lblMaksimumEpoch.setFont(lblMaksimumEpoch.getFont().deriveFont(Font.BOLD, 15f));
 		lblMaksimumEpoch.setBounds(15, 30, 150, 30);
 		panelFormPelatihan.add(lblMaksimumEpoch);
 		
@@ -70,7 +71,7 @@ public class PelatihanSistem extends JPanel {
 		panelFormPelatihan.add(txtMaksimumEpoch);
 		
 		JLabel lblMinimumError = new JLabel("Minimum Error:");
-		lblMinimumError.setFont(lblMinimumError.getFont().deriveFont(15f));
+		lblMinimumError.setFont(lblMinimumError.getFont().deriveFont(Font.BOLD, 15f));
 		lblMinimumError.setBounds(panelFormPelatihan.getWidth()-220, 30, 150, 30);
 		panelFormPelatihan.add(lblMinimumError);
 		
@@ -79,7 +80,7 @@ public class PelatihanSistem extends JPanel {
 		panelFormPelatihan.add(txtMinimumError);
 		
 		JLabel lblLearningRate = new JLabel("Learning Rate:");
-		lblLearningRate.setFont(lblLearningRate.getFont().deriveFont(15f));
+		lblLearningRate.setFont(lblLearningRate.getFont().deriveFont(Font.BOLD, 15f));
 		lblLearningRate.setBounds(15, 100, 150, 30);
 		panelFormPelatihan.add(lblLearningRate);
 		
@@ -88,7 +89,7 @@ public class PelatihanSistem extends JPanel {
 		panelFormPelatihan.add(txtLearningRate);
 		
 		JLabel lblPenguranganLR = new JLabel("Pengurangan LR:");
-		lblPenguranganLR.setFont(lblPenguranganLR.getFont().deriveFont(15f));
+		lblPenguranganLR.setFont(lblPenguranganLR.getFont().deriveFont(Font.BOLD, 15f));
 		lblPenguranganLR.setBounds(panelFormPelatihan.getWidth()-220, 100, 200, 30);
 		panelFormPelatihan.add(lblPenguranganLR);
 		
