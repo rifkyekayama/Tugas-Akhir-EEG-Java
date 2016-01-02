@@ -4,7 +4,7 @@ import java.awt.List;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.lang.reflect.Array;
 
 public class Wavelet {
 	
@@ -13,15 +13,6 @@ public class Wavelet {
 	protected String[] pathFile;
 	protected int segmentasi, samplingRate;
 	
-	public Wavelet(String[] pathFile, String kelas, int segmentasi, int samplingRate, String kanal1) throws IOException{
-		this.pathFile = pathFile;
-		this.kelas = kelas;
-		this.segmentasi = segmentasi;
-		this.samplingRate = samplingRate;
-		this.kanal1 = kanal1;
-		ekstraksi(pathFile, kanal1, null, segmentasi, samplingRate);
-	}
-	
 	public Wavelet(String[] pathFile, String kelas, int segmentasi, int samplingRate, String kanal1, String kanal2) throws IOException{
 		this.pathFile = pathFile;
 		this.kelas = kelas;
@@ -29,25 +20,23 @@ public class Wavelet {
 		this.samplingRate = samplingRate;
 		this.kanal1 = kanal1;
 		this.kanal2 = kanal2;
-		ekstraksi(pathFile, kanal1, kanal2, segmentasi, samplingRate);
-	}
-	
-	@SuppressWarnings("unused")
-	public void ekstraksi(String[] pathFile, String kanal1, String kanal2, int segmentasi, int samplingRate) throws IOException{
-		ArrayList<Object> sinyalKanal1 = null, sinyalKanal2;
+		
+		String[][] sinyalKanal1 = null, sinyalKanal2, kanalMerge;
 		for(int i=0; i<pathFile.length; i++){
 			lineOfSinyal = readCsv(pathFile[i]);
 			if(kanal2 == null){
-				sinyalKanal1 = new ArrayList<Object>();
+				sinyalKanal1 = new String[(int) Math.floor(lineOfSinyal.getItemCount()/(this.samplingRate*this.segmentasi))][lineOfSinyal.getItemCount()-1];
 				sinyalKanal1 = segmentasiEEG(lineOfSinyal, kanalToInt(kanal1), segmentasi, samplingRate);
 			}else{
-				sinyalKanal1 = new ArrayList<Object>();
+				sinyalKanal1 = new String[(int) Math.floor(lineOfSinyal.getItemCount()/(this.samplingRate*this.segmentasi))][lineOfSinyal.getItemCount()-1];
 				sinyalKanal1 = segmentasiEEG(lineOfSinyal, kanalToInt(kanal1), segmentasi, samplingRate);
-				sinyalKanal2 = new ArrayList<Object>();
+				sinyalKanal2 = new String[(int) Math.floor(lineOfSinyal.getItemCount()/(this.samplingRate*this.segmentasi))][lineOfSinyal.getItemCount()-1];
 				sinyalKanal2 = segmentasiEEG(lineOfSinyal, kanalToInt(kanal2), segmentasi, samplingRate);
+				kanalMerge = mergeArrays(String.class, sinyalKanal1, sinyalKanal2);
+				System.out.println(kanalMerge.length);
+				System.out.println(kanalMerge[0].length);
 			}
 		}
-		System.out.println("panjang array list = "+sinyalKanal1);
 	}
 	
 	public int kanalToInt(String kanal){
@@ -72,6 +61,26 @@ public class Wavelet {
 		return indexKanal;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public <T> T[][] mergeArrays(Class<T> clazz, T[][]... arrays) {
+	    // determine length of 1st dimension.
+	    int dim1 = 0;
+	    for (T[][] arr : arrays) {
+	        dim1 += arr.length;
+	    }
+	    // Create new 2Dim Array
+	    T[][] result = (T[][]) Array.newInstance(clazz, dim1, 0);
+	    // Fill the new array with all 'old' arrays
+	    int index = 0;
+	    for (T[][] arr : arrays) {
+	        for (T[] array : arr) {
+	            // changes within your old arrays will reflect to merged one
+	            result[index++] = array;
+	        }
+	    }
+	    return result;
+	}
+	
 	public List readCsv(String pathFile) throws IOException{
 		BufferedReader reader = new BufferedReader(new FileReader(pathFile));
 		List lines = new List();
@@ -83,13 +92,12 @@ public class Wavelet {
 		return lines;
 	}
 
-	@SuppressWarnings("unused")
-	public ArrayList<Object> segmentasiEEG(List lineOfSinyal, int kanal, int segmentasi, int sampling){
-		String[] temp = new String[lineOfSinyal.getItemCount()-1];
-		ArrayList<Object> segmen = new ArrayList<Object>();
+	public String[][] segmentasiEEG(List lineOfSinyal, int kanal, int segmentasi, int sampling){
 		int fs=0, waktu=0, i, j=0, k=0;
-		for(i=1; i<lineOfSinyal.getItemCount()-1; i++){
-			temp[j] = lineOfSinyal.getItem(i).split(", ")[kanal];
+		int jumSegmen = (int) Math.floor(lineOfSinyal.getItemCount()/(sampling*segmentasi));
+		String[][] segmen = new String[jumSegmen][lineOfSinyal.getItemCount()-1];
+		for(i=1; i<jumSegmen; i++){
+			segmen[k][j] = lineOfSinyal.getItem(i).split(", ")[kanal];
 			j++;
 			fs++;
 			if(fs == sampling){
@@ -99,7 +107,6 @@ public class Wavelet {
 			if(waktu == segmentasi){
 				j=0;
 				waktu=0;
-				segmen.add(temp);
 				k++;
 			}
 		}
