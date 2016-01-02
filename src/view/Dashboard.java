@@ -174,6 +174,9 @@ public class Dashboard extends JPanel {
 		btnNonRileks.setBounds(0, panelWidgetNonRileks.getHeight()-25, panelWidgetNonRileks.getWidth(), 25);
 		panelWidgetNonRileks.add(btnNonRileks);
 		
+		JLabel lblUnjani = new JLabel(new ImageIcon(getClass().getResource("/resource/iconUnjani.png")));
+		lblUnjani.setBounds(0, 430, 100, 100);
+		
 		JPanel panelPowered = new JPanel();
 		panelPowered.setLayout(new FlowLayout());
 		panelPowered.setBackground(new Color(238, 238, 238));
@@ -204,13 +207,14 @@ public class Dashboard extends JPanel {
 		JLabel lblIconUbuntu = new JLabel(new ImageIcon(getClass().getResource("/resource/iconUbuntu.png")));
 		panelPowered.add(lblIconUbuntu);
 		
-		panelContent.add(lblPowered);
-		panelContent.add(panelPowered);
 		panelContent.add(panelJudul);
 		panelContent.add(panelWidgetNaracoba);
 		panelContent.add(panelWidgetSegmentasi);
 		panelContent.add(panelWidgetRileks);
 		panelContent.add(panelWidgetNonRileks);
+		panelContent.add(lblUnjani);
+		panelContent.add(lblPowered);
+		panelContent.add(panelPowered);
 		
 		return panelContent;
 	}
