@@ -168,8 +168,9 @@ public class DatabaseAction {
 	public void inputSegmentasiSinyal(String[][] sinyal, int kelas, int naracoba, int samplingRate, String kanal){
 		try{
 			for(int i=0;i<sinyal.length;i++){
+				String tempSinyal = Arrays.toString(sinyal[i]).substring(1, Arrays.toString(sinyal[i]).length()-1).replaceAll(",", "");
 				stmt = koneksi.createStatement();
-				stmt.executeUpdate("INSERT INTO Data_Latih (data_eeg, kelas, naracoba, sampling_rate, kanal) VALUES ('"+Arrays.deepToString(sinyal[i])+"', '"+kelas+"', '"+naracoba+"', '"+samplingRate+"', '"+kanal+"')");
+				stmt.executeUpdate("INSERT INTO Data_Latih (data_eeg, kelas, naracoba, sampling_rate, kanal) VALUES ('"+tempSinyal+"', '"+kelas+"', '"+naracoba+"', '"+samplingRate+"', '"+kanal+"')");
 			}
 		}catch(SQLException e){
 			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
