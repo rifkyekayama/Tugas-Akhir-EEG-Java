@@ -329,11 +329,6 @@ public class KelolaDataLatih extends JPanel {
 						CoreKelolaDataLatih coreKelolaDataLatih = new CoreKelolaDataLatih(wavelet);
 						coreKelolaDataLatih.execute();
 					}
-//					if(wavelet != null){
-//						JOptionPane.showMessageDialog(null, "Proses Segmentasi Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-//						Home.refreshAllElement();
-//						resetFormTableDataLatih();
-//					}
 				}
 			}
 		}
@@ -342,7 +337,6 @@ public class KelolaDataLatih extends JPanel {
 	class CoreKelolaDataLatih extends SwingWorker<Void, Void> {
 		
 		Wavelet wavelet;
-		int progressValue=0;
 		
 		public CoreKelolaDataLatih(Wavelet wavelet) {
 			// TODO Auto-generated constructor stub
@@ -353,43 +347,40 @@ public class KelolaDataLatih extends JPanel {
 		@Override
 		protected Void doInBackground() throws Exception {
 			// TODO Auto-generated method stub
-			lblStatusLoading.setText("inisialisasi local variable");
-			progressSubmitDataEEG.setValue(progressValue+=30);
-	
 			String[][] sinyalKanal1, sinyalKanal2, kanalMerge;
 			int naracoba = dbAction.getJumNaracoba()+1;
 			String kanal = null;
 			int i;
 			for(i=0; i<wavelet.pathFile.length; i++){
-				lblStatusLoading.setText("reading EEG signal");
-				progressSubmitDataEEG.setValue(progressValue+=20);
+				lblStatusLoading.setText("membaca EEG signal ke-"+i);
+				progressSubmitDataEEG.setValue(0);
 				
 				wavelet.lineOfSinyal = wavelet.readCsv(wavelet.pathFile[i]);
 				if(wavelet.kanal2 == null){
 					lblStatusLoading.setText("Segmentasi Sinyal EEG");
-					progressSubmitDataEEG.setValue(progressValue+=20);
+					progressSubmitDataEEG.setValue(50);
 					sinyalKanal1 = new String[(int) Math.floor(wavelet.lineOfSinyal.getItemCount()/(wavelet.samplingRate*wavelet.segmentasi))][wavelet.lineOfSinyal.getItemCount()-1];
 					sinyalKanal1 = wavelet.segmentasiEEG(wavelet.lineOfSinyal, wavelet.kanalToInt(wavelet.kanal1), wavelet.segmentasi, wavelet.samplingRate);
 					kanal = Integer.toString(wavelet.kanalToInt(wavelet.kanal1));
 					lblStatusLoading.setText("Input hasil segmentasi ke DB");
-					progressSubmitDataEEG.setValue(progressValue+=40);
+					progressSubmitDataEEG.setValue(100);
 					dbAction.inputSegmentasiSinyal(sinyalKanal1, wavelet.kelasToInt(wavelet.kelas), naracoba, wavelet.samplingRate, kanal);
 				}else{
 					lblStatusLoading.setText("Segmentasi Sinyal EEG Kanal 1");
-					progressSubmitDataEEG.setValue(progressValue+=10);
+					progressSubmitDataEEG.setValue(40);
 					sinyalKanal1 = new String[(int) Math.floor(wavelet.lineOfSinyal.getItemCount()/(wavelet.samplingRate*wavelet.segmentasi))][wavelet.lineOfSinyal.getItemCount()-1];
 					sinyalKanal1 = wavelet.segmentasiEEG(wavelet.lineOfSinyal, wavelet.kanalToInt(wavelet.kanal1), wavelet.segmentasi, wavelet.samplingRate);
 					lblStatusLoading.setText("Segmentasi Sinyal EEG Kanal 2");
-					progressSubmitDataEEG.setValue(progressValue+=10);
+					progressSubmitDataEEG.setValue(60);
 					sinyalKanal2 = new String[(int) Math.floor(wavelet.lineOfSinyal.getItemCount()/(wavelet.samplingRate*wavelet.segmentasi))][wavelet.lineOfSinyal.getItemCount()-1];
 					sinyalKanal2 = wavelet.segmentasiEEG(wavelet.lineOfSinyal, wavelet.kanalToInt(wavelet.kanal2), wavelet.segmentasi, wavelet.samplingRate);
 					lblStatusLoading.setText("Menggabungkan array kanal 1 dan 2");
-					progressSubmitDataEEG.setValue(progressValue+=20);
+					progressSubmitDataEEG.setValue(90);
 					kanalMerge = new String[sinyalKanal1.length+sinyalKanal2.length][sinyalKanal1[0].length];
 					kanalMerge = wavelet.mergeArrays(String.class, sinyalKanal1, sinyalKanal2);
 					kanal = Integer.toString(wavelet.kanalToInt(wavelet.kanal1))+","+Integer.toString(wavelet.kanalToInt(wavelet.kanal1));
 					lblStatusLoading.setText("Input hasil segmentasi ke DB");
-					progressSubmitDataEEG.setValue(progressValue+=30);
+					progressSubmitDataEEG.setValue(100);
 					dbAction.inputSegmentasiSinyal(kanalMerge, wavelet.kelasToInt(wavelet.kelas), naracoba, wavelet.samplingRate, kanal);
 				}
 			}
