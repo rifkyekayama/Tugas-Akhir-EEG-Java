@@ -41,12 +41,13 @@ public class KelolaDataLatih extends JPanel {
 	protected JLabel lblFileDataEEG;
 	protected JComboBox<?> cmbKelas, cmbKanal1, cmbKanal2;
 	protected JTextField txtSegmentasi, txtSamplingrate;
+	protected JCheckBox cbGunakanKanal2;
 	protected DefaultTableModel tableModel;
 	protected JTable tableDataLatih;
 	protected JScrollPane scrollTableDataLatih;
 	protected DefaultTableCellRenderer centerTable;
 	protected JFileChooser inputDataEEG;
-	protected JProgressBar progressSubmitDataEEG;
+	public static JProgressBar progressSubmitDataEEG;
 	protected String[] kelas = {"Pilih salah satu...", "Rileks", "Non-Rileks"};
 	protected String[] kanal = {"Pilih salah satu...", "AF3", "F7", "F3", "FC5", "T7", "P7", "O1", "O2", "P8", "T8", "FC6", "F4", "F8", "AF4"};
 	protected DatabaseAction dbAction;
@@ -130,7 +131,7 @@ public class KelolaDataLatih extends JPanel {
 		txtSamplingrate.setBounds(panelFormDataLatih.getWidth()-220, 240, 205, 30);
 		panelFormDataLatih.add(txtSamplingrate);
 		
-		JCheckBox cbGunakanKanal2 = new JCheckBox("Gunakan Kanal 2", false);
+		cbGunakanKanal2 = new JCheckBox("Gunakan Kanal 2", false);
 		cbGunakanKanal2.setBackground(Color.white);
 		cbGunakanKanal2.setBounds(panelFormDataLatih.getWidth()-220, 280, 205, 30);
 		cbGunakanKanal2.setActionCommand("cekKanal2");
@@ -206,6 +207,29 @@ public class KelolaDataLatih extends JPanel {
 		panelContent.add(panelFormDataLatih);
 		panelContent.add(panelLihatDataLatih);
 		return panelContent;
+	}
+	
+	public void updateTableDataLatih(){
+		tableDataLatih.setModel(dbAction.getListDataLatih());
+		tableDataLatih.repaint();
+		tableDataLatih.setRowSelectionAllowed(false);
+		tableDataLatih.setPreferredScrollableViewportSize(getSize());
+		tableDataLatih.setFillsViewportHeight(true);
+		tableDataLatih.getColumnModel().getColumn(0).setCellRenderer(centerTable);
+		tableDataLatih.getColumnModel().getColumn(2).setCellRenderer(centerTable);
+		tableDataLatih.getColumnModel().getColumn(3).setCellRenderer(centerTable);
+	}
+	
+	public void resetFormTableDataLatih(){
+		fullPathDataEEG = null;
+		lblFileDataEEG.setText("No file chosen");
+		cmbKelas.setSelectedIndex(0);
+		txtSegmentasi.setText("60");;
+		txtSamplingrate.setText("128");;
+		cmbKanal1.setSelectedIndex(0);
+		cbGunakanKanal2.setSelected(false);
+		cmbKanal2.setSelectedIndex(0);
+		cmbKanal2.setEnabled(false);
 	}
 	
 	class MouseController implements MouseListener{
@@ -294,6 +318,8 @@ public class KelolaDataLatih extends JPanel {
 						}
 						if(wavelet != null){
 							JOptionPane.showMessageDialog(null, "Proses Segmentasi Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+							Home.refreshAllElement();
+							resetFormTableDataLatih();
 						}
 						new KelolaDataLatih();
 					} catch (IOException e1) {

@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.SQLException;
-import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import mysql.DatabaseAction;
 import mysql.MySQL_Connector;
 
 public class Home extends JFrame {
@@ -30,6 +30,11 @@ public class Home extends JFrame {
 						 panelPelatihanSistem, panelPengujianSistem;
 	public JButton buttonAwal;
 	public JLabel labelJudul;
+	private static Dashboard dashboard = new Dashboard();
+	private static KelolaDataLatih kelolaDataLatih = new KelolaDataLatih();
+	private static PelatihanSistem pelatihanSistem = new PelatihanSistem();
+	private static PengujianSistem pengujianSistem = new PengujianSistem();
+	private static DatabaseAction dbAction = new DatabaseAction();
 	
 	public Home() throws SQLException{
 		super("Identifikasi Kondisi Rileks - 3411121013 Rifky Ekayama");
@@ -44,10 +49,10 @@ public class Home extends JFrame {
 		if(koneksi.getKoneksi() != null){
 			mainPanel = new JPanel(new CardLayout());
 			mainPanel.add(getPanelHome(), "panelAwal");
-			mainPanel.add(new Dashboard(), "panelDashboard");
-			mainPanel.add(new KelolaDataLatih(), "panelKelolaDataLatih");
-			mainPanel.add(new PelatihanSistem(), "panelPelatihanSistem");
-			mainPanel.add(new PengujianSistem(), "panelPengujianSistem");
+			mainPanel.add(dashboard, "panelDashboard");
+			mainPanel.add(kelolaDataLatih, "panelKelolaDataLatih");
+			mainPanel.add(pelatihanSistem, "panelPelatihanSistem");
+			mainPanel.add(pengujianSistem, "panelPengujianSistem");
 			add(mainPanel);
 		}
 	}
@@ -90,6 +95,15 @@ public class Home extends JFrame {
 		panelAwal.add(panelButtonAwal);
 		
 		return panelAwal;
+	}
+	
+	public static void refreshAllElement(){
+		dashboard.lblJumNaracoba.setText(Integer.toString(dbAction.getJumNaracoba()));
+		dashboard.lblJumSegmentasi.setText(Integer.toString(dbAction.getJumSegmentasi()));
+		dashboard.lblJumRileks.setText(Integer.toString(dbAction.getJumRileks()));
+		dashboard.lblJumNonRileks.setText(Integer.toString(dbAction.getJumNonRileks()));
+		
+		kelolaDataLatih.updateTableDataLatih();
 	}
 	
 	public static void changeCard(String cardName){

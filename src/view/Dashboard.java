@@ -23,7 +23,7 @@ public class Dashboard extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	protected JLabel lblJumNaracoba, lblJumSegmentasi, lblJumRileks, lblJumNonRileks;
+	public JLabel lblJumNaracoba, lblJumSegmentasi, lblJumRileks, lblJumNonRileks;
 	protected DatabaseAction dbAction;
 	
 	public Dashboard(){
