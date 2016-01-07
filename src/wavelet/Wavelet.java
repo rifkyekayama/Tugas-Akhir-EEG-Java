@@ -10,47 +10,23 @@ import mysql.DatabaseAction;
 
 public class Wavelet {
 	
-	protected List lineOfSinyal;
-	protected String kelas, kanal1, kanal2;
-	protected String[] pathFile;
-	protected int segmentasi, samplingRate;
-	protected DatabaseAction dbAction = new DatabaseAction();
+	public List lineOfSinyal;
+	public String kelas, kanal1, kanal2;
+	public String[] pathFile;
+	public int segmentasi, samplingRate;
+	public DatabaseAction dbAction = new DatabaseAction();
 	
 	public Wavelet(){
 		//constructor kosong
 	}
 	
-	public Wavelet(String[] pathFile, String kelas, int segmentasi, int samplingRate, String kanal1, String kanal2) throws IOException{
-		//constructor untuk segmentasi data EEG
+	public Wavelet(String[] pathFile, String kelas, int segmentasi, int samplingRate, String kanal1, String kanal2){
 		this.pathFile = pathFile;
 		this.kelas = kelas;
 		this.segmentasi = segmentasi;
 		this.samplingRate = samplingRate;
 		this.kanal1 = kanal1;
 		this.kanal2 = kanal2;
-		
-		String[][] sinyalKanal1, sinyalKanal2, kanalMerge;
-		int naracoba = dbAction.getJumNaracoba()+1;
-		String kanal = null;
-		int i;
-		for(i=0; i<pathFile.length; i++){
-			lineOfSinyal = readCsv(pathFile[i]);
-			if(kanal2 == null){
-				sinyalKanal1 = new String[(int) Math.floor(lineOfSinyal.getItemCount()/(this.samplingRate*this.segmentasi))][lineOfSinyal.getItemCount()-1];
-				sinyalKanal1 = segmentasiEEG(lineOfSinyal, kanalToInt(kanal1), segmentasi, samplingRate);
-				kanal = Integer.toString(kanalToInt(this.kanal1));
-				dbAction.inputSegmentasiSinyal(sinyalKanal1, kelasToInt(kelas), naracoba, samplingRate, kanal);
-			}else{
-				sinyalKanal1 = new String[(int) Math.floor(lineOfSinyal.getItemCount()/(this.samplingRate*this.segmentasi))][lineOfSinyal.getItemCount()-1];
-				sinyalKanal1 = segmentasiEEG(lineOfSinyal, kanalToInt(kanal1), segmentasi, samplingRate);
-				sinyalKanal2 = new String[(int) Math.floor(lineOfSinyal.getItemCount()/(this.samplingRate*this.segmentasi))][lineOfSinyal.getItemCount()-1];
-				sinyalKanal2 = segmentasiEEG(lineOfSinyal, kanalToInt(kanal2), segmentasi, samplingRate);
-				kanalMerge = new String[sinyalKanal1.length+sinyalKanal2.length][sinyalKanal1[0].length];
-				kanalMerge = mergeArrays(String.class, sinyalKanal1, sinyalKanal2);
-				kanal = Integer.toString(kanalToInt(this.kanal1))+","+Integer.toString(kanalToInt(this.kanal1));
-				dbAction.inputSegmentasiSinyal(kanalMerge, kelasToInt(kelas), naracoba, samplingRate, kanal);
-			}
-		}
 	}
 	
 	public Wavelet(boolean useAlfa, boolean useBeta, boolean useTeta){

@@ -4,12 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -23,6 +23,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -47,7 +48,8 @@ public class KelolaDataLatih extends JPanel {
 	protected JScrollPane scrollTableDataLatih;
 	protected DefaultTableCellRenderer centerTable;
 	protected JFileChooser inputDataEEG;
-	public static JProgressBar progressSubmitDataEEG;
+	public JProgressBar progressSubmitDataEEG;
+	public JLabel lblStatusLoading;
 	protected String[] kelas = {"Pilih salah satu...", "Rileks", "Non-Rileks"};
 	protected String[] kanal = {"Pilih salah satu...", "AF3", "F7", "F3", "FC5", "T7", "P7", "O1", "O2", "P8", "T8", "FC6", "F4", "F8", "AF4"};
 	protected DatabaseAction dbAction;
@@ -170,11 +172,18 @@ public class KelolaDataLatih extends JPanel {
 		panelFormDataLatih.add(btnSubmitDataEEG);
 		
 		progressSubmitDataEEG = new JProgressBar();
-		progressSubmitDataEEG.setBounds(15, 480, 420, 30);
+		progressSubmitDataEEG.setBounds(15, 470, 420, 30);
 		progressSubmitDataEEG.setForeground(new Color(44, 195, 107));
 		progressSubmitDataEEG.setBackground(new Color(251, 252, 252));
 		progressSubmitDataEEG.setStringPainted(true);
 		progressSubmitDataEEG.setVisible(true);
+		
+		JPanel panelStatusLoading = new JPanel(new GridBagLayout());
+		panelStatusLoading.setBounds(15, 500, 420, 30);
+		
+		lblStatusLoading = new JLabel("Loading...");
+		lblStatusLoading.setVisible(false);
+		panelStatusLoading.add(lblStatusLoading);
 		
 		JPanel panelLihatDataLatih = new JPanel();
 		panelLihatDataLatih.setLayout(null);
@@ -203,9 +212,10 @@ public class KelolaDataLatih extends JPanel {
 		scrollTableDataLatih.setVisible(true);
 		panelTableDataLatih.add(scrollTableDataLatih, BorderLayout.CENTER);
 		
-		panelContent.add(progressSubmitDataEEG);
 		panelContent.add(panelFormDataLatih);
 		panelContent.add(panelLihatDataLatih);
+		panelContent.add(progressSubmitDataEEG);
+		panelContent.add(panelStatusLoading);
 		return panelContent;
 	}
 	
@@ -310,24 +320,90 @@ public class KelolaDataLatih extends JPanel {
 				}else if(cmbKanal2.isEnabled() == true && (String)cmbKanal2.getSelectedItem() == "Pilih salah satu..."){
 					JOptionPane.showMessageDialog(null, "Pilihan Kanal 2 tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else{
-					try {
-						if(cmbKanal2.isEnabled() == false){
-							wavelet = new Wavelet(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), null);
-						}else{
-							wavelet = new Wavelet(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), (String)cmbKanal2.getSelectedItem());
-						}
-						if(wavelet != null){
-							JOptionPane.showMessageDialog(null, "Proses Segmentasi Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-							Home.refreshAllElement();
-							resetFormTableDataLatih();
-						}
-						new KelolaDataLatih();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+					if(cmbKanal2.isEnabled() == false){
+						wavelet = new Wavelet(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), null);
+						CoreKelolaDataLatih coreKelolaDataLatih = new CoreKelolaDataLatih(wavelet);
+						coreKelolaDataLatih.execute();
+					}else{
+						wavelet = new Wavelet(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), (String)cmbKanal2.getSelectedItem());
+						CoreKelolaDataLatih coreKelolaDataLatih = new CoreKelolaDataLatih(wavelet);
+						coreKelolaDataLatih.execute();
 					}
+//					if(wavelet != null){
+//						JOptionPane.showMessageDialog(null, "Proses Segmentasi Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+//						Home.refreshAllElement();
+//						resetFormTableDataLatih();
+//					}
 				}
 			}
+		}
+	}
+	
+	class CoreKelolaDataLatih extends SwingWorker<Void, Void> {
+		
+		Wavelet wavelet;
+		int progressValue=0;
+		
+		public CoreKelolaDataLatih(Wavelet wavelet) {
+			// TODO Auto-generated constructor stub
+			this.wavelet = wavelet;
+			lblStatusLoading.setVisible(true);
+		}
+
+		@Override
+		protected Void doInBackground() throws Exception {
+			// TODO Auto-generated method stub
+			lblStatusLoading.setText("inisialisasi local variable");
+			progressSubmitDataEEG.setValue(progressValue+=30);
+	
+			String[][] sinyalKanal1, sinyalKanal2, kanalMerge;
+			int naracoba = dbAction.getJumNaracoba()+1;
+			String kanal = null;
+			int i;
+			for(i=0; i<wavelet.pathFile.length; i++){
+				lblStatusLoading.setText("reading EEG signal");
+				progressSubmitDataEEG.setValue(progressValue+=20);
+				
+				wavelet.lineOfSinyal = wavelet.readCsv(wavelet.pathFile[i]);
+				if(wavelet.kanal2 == null){
+					lblStatusLoading.setText("Segmentasi Sinyal EEG");
+					progressSubmitDataEEG.setValue(progressValue+=20);
+					sinyalKanal1 = new String[(int) Math.floor(wavelet.lineOfSinyal.getItemCount()/(wavelet.samplingRate*wavelet.segmentasi))][wavelet.lineOfSinyal.getItemCount()-1];
+					sinyalKanal1 = wavelet.segmentasiEEG(wavelet.lineOfSinyal, wavelet.kanalToInt(wavelet.kanal1), wavelet.segmentasi, wavelet.samplingRate);
+					kanal = Integer.toString(wavelet.kanalToInt(wavelet.kanal1));
+					lblStatusLoading.setText("Input hasil segmentasi ke DB");
+					progressSubmitDataEEG.setValue(progressValue+=40);
+					dbAction.inputSegmentasiSinyal(sinyalKanal1, wavelet.kelasToInt(wavelet.kelas), naracoba, wavelet.samplingRate, kanal);
+				}else{
+					lblStatusLoading.setText("Segmentasi Sinyal EEG Kanal 1");
+					progressSubmitDataEEG.setValue(progressValue+=10);
+					sinyalKanal1 = new String[(int) Math.floor(wavelet.lineOfSinyal.getItemCount()/(wavelet.samplingRate*wavelet.segmentasi))][wavelet.lineOfSinyal.getItemCount()-1];
+					sinyalKanal1 = wavelet.segmentasiEEG(wavelet.lineOfSinyal, wavelet.kanalToInt(wavelet.kanal1), wavelet.segmentasi, wavelet.samplingRate);
+					lblStatusLoading.setText("Segmentasi Sinyal EEG Kanal 2");
+					progressSubmitDataEEG.setValue(progressValue+=10);
+					sinyalKanal2 = new String[(int) Math.floor(wavelet.lineOfSinyal.getItemCount()/(wavelet.samplingRate*wavelet.segmentasi))][wavelet.lineOfSinyal.getItemCount()-1];
+					sinyalKanal2 = wavelet.segmentasiEEG(wavelet.lineOfSinyal, wavelet.kanalToInt(wavelet.kanal2), wavelet.segmentasi, wavelet.samplingRate);
+					lblStatusLoading.setText("Menggabungkan array kanal 1 dan 2");
+					progressSubmitDataEEG.setValue(progressValue+=20);
+					kanalMerge = new String[sinyalKanal1.length+sinyalKanal2.length][sinyalKanal1[0].length];
+					kanalMerge = wavelet.mergeArrays(String.class, sinyalKanal1, sinyalKanal2);
+					kanal = Integer.toString(wavelet.kanalToInt(wavelet.kanal1))+","+Integer.toString(wavelet.kanalToInt(wavelet.kanal1));
+					lblStatusLoading.setText("Input hasil segmentasi ke DB");
+					progressSubmitDataEEG.setValue(progressValue+=30);
+					dbAction.inputSegmentasiSinyal(kanalMerge, wavelet.kelasToInt(wavelet.kelas), naracoba, wavelet.samplingRate, kanal);
+				}
+			}
+			return null;
+		}
+		
+		@Override
+		public void done(){
+			JOptionPane.showMessageDialog(null, "Proses Segmentasi Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+			Home.refreshAllElement();
+			resetFormTableDataLatih();
+			progressSubmitDataEEG.setValue(100);
+			lblStatusLoading.setVisible(false);
+			progressSubmitDataEEG.setValue(0);
 		}
 	}
 }
