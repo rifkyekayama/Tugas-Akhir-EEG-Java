@@ -121,19 +121,27 @@ public class Wavelet {
 		return segmen;
 	}
 	
-	public double[][] unSegmenEEG(double[] sinyalEEG, int samplingRate){
-		double[][] hasilSinyal = new double[sinyalEEG.length/samplingRate][samplingRate];
-		int i=0, idx=0, idx2=0;
+	public double[][][] unSegmenEEG(double[][] sinyalEEG, int samplingRate){
+		double[][][] hasilSinyal = new double[sinyalEEG.length][sinyalEEG[0].length/samplingRate][samplingRate];
+		int i=0, j=0, idx=0, idx2=0;
 		
 		for(i=0;i<sinyalEEG.length;i++){
-			hasilSinyal[idx][idx2] = sinyalEEG[idx2];
-			if(idx2 < samplingRate-1){
-				idx2++;
-			}else{
-				idx++;
-				idx2=0;
+			for(j=0;j<sinyalEEG[i].length;j++){
+				//System.out.println(i+" "+j+" "+sinyalEEG[i][j]);
+				hasilSinyal[i][idx][idx2] = sinyalEEG[i][j];
+				System.out.println(i+" "+idx2+" "+hasilSinyal[i][idx][idx2]+" "+sinyalEEG[i][j]);
+				if(idx2 < samplingRate-1){
+					idx2++;
+				}else{
+					idx2=0;
+					if(idx < sinyalEEG[0].length/samplingRate-1){
+						idx++;
+					}
+				}
+				//System.out.println(Arrays.toString(hasilSinyal[i][j]));
 			}
 		}
+		
 		return hasilSinyal;
 	}
 	

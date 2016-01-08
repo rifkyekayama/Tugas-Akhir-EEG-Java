@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -12,14 +13,17 @@ import java.awt.event.MouseListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import mysql.DatabaseAction;
+import wavelet.Wavelet;
 
 public class PelatihanSistem extends JPanel {
 	
@@ -29,11 +33,13 @@ public class PelatihanSistem extends JPanel {
 	private static final long serialVersionUID = 1L;
 	protected JTextField txtMaksimumEpoch, txtMinimumError, txtLearningRate, txtPenguranganLR;
 	protected JButton btnPelatihan;
+	public JProgressBar progressBarPelatihan;
+	public JLabel lblStatusLoading;
 	protected DefaultTableModel tableModel;
 	protected JTable tableBobot;
 	protected JScrollPane scrollTableBobot;
 	protected DefaultTableCellRenderer centerTable;
-	protected DatabaseAction dbAction;
+	protected DatabaseAction dbAction = new DatabaseAction();
 	
 	public PelatihanSistem(){
 		setSize(1200, 650);
@@ -107,6 +113,19 @@ public class PelatihanSistem extends JPanel {
 		btnPelatihan.setBounds(15, 180, 420, 50);
 		panelFormPelatihan.add(btnPelatihan);
 		
+		progressBarPelatihan = new JProgressBar();
+		progressBarPelatihan.setForeground(new Color(44, 195, 107));
+		progressBarPelatihan.setBackground(new Color(251, 252, 252));
+		progressBarPelatihan.setStringPainted(true);
+		progressBarPelatihan.setBounds(15, panelFormPelatihan.getHeight()+30, panelFormPelatihan.getWidth()-30, 30);
+		
+		JPanel panelLblStatusLoading = new JPanel(new GridBagLayout());
+		panelLblStatusLoading.setBounds(15, panelFormPelatihan.getHeight()+60, panelFormPelatihan.getWidth()-30, 30);
+		
+		lblStatusLoading = new JLabel("Loading...");
+		lblStatusLoading.setVisible(false);
+		panelLblStatusLoading.add(lblStatusLoading);
+		
 		JPanel panelTabelPelatihan = new JPanel();
 		panelTabelPelatihan.setLayout(null);
 		panelTabelPelatihan.setBackground(Color.white);
@@ -136,6 +155,8 @@ public class PelatihanSistem extends JPanel {
 		panelTableDataBobot.add(scrollTableBobot, BorderLayout.CENTER);
 		
 		panelContent.add(panelFormPelatihan);
+		panelContent.add(progressBarPelatihan);
+		panelContent.add(panelLblStatusLoading);
 		panelContent.add(panelTabelPelatihan);
 		
 		return panelContent;
@@ -180,8 +201,28 @@ public class PelatihanSistem extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getActionCommand().equals("mulaiPelatihan")){
-				
+				CorePelatihanSistem corePelatihanSistem = new CorePelatihanSistem();
+				corePelatihanSistem.execute();
 			}
+		}
+	}
+	
+	class CorePelatihanSistem extends SwingWorker<Void, Void>{
+
+		double[][] sinyalAsli;
+		double[][][] sinyalUnsegmen;
+		Wavelet wavelet = new Wavelet();
+		@Override
+		protected Void doInBackground() throws Exception {
+			// TODO Auto-generated method stub
+			sinyalAsli = dbAction.getDataLatihRileks();
+			sinyalUnsegmen = wavelet.unSegmenEEG(sinyalAsli, 128);
+			return null;
+		}
+		
+		@Override
+		public void done(){
+			
 		}
 	}
 }

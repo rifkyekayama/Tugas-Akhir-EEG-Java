@@ -176,4 +176,64 @@ public class DatabaseAction {
 			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
 		}
 	}
+	
+	public double[][] getDataLatihRileks(){
+		double[][] sinyalDataLatih = null;
+		String[] sinyalTemp;
+		int i=0, j=0;
+		try{
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM Data_Latih WHERE kelas=1");
+			if(rs.next()){
+				rs.last();
+				sinyalDataLatih = new double[rs.getRow()][rs.getString("data_eeg").split(" ").length];
+				rs.first();
+				sinyalTemp = rs.getString("data_eeg").split(" ");
+				for(j=0;j<sinyalTemp.length;j++){
+					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
+				}
+				i++;
+				while(rs.next()){
+					sinyalTemp = rs.getString("data_eeg").split(" ");
+					for(j=0;j<sinyalTemp.length;j++){
+						sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
+					}
+					i++;
+				}
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return sinyalDataLatih;
+	}
+	
+	public double[][] getDataLatihNonRileks(){
+		double[][] sinyalDataLatih = null;
+		String[] sinyalTemp;
+		int i=0, j=0;
+		try{
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM Data_Latih WHERE kelas=-1");
+			if(rs.next()){
+				rs.last();
+				sinyalDataLatih = new double[rs.getRow()][rs.getString("data_eeg").split(" ").length];
+				rs.first();
+				sinyalTemp = rs.getString("data_eeg").split(" ");
+				for(j=0;j<sinyalTemp.length;j++){
+					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
+				}
+				i++;
+				while(rs.next()){
+					sinyalTemp = rs.getString("data_eeg").split(" ");
+					for(j=0;j<sinyalTemp.length;j++){
+						sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
+					}
+					i++;
+				}
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return sinyalDataLatih;
+	}
 }
