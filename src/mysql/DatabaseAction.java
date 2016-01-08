@@ -236,4 +236,18 @@ public class DatabaseAction {
 		}
 		return sinyalDataLatih;
 	}
+	
+	public int getSamplingRate(){
+		int samplingRate = 0;
+		try{
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT DISTINCT sampling_rate FROM Data_Latih");
+			if(rs.next()){
+				samplingRate = rs.getInt(1);
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return samplingRate;
+	}
 }

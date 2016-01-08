@@ -12,6 +12,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -201,28 +202,45 @@ public class PelatihanSistem extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getActionCommand().equals("mulaiPelatihan")){
-				CorePelatihanSistem corePelatihanSistem = new CorePelatihanSistem();
-				corePelatihanSistem.execute();
+//				CorePelatihanSistem corePelatihanSistem = new CorePelatihanSistem();
+//				corePelatihanSistem.execute();
+				double[][][] sinyalUnsegmen;
+				Object[][][][] tes;
+				Wavelet wavelet = new Wavelet();
+				sinyalUnsegmen = wavelet.unSegmenEEG(dbAction.getDataLatihRileks(), dbAction.getSamplingRate());
+				tes = wavelet.getNeuron(sinyalUnsegmen, 1);
 			}
 		}
 	}
 	
 	class CorePelatihanSistem extends SwingWorker<Void, Void>{
 
-		double[][] sinyalAsli;
 		double[][][] sinyalUnsegmen;
+		Object[][][][] tes;
 		Wavelet wavelet = new Wavelet();
+		public CorePelatihanSistem() {
+			// TODO Auto-generated constructor stub
+			lblStatusLoading.setVisible(true);
+		}
+		
 		@Override
 		protected Void doInBackground() throws Exception {
 			// TODO Auto-generated method stub
-			sinyalAsli = dbAction.getDataLatihRileks();
-			sinyalUnsegmen = wavelet.unSegmenEEG(sinyalAsli, 128);
+			lblStatusLoading.setText("unsegmen data sinya EEG");
+			progressBarPelatihan.setValue(45);
+			sinyalUnsegmen = wavelet.unSegmenEEG(dbAction.getDataLatihRileks(), dbAction.getSamplingRate());
+			lblStatusLoading.setText("Get Neuron");
+			progressBarPelatihan.setValue(75);
+			tes = wavelet.getNeuron(sinyalUnsegmen, 1);
 			return null;
 		}
 		
 		@Override
 		public void done(){
-			
+			progressBarPelatihan.setValue(100);
+			lblStatusLoading.setVisible(false);
+			JOptionPane.showMessageDialog(null, "Proses pelatihan beres", "Pelatihan", JOptionPane.INFORMATION_MESSAGE);
+			progressBarPelatihan.setValue(0);
 		}
 	}
 }

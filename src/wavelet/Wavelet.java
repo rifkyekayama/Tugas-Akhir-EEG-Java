@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.util.Arrays;
 
 import mysql.DatabaseAction;
 
@@ -127,9 +128,7 @@ public class Wavelet {
 		
 		for(i=0;i<sinyalEEG.length;i++){
 			for(j=0;j<sinyalEEG[i].length;j++){
-				//System.out.println(i+" "+j+" "+sinyalEEG[i][j]);
 				hasilSinyal[i][idx][idx2] = sinyalEEG[i][j];
-				System.out.println(i+" "+idx2+" "+hasilSinyal[i][idx][idx2]+" "+sinyalEEG[i][j]);
 				if(idx2 < samplingRate-1){
 					idx2++;
 				}else{
@@ -138,10 +137,8 @@ public class Wavelet {
 						idx++;
 					}
 				}
-				//System.out.println(Arrays.toString(hasilSinyal[i][j]));
 			}
 		}
-		
 		return hasilSinyal;
 	}
 	
@@ -241,7 +238,7 @@ public class Wavelet {
 		for(i=0;i<ADAAA5_5.length;i++){
 			hasilSinyal[i] = ADAAA5_5[i];
 		}
-		i_temp = hasilSinyal.length+1;
+		i_temp = ADAAA5_5.length;
 		for(i=0;i<ADDAAA6_6.length;i++){
 			hasilSinyal[i_temp] = ADDAAA6_6[i];
 			i_temp++;
@@ -279,7 +276,7 @@ public class Wavelet {
 		for(i=0;i<DAA3_3.length;i++){
 			hasilSinyal[i] = DAA3_3[i];
 		}
-		i_temp = hasilSinyal.length+1;
+		i_temp = DAA3_3.length;
 		for(i=0;i<DDDAAA6_6.length;i++){
 			hasilSinyal[i_temp] = DDDAAA6_6[i];
 			i_temp++;
@@ -310,7 +307,7 @@ public class Wavelet {
 	
 	public double[] transformasiWavelet(double[] sinyalEEG, boolean isAlfaUse, boolean isBetaUse, boolean isTetaUse){
 		double[] alfa, beta, teta, hasilSinyal;
-		int i, i_temp, idx=0;
+		int i, i_temp=0, idx=0;
 		alfa = getAlfa(sinyalEEG);
 		beta = getBeta(sinyalEEG);
 		teta = getTeta(sinyalEEG);
@@ -330,24 +327,46 @@ public class Wavelet {
 		
 		if(isAlfaUse == true){
 			for(i=0;i<alfa.length;i++){
-				hasilSinyal[i] = alfa[i];
+				hasilSinyal[i_temp] = alfa[i];
+				if(i_temp < idx){
+					i_temp++;
+				}
 			}
 		}
-		i_temp = hasilSinyal.length+1;
 		
 		if(isBetaUse == true){
 			for(i=0;i<beta.length;i++){
 				hasilSinyal[i_temp] = beta[i];
+				if(i_temp < idx){
+					i_temp++;
+				}
 			}
 		}
-		
-		i_temp = hasilSinyal.length+1;
 		
 		if(isTetaUse == true){
 			for(i=0;i<teta.length;i++){
 				hasilSinyal[i_temp] = teta[i];
+				if(i_temp < idx){
+					i_temp++;
+				}
 			}
 		}
+		System.out.println(Arrays.toString(hasilSinyal));
 		return hasilSinyal;
+	}
+	
+	public Object[][][][] getNeuron(double[][][] sinyalEEG, int kelas){
+		Object[][][][] neuron = new Object[sinyalEEG.length][2][sinyalEEG[0].length][sinyalEEG[0][0].length];
+		int i=0, j=0;
+		
+		System.out.println(transformasiWavelet(sinyalEEG[0][0], true, true, true));
+		
+//		for(i=0;i<sinyalEEG.length;i++){
+//			for(j=0;j<sinyalEEG[i].length;j++){
+//				transformasiWavelet(sinyalEEG[i][j], true, true, true);
+//			}
+//		}
+		
+		return null;
 	}
 }
