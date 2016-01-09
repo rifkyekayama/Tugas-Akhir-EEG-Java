@@ -4,8 +4,6 @@ import java.awt.List;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.Arrays;
 
 import mysql.DatabaseAction;
 
@@ -378,7 +376,6 @@ public class Wavelet {
 			}
 			neuron[i][1] = objectKelas;
 			iTemp=0;
-			System.out.println(neuron[i][0][0]);
 		}
 		
 		return neuron;
