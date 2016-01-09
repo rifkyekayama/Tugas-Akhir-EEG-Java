@@ -62,9 +62,8 @@ public class DatabaseAction {
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM Data_Latih WHERE kelas=1");
-			if(rs.next()){
-				jumRileks = rs.getInt(1);
-			}
+			rs.last();
+			jumRileks = rs.getRow();
 		}catch(SQLException e){
 			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
 		}
@@ -77,9 +76,8 @@ public class DatabaseAction {
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM Data_Latih WHERE kelas=-1");
-			if(rs.next()){
-				jumNonRileks = rs.getInt(1);
-			}
+			rs.last();
+			jumNonRileks = rs.getRow();
 		}catch(SQLException e){
 			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
 		}

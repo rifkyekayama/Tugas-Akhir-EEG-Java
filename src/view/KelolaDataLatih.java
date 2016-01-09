@@ -47,7 +47,7 @@ public class KelolaDataLatih extends JPanel {
 	protected JTable tableDataLatih;
 	protected JScrollPane scrollTableDataLatih;
 	protected DefaultTableCellRenderer centerTable;
-	protected JFileChooser inputDataEEG;
+	protected JFileChooser inputDataEEG = new JFileChooser();
 	public JProgressBar progressSubmitDataEEG;
 	public JLabel lblStatusLoading;
 	protected String[] kelas = {"Pilih salah satu...", "Rileks", "Non-Rileks"};
@@ -288,7 +288,7 @@ public class KelolaDataLatih extends JPanel {
 				}
 			}else if(e.getActionCommand().equals("pilihDataEEG")){
 				FileNameExtensionFilter filterFile = new FileNameExtensionFilter("CSV FILE", "csv");
-				inputDataEEG = new JFileChooser();
+				inputDataEEG.setCurrentDirectory(inputDataEEG.getCurrentDirectory());
 				inputDataEEG.setFileFilter(filterFile);
 				inputDataEEG.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				inputDataEEG.setMultiSelectionEnabled(true);
@@ -350,37 +350,25 @@ public class KelolaDataLatih extends JPanel {
 			String[][] sinyalKanal1, sinyalKanal2, kanalMerge;
 			int naracoba = dbAction.getJumNaracoba()+1;
 			String kanal = null;
-			int i;
+			int i, progress=0, progressDistance = 100/wavelet.pathFile.length;
 			for(i=0; i<wavelet.pathFile.length; i++){
-				lblStatusLoading.setText("membaca EEG signal ke-"+i);
-				progressSubmitDataEEG.setValue(0);
+				lblStatusLoading.setText("membaca EEG signal ke "+(i+1));
+				progressSubmitDataEEG.setValue(progress+=progressDistance);
 				
 				wavelet.lineOfSinyal = wavelet.readCsv(wavelet.pathFile[i]);
 				if(wavelet.kanal2 == null){
-					lblStatusLoading.setText("Segmentasi Sinyal EEG");
-					progressSubmitDataEEG.setValue(50);
 					sinyalKanal1 = new String[(int) Math.floor(wavelet.lineOfSinyal.getItemCount()/(wavelet.samplingRate*wavelet.segmentasi))][wavelet.lineOfSinyal.getItemCount()-1];
 					sinyalKanal1 = wavelet.segmentasiEEG(wavelet.lineOfSinyal, wavelet.kanalToInt(wavelet.kanal1), wavelet.segmentasi, wavelet.samplingRate);
 					kanal = Integer.toString(wavelet.kanalToInt(wavelet.kanal1));
-					lblStatusLoading.setText("Input hasil segmentasi ke DB");
-					progressSubmitDataEEG.setValue(100);
 					dbAction.inputSegmentasiSinyal(sinyalKanal1, wavelet.kelasToInt(wavelet.kelas), naracoba, wavelet.samplingRate, kanal);
 				}else{
-					lblStatusLoading.setText("Segmentasi Sinyal EEG Kanal 1");
-					progressSubmitDataEEG.setValue(40);
 					sinyalKanal1 = new String[(int) Math.floor(wavelet.lineOfSinyal.getItemCount()/(wavelet.samplingRate*wavelet.segmentasi))][wavelet.lineOfSinyal.getItemCount()-1];
 					sinyalKanal1 = wavelet.segmentasiEEG(wavelet.lineOfSinyal, wavelet.kanalToInt(wavelet.kanal1), wavelet.segmentasi, wavelet.samplingRate);
-					lblStatusLoading.setText("Segmentasi Sinyal EEG Kanal 2");
-					progressSubmitDataEEG.setValue(60);
 					sinyalKanal2 = new String[(int) Math.floor(wavelet.lineOfSinyal.getItemCount()/(wavelet.samplingRate*wavelet.segmentasi))][wavelet.lineOfSinyal.getItemCount()-1];
 					sinyalKanal2 = wavelet.segmentasiEEG(wavelet.lineOfSinyal, wavelet.kanalToInt(wavelet.kanal2), wavelet.segmentasi, wavelet.samplingRate);
-					lblStatusLoading.setText("Menggabungkan array kanal 1 dan 2");
-					progressSubmitDataEEG.setValue(90);
-					kanalMerge = new String[sinyalKanal1.length+sinyalKanal2.length][sinyalKanal1[0].length];
-					kanalMerge = wavelet.mergeArrays(String.class, sinyalKanal1, sinyalKanal2);
+					kanalMerge = new String[sinyalKanal1.length][sinyalKanal1[0].length+sinyalKanal2[0].length];
+					kanalMerge = wavelet.gabungkanArray(sinyalKanal1, sinyalKanal2);
 					kanal = Integer.toString(wavelet.kanalToInt(wavelet.kanal1))+","+Integer.toString(wavelet.kanalToInt(wavelet.kanal1));
-					lblStatusLoading.setText("Input hasil segmentasi ke DB");
-					progressSubmitDataEEG.setValue(100);
 					dbAction.inputSegmentasiSinyal(kanalMerge, wavelet.kelasToInt(wavelet.kelas), naracoba, wavelet.samplingRate, kanal);
 				}
 			}
@@ -391,7 +379,7 @@ public class KelolaDataLatih extends JPanel {
 		public void done(){
 			JOptionPane.showMessageDialog(null, "Proses Segmentasi Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
 			Home.refreshAllElement();
-			resetFormTableDataLatih();
+			//resetFormTableDataLatih();
 			progressSubmitDataEEG.setValue(100);
 			lblStatusLoading.setVisible(false);
 			progressSubmitDataEEG.setValue(0);

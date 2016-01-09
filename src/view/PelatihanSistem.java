@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -22,6 +23,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.xml.crypto.dsig.SignedInfo;
 
 import mysql.DatabaseAction;
 import wavelet.Wavelet;
@@ -205,10 +207,10 @@ public class PelatihanSistem extends JPanel {
 //				CorePelatihanSistem corePelatihanSistem = new CorePelatihanSistem();
 //				corePelatihanSistem.execute();
 				double[][][] sinyalUnsegmen;
-				Object[][][][] tes;
+				Object[][][] tes;
 				Wavelet wavelet = new Wavelet();
-				sinyalUnsegmen = wavelet.unSegmenEEG(dbAction.getDataLatihRileks(), dbAction.getSamplingRate());
-				tes = wavelet.getNeuron(sinyalUnsegmen, 1);
+				sinyalUnsegmen = wavelet.unSegmenEEG(dbAction.getDataLatihNonRileks(), dbAction.getSamplingRate());
+				tes = wavelet.getNeuron(sinyalUnsegmen, "Rileks");
 			}
 		}
 	}
@@ -216,7 +218,7 @@ public class PelatihanSistem extends JPanel {
 	class CorePelatihanSistem extends SwingWorker<Void, Void>{
 
 		double[][][] sinyalUnsegmen;
-		Object[][][][] tes;
+		Object[][][] tes;
 		Wavelet wavelet = new Wavelet();
 		public CorePelatihanSistem() {
 			// TODO Auto-generated constructor stub
@@ -231,7 +233,7 @@ public class PelatihanSistem extends JPanel {
 			sinyalUnsegmen = wavelet.unSegmenEEG(dbAction.getDataLatihRileks(), dbAction.getSamplingRate());
 			lblStatusLoading.setText("Get Neuron");
 			progressBarPelatihan.setValue(75);
-			tes = wavelet.getNeuron(sinyalUnsegmen, 1);
+			tes = wavelet.getNeuron(sinyalUnsegmen, "Rileks");
 			return null;
 		}
 		

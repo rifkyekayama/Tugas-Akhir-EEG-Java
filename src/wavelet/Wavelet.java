@@ -66,24 +66,28 @@ public class Wavelet {
 		return indexKanal;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public <T> T[][] mergeArrays(Class<T> clazz, T[][]... arrays) {
-	    // determine length of 1st dimension.
-	    int dim1 = 0;
-	    for (T[][] arr : arrays) {
-	        dim1 += arr.length;
-	    }
-	    // Create new 2Dim Array
-	    T[][] result = (T[][]) Array.newInstance(clazz, dim1, 0);
-	    // Fill the new array with all 'old' arrays
-	    int index = 0;
-	    for (T[][] arr : arrays) {
-	        for (T[] array : arr) {
-	            // changes within your old arrays will reflect to merged one
-	            result[index++] = array;
-	        }
-	    }
-	    return result;
+	
+	public String[][] gabungkanArray(String[][] kanal1, String[][] kanal2){
+		String[][] hasilPenggabungan = new String[kanal1.length][kanal1[0].length+kanal2[0].length];
+		int i=0, iTemp=0, j=0, k=0;
+		for(i=0;i<hasilPenggabungan.length;i++){
+			for(j=0;j<hasilPenggabungan[i].length;j++){
+				for(k=0;k<kanal1[i].length;k++){
+					if(iTemp < hasilPenggabungan[i].length){
+						hasilPenggabungan[i][iTemp] = kanal1[i][k];
+						iTemp++;
+					}
+				}
+				for(k=0;k<kanal2[i].length;k++){
+					if(iTemp < hasilPenggabungan[i].length){
+						hasilPenggabungan[i][iTemp] = kanal2[i][k];
+						iTemp++;
+					}
+				}
+			}
+			iTemp=0;
+		}
+		return hasilPenggabungan;
 	}
 	
 	public List readCsv(String pathFile) throws IOException{
@@ -128,16 +132,16 @@ public class Wavelet {
 		
 		for(i=0;i<sinyalEEG.length;i++){
 			for(j=0;j<sinyalEEG[i].length;j++){
-				hasilSinyal[i][idx][idx2] = sinyalEEG[i][j];
 				if(idx2 < samplingRate-1){
+					hasilSinyal[i][idx][idx2] = sinyalEEG[i][j];
 					idx2++;
 				}else{
 					idx2=0;
-					if(idx < sinyalEEG[0].length/samplingRate-1){
-						idx++;
-					}
+					idx++;
 				}
 			}
+			idx=0;
+			idx2=0;
 		}
 		return hasilSinyal;
 	}
@@ -351,22 +355,32 @@ public class Wavelet {
 				}
 			}
 		}
-		System.out.println(Arrays.toString(hasilSinyal));
 		return hasilSinyal;
 	}
 	
-	public Object[][][][] getNeuron(double[][][] sinyalEEG, int kelas){
-		Object[][][][] neuron = new Object[sinyalEEG.length][2][sinyalEEG[0].length][sinyalEEG[0][0].length];
-		int i=0, j=0;
+	public Object[][][] getNeuron(double[][][] sinyalEEG, String kelas){
+		double[] hasilWavelet = new double[transformasiWavelet(sinyalEEG[0][0], true, true, true).length];
+		Object[] objectKelas = new Object[]{(Integer)kelasToInt(kelas)};
+		Object[][][] neuron = new Object[sinyalEEG.length][2][sinyalEEG[0].length*hasilWavelet.length];
+		int i=0, j=0, k=0, iTemp=0;
 		
-		System.out.println(transformasiWavelet(sinyalEEG[0][0], true, true, true));
+		hasilWavelet = transformasiWavelet(sinyalEEG[19][119], true, true, true);
 		
-//		for(i=0;i<sinyalEEG.length;i++){
-//			for(j=0;j<sinyalEEG[i].length;j++){
-//				transformasiWavelet(sinyalEEG[i][j], true, true, true);
-//			}
-//		}
+		for(i=0;i<sinyalEEG.length;i++){
+			for(j=0;j<sinyalEEG[i].length;j++){
+				hasilWavelet = transformasiWavelet(sinyalEEG[i][j], true, true, true);
+				for(k=0;k<hasilWavelet.length;k++){
+					if(iTemp < neuron[i][0].length){
+						neuron[i][0][iTemp] = hasilWavelet[k];
+						iTemp++;
+					}
+				}
+			}
+			neuron[i][1] = objectKelas;
+			iTemp=0;
+			System.out.println(neuron[i][0][0]);
+		}
 		
-		return null;
+		return neuron;
 	}
 }
