@@ -200,7 +200,11 @@ public class DatabaseAction {
 				}
 			}
 		}catch(SQLException e){
-			e.printStackTrace();
+			if(sinyalDataLatih == null){
+				JOptionPane.showMessageDialog(null, "Data latih kelas Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+			}else{
+				JOptionPane.showMessageDialog(null, "getDataLatihRileks error = "+e, "Error", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 		return sinyalDataLatih;
 	}
@@ -230,7 +234,11 @@ public class DatabaseAction {
 				}
 			}
 		}catch(SQLException e){
-			e.printStackTrace();
+			if(sinyalDataLatih == null){
+				JOptionPane.showMessageDialog(null, "Data latih kelas Non-Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+			}else{
+				JOptionPane.showMessageDialog(null, "getDataLatihNonRileks error = "+e, "Error", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 		return sinyalDataLatih;
 	}

@@ -380,4 +380,23 @@ public class Wavelet {
 		
 		return neuron;
 	}
+	
+	public Object[][][][] getBobot(Object[][][] neuron){
+		Object[][][][] bobotAndNeuron = new Object[2][neuron.length][neuron[0].length][neuron[0][0].length];
+		int i=0, j=0;
+		
+		for(i=0;i<neuron[0][0].length;i++){
+			bobotAndNeuron[0][0][0][i] = neuron[0][0][i];
+		}
+		bobotAndNeuron[0][0][1] = neuron[0][1];
+		
+		for(i=1;i<neuron.length;i++){
+			for(j=0;j<neuron[0][0].length;j++){
+				bobotAndNeuron[1][i][0][j] = neuron[i][0][j];
+			}
+			bobotAndNeuron[1][i][1] = neuron[i][1];
+		}
+		
+		return bobotAndNeuron;
+	}
 }

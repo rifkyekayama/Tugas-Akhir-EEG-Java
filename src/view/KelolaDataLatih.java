@@ -379,7 +379,7 @@ public class KelolaDataLatih extends JPanel {
 		public void done(){
 			JOptionPane.showMessageDialog(null, "Proses Segmentasi Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
 			Home.refreshAllElement();
-			//resetFormTableDataLatih();
+			resetFormTableDataLatih();
 			progressSubmitDataEEG.setValue(100);
 			lblStatusLoading.setVisible(false);
 			progressSubmitDataEEG.setValue(0);

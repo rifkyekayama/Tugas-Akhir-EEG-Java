@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -23,8 +22,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.xml.crypto.dsig.SignedInfo;
 
+import lvq.LVQ;
 import mysql.DatabaseAction;
 import wavelet.Wavelet;
 
@@ -206,11 +205,12 @@ public class PelatihanSistem extends JPanel {
 			if(e.getActionCommand().equals("mulaiPelatihan")){
 //				CorePelatihanSistem corePelatihanSistem = new CorePelatihanSistem();
 //				corePelatihanSistem.execute();
-				double[][][] sinyalUnsegmen;
-				Object[][][] tes;
+				double[][][] sinyalUnsegmenRileks, sinyalUnsegmenNonRileks;
 				Wavelet wavelet = new Wavelet();
-				sinyalUnsegmen = wavelet.unSegmenEEG(dbAction.getDataLatihNonRileks(), dbAction.getSamplingRate());
-				tes = wavelet.getNeuron(sinyalUnsegmen, "Rileks");
+				LVQ lvq = new LVQ();
+				sinyalUnsegmenRileks = wavelet.unSegmenEEG(dbAction.getDataLatihRileks(), dbAction.getSamplingRate());
+				sinyalUnsegmenNonRileks = wavelet.unSegmenEEG(dbAction.getDataLatihNonRileks(), dbAction.getSamplingRate());
+				lvq.initLVQ(sinyalUnsegmenRileks, sinyalUnsegmenNonRileks);
 			}
 		}
 	}
