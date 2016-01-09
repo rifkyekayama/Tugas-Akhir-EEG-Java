@@ -164,6 +164,17 @@ public class PelatihanSistem extends JPanel {
 		return panelContent;
 	}
 	
+	public void updateTableDataBobot(){
+		tableBobot.setModel(dbAction.getListDataBobot());
+		tableBobot.repaint();
+		tableBobot.setRowSelectionAllowed(false);
+		tableBobot.setPreferredScrollableViewportSize(getSize());
+		tableBobot.setFillsViewportHeight(true);
+		tableBobot.getColumnModel().getColumn(0).setCellRenderer(centerTable);
+		tableBobot.getColumnModel().getColumn(1).setCellRenderer(centerTable);
+		tableBobot.getColumnModel().getColumn(2).setCellRenderer(centerTable);
+	}
+	
 	class MouseController implements MouseListener{
 
 		@Override
@@ -259,6 +270,7 @@ public class PelatihanSistem extends JPanel {
 			lblStatusLoading.setVisible(false);
 			JOptionPane.showMessageDialog(null, "Proses pelatihan beres", "Pelatihan", JOptionPane.INFORMATION_MESSAGE);
 			progressBarPelatihan.setValue(0);
+			Home.refreshAllElement();
 		}
 	}
 }

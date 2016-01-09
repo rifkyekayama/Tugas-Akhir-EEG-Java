@@ -104,6 +104,7 @@ public class Home extends JFrame {
 		dashboard.lblJumNonRileks.setText(Integer.toString(dbAction.getJumNonRileks()));
 		
 		kelolaDataLatih.updateTableDataLatih();
+		pelatihanSistem.updateTableDataBobot();
 	}
 	
 	public static void changeCard(String cardName){

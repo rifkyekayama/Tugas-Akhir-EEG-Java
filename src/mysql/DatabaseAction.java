@@ -258,10 +258,26 @@ public class DatabaseAction {
 	}
 	
 	public void inputHasilBobot(double[][] bobot){
+		int i=0;
 		try{
-			for(int i=0;i<bobot[0].length;i++){
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM Koefisien_Bobot");
+			rs.last();
+			if(rs.getRow() != 0){
+				rs.first();
 				stmt = koneksi.createStatement();
-				stmt.executeUpdate("INSERT INTO Koefisien_Bobot (w1, w2) VALUES ('"+bobot[0][i]+"', '"+bobot[1][i]+"')");
+				stmt.executeUpdate("UPDATE Koefisien_Bobot SET w1='"+bobot[0][0]+"', w2='"+bobot[1][0]+"' WHERE id='"+rs.getInt("id")+"'");
+				i=1;
+				while(rs.next()){
+					stmt = koneksi.createStatement();
+					stmt.executeUpdate("UPDATE Koefisien_Bobot SET w1='"+bobot[0][i]+"', w2='"+bobot[1][i]+"' WHERE id='"+rs.getInt("id")+"'");
+					i++;
+				}
+			}else{
+				for(i=0;i<bobot[0].length;i++){
+					stmt = koneksi.createStatement();
+					stmt.executeUpdate("INSERT INTO Koefisien_Bobot (w1, w2) VALUES ('"+bobot[0][i]+"', '"+bobot[1][i]+"')");
+				}
 			}
 		}catch(SQLException e){
 			e.printStackTrace();

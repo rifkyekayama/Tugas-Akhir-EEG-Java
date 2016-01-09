@@ -1,7 +1,5 @@
 package lvq;
 
-import java.util.Arrays;
-
 import wavelet.Wavelet;
 
 public class LVQ {
@@ -44,20 +42,6 @@ public class LVQ {
 			}
 			hasilCompare[2][(i2+i)-2][1] = bobotDanNeuronNonRileks[1][i2-1][1];
 		}
-		
-//		System.out.println(hasilCompare.length);           //3
-//		System.out.println(hasilCompare[0].length);        //40
-//		System.out.println(hasilCompare[0][0].length);     //2
-//		System.out.println(hasilCompare[0][0][0].length);  //6720
-//		
-//		System.out.println(Arrays.toString(hasilCompare[2][19][1]));
-//		for(i=2;i<hasilCompare.length;i++){
-//			for(j=2;j<hasilCompare[i].length-2;j++){
-//				System.out.println(i+" "+j+" "+hasilCompare[i][j][0][0]+" "+Arrays.toString(hasilCompare[i][j][1]));
-//			}
-//		}
-//		System.out.println(Arrays.toString(hasilCompare[0][0][0]));
-		
 		return hasilCompare;
 	}
 	
@@ -135,7 +119,6 @@ public class LVQ {
 		for(i=0;i<bobot2.length;i++){
 			result[1][i] = bobot2[i];
 		}
-		
 		return result;
 	}
 	
