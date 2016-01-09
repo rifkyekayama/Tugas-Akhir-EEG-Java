@@ -28,10 +28,6 @@ public class Wavelet {
 		this.kanal2 = kanal2;
 	}
 	
-	public Wavelet(boolean useAlfa, boolean useBeta, boolean useTeta){
-		//constructor untuk ekstraksi data alfa beda dan teta
-	}
-	
 	public int kelasToInt(String kelas){
 		int indexKelas = 0;
 		switch (kelas) {

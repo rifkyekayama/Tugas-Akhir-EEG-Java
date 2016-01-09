@@ -256,4 +256,15 @@ public class DatabaseAction {
 		}
 		return samplingRate;
 	}
+	
+	public void inputHasilBobot(double[][] bobot){
+		try{
+			for(int i=0;i<bobot[0].length;i++){
+				stmt = koneksi.createStatement();
+				stmt.executeUpdate("INSERT INTO Koefisien_Bobot (w1, w2) VALUES ('"+bobot[0][i]+"', '"+bobot[1][i]+"')");
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
 }

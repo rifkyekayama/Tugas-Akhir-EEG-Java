@@ -203,23 +203,30 @@ public class PelatihanSistem extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getActionCommand().equals("mulaiPelatihan")){
-//				CorePelatihanSistem corePelatihanSistem = new CorePelatihanSistem();
-//				corePelatihanSistem.execute();
-				double[][][] sinyalUnsegmenRileks, sinyalUnsegmenNonRileks;
-				Wavelet wavelet = new Wavelet();
-				LVQ lvq = new LVQ();
-				sinyalUnsegmenRileks = wavelet.unSegmenEEG(dbAction.getDataLatihRileks(), dbAction.getSamplingRate());
-				sinyalUnsegmenNonRileks = wavelet.unSegmenEEG(dbAction.getDataLatihNonRileks(), dbAction.getSamplingRate());
-				lvq.initLVQ(sinyalUnsegmenRileks, sinyalUnsegmenNonRileks);
+				CorePelatihanSistem corePelatihanSistem = new CorePelatihanSistem();
+				corePelatihanSistem.execute();
+//				double[][][] sinyalUnsegmenRileks, sinyalUnsegmenNonRileks;
+//				Object[][][][] init;
+//				double[][] belajar;
+//				Wavelet wavelet = new Wavelet();
+//				LVQ lvq = new LVQ();
+//				sinyalUnsegmenRileks = wavelet.unSegmenEEG(dbAction.getDataLatihRileks(), dbAction.getSamplingRate());
+//				sinyalUnsegmenNonRileks = wavelet.unSegmenEEG(dbAction.getDataLatihNonRileks(), dbAction.getSamplingRate());
+//				init = lvq.initLVQ(sinyalUnsegmenRileks, sinyalUnsegmenNonRileks);
+//				belajar = lvq.pembelajaran(init[0], init[1], init[2], Double.parseDouble(txtLearningRate.getText()), Double.parseDouble(txtPenguranganLR.getText()), Integer.parseInt(txtMaksimumEpoch.getText()), Double.parseDouble(txtMinimumError.getText()));
+//				dbAction.inputHasilBobot(belajar);
 			}
 		}
 	}
 	
 	class CorePelatihanSistem extends SwingWorker<Void, Void>{
 
-		double[][][] sinyalUnsegmen;
-		Object[][][] tes;
+		double[][][] sinyalUnsegmenRileks, sinyalUnsegmenNonRileks;
+		Object[][][][] init;
+		double[][] belajar;
 		Wavelet wavelet = new Wavelet();
+		LVQ lvq = new LVQ();
+		
 		public CorePelatihanSistem() {
 			// TODO Auto-generated constructor stub
 			lblStatusLoading.setVisible(true);
@@ -228,12 +235,21 @@ public class PelatihanSistem extends JPanel {
 		@Override
 		protected Void doInBackground() throws Exception {
 			// TODO Auto-generated method stub
-			lblStatusLoading.setText("unsegmen data sinya EEG");
-			progressBarPelatihan.setValue(45);
-			sinyalUnsegmen = wavelet.unSegmenEEG(dbAction.getDataLatihRileks(), dbAction.getSamplingRate());
-			lblStatusLoading.setText("Get Neuron");
+			lblStatusLoading.setText("unsegmen data sinya EEG Rileks");
+			progressBarPelatihan.setValue(25);
+			sinyalUnsegmenRileks = wavelet.unSegmenEEG(dbAction.getDataLatihRileks(), dbAction.getSamplingRate());
+			lblStatusLoading.setText("unsegmen data sinya EEG Non-Rileks");
+			progressBarPelatihan.setValue(50);
+			sinyalUnsegmenNonRileks = wavelet.unSegmenEEG(dbAction.getDataLatihNonRileks(), dbAction.getSamplingRate());
+			lblStatusLoading.setText("Inisialisasi neuron dan bobot awal LVQ");
+			progressBarPelatihan.setValue(60);
+			init = lvq.initLVQ(sinyalUnsegmenRileks, sinyalUnsegmenNonRileks);
+			lblStatusLoading.setText("Pembelajaran LVQ");
 			progressBarPelatihan.setValue(75);
-			tes = wavelet.getNeuron(sinyalUnsegmen, "Rileks");
+			belajar = lvq.pembelajaran(init[0], init[1], init[2], Double.parseDouble(txtLearningRate.getText()), Double.parseDouble(txtPenguranganLR.getText()), Integer.parseInt(txtMaksimumEpoch.getText()), Double.parseDouble(txtMinimumError.getText()));
+			lblStatusLoading.setText("Input hasil pelatihan bobot ke DB");
+			progressBarPelatihan.setValue(90);
+			dbAction.inputHasilBobot(belajar);
 			return null;
 		}
 		
