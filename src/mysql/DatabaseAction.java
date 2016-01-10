@@ -9,6 +9,8 @@ import java.util.Arrays;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
+import view.Home;
+
 public class DatabaseAction {
 	
 	Connection koneksi = null;
@@ -36,6 +38,7 @@ public class DatabaseAction {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
 		}
 		return maxNaracoba;
@@ -51,6 +54,7 @@ public class DatabaseAction {
 				jumSegmentasi = rs.getInt(1);
 			}
 		}catch(SQLException e){
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
 		}
 		return jumSegmentasi;
@@ -79,6 +83,7 @@ public class DatabaseAction {
 			rs.last();
 			jumNonRileks = rs.getRow();
 		}catch(SQLException e){
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
 		}
 		return jumNonRileks;
@@ -121,6 +126,7 @@ public class DatabaseAction {
 				listDataLatih.addRow(data);
 			}
 		}catch(SQLException e){
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
 		}
 		return listDataLatih;
@@ -144,19 +150,29 @@ public class DatabaseAction {
 		listDataBobot.addColumn("No");
 		listDataBobot.addColumn("Bobot Kelas 1");
 		listDataBobot.addColumn("Bobot Kelas 2");
-		int no=1;
+		int i=0;
+		String[] bobotW1, bobotW2;
 		
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM Koefisien_Bobot");
-			while(rs.next()){
-				Object[] data = new Object[3];
-				data[0] = no++;
-				data[1] = rs.getString("w1");
-				data[2] = rs.getString("w2");
-				listDataBobot.addRow(data);
+			rs.last();
+			if(rs.getRow() != 0){
+				rs.first();
+				bobotW1 = new String[rs.getString("w1").split(" ").length];
+				bobotW2 = new String[rs.getString("w2").split(" ").length];
+				bobotW1 = rs.getString("w1").split(" ");
+				bobotW2 = rs.getString("w2").split(" ");
+				for(i=0;i<bobotW1.length;i++){
+					Object[] data = new Object[3];
+					data[0] = (i+1);
+					data[1] = bobotW1[i];
+					data[2] = bobotW2[i];
+					listDataBobot.addRow(data);
+				}
 			}
 		}catch(SQLException e){
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
 		}
 		
@@ -171,6 +187,7 @@ public class DatabaseAction {
 				stmt.executeUpdate("INSERT INTO Data_Latih (data_eeg, kelas, naracoba, sampling_rate, kanal) VALUES ('"+tempSinyal+"', '"+kelas+"', '"+naracoba+"', '"+samplingRate+"', '"+kanal+"')");
 			}
 		}catch(SQLException e){
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
 		}
 	}
@@ -182,8 +199,11 @@ public class DatabaseAction {
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM Data_Latih WHERE kelas=1");
-			if(rs.next()){
-				rs.last();
+			rs.last();
+			if(rs.getRow() == 0){
+				JOptionPane.showMessageDialog(null, "Data latih kelas Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				Home.changeCard("panelKelolaDataLatih");
+			}else{
 				sinyalDataLatih = new double[rs.getRow()][rs.getString("data_eeg").split(" ").length];
 				rs.first();
 				sinyalTemp = rs.getString("data_eeg").split(" ");
@@ -200,11 +220,8 @@ public class DatabaseAction {
 				}
 			}
 		}catch(SQLException e){
-			if(sinyalDataLatih == null){
-				JOptionPane.showMessageDialog(null, "Data latih kelas Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-			}else{
-				JOptionPane.showMessageDialog(null, "getDataLatihRileks error = "+e, "Error", JOptionPane.ERROR_MESSAGE);
-			}
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "getDataLatihRileks error = "+e, "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		return sinyalDataLatih;
 	}
@@ -216,8 +233,11 @@ public class DatabaseAction {
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM Data_Latih WHERE kelas=-1");
-			if(rs.next()){
-				rs.last();
+			rs.last();
+			if(rs.getRow() == 0){
+				JOptionPane.showMessageDialog(null, "Data latih kelas Non-Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				Home.changeCard("panelKelolaDataLatih");
+			}else{
 				sinyalDataLatih = new double[rs.getRow()][rs.getString("data_eeg").split(" ").length];
 				rs.first();
 				sinyalTemp = rs.getString("data_eeg").split(" ");
@@ -234,11 +254,8 @@ public class DatabaseAction {
 				}
 			}
 		}catch(SQLException e){
-			if(sinyalDataLatih == null){
-				JOptionPane.showMessageDialog(null, "Data latih kelas Non-Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-			}else{
-				JOptionPane.showMessageDialog(null, "getDataLatihNonRileks error = "+e, "Error", JOptionPane.ERROR_MESSAGE);
-			}
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "getDataLatihNonRileks error = "+e, "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		return sinyalDataLatih;
 	}
@@ -258,26 +275,22 @@ public class DatabaseAction {
 	}
 	
 	public void inputHasilBobot(double[][] bobot){
-		int i=0;
+//		int i=0;
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM Koefisien_Bobot");
 			rs.last();
 			if(rs.getRow() != 0){
 				rs.first();
+				String tempBobotRileks = Arrays.toString(bobot[0]).substring(1, Arrays.toString(bobot[0]).length()-1).replaceAll(",", "");
+				String tempBobotNonRileks = Arrays.toString(bobot[1]).substring(1, Arrays.toString(bobot[1]).length()-1).replaceAll(",", "");
 				stmt = koneksi.createStatement();
-				stmt.executeUpdate("UPDATE Koefisien_Bobot SET w1='"+bobot[0][0]+"', w2='"+bobot[1][0]+"' WHERE id='"+rs.getInt("id")+"'");
-				i=1;
-				while(rs.next()){
-					stmt = koneksi.createStatement();
-					stmt.executeUpdate("UPDATE Koefisien_Bobot SET w1='"+bobot[0][i]+"', w2='"+bobot[1][i]+"' WHERE id='"+rs.getInt("id")+"'");
-					i++;
-				}
-			}else{
-				for(i=0;i<bobot[0].length;i++){
-					stmt = koneksi.createStatement();
-					stmt.executeUpdate("INSERT INTO Koefisien_Bobot (w1, w2) VALUES ('"+bobot[0][i]+"', '"+bobot[1][i]+"')");
-				}
+				stmt.executeUpdate("UPDATE Koefisien_Bobot SET w1='"+tempBobotRileks+"', w2='"+tempBobotNonRileks+"' WHERE id='"+rs.getInt("id")+"'");
+			}else{				
+				String tempBobotRileks = Arrays.toString(bobot[0]).substring(1, Arrays.toString(bobot[0]).length()-1).replaceAll(",", "");
+				String tempBobotNonRileks = Arrays.toString(bobot[1]).substring(1, Arrays.toString(bobot[1]).length()-1).replaceAll(",", "");
+				stmt = koneksi.createStatement();
+				stmt.executeUpdate("INSERT INTO Koefisien_Bobot (w1, w2) VALUES ('"+tempBobotRileks+"', '"+tempBobotNonRileks+"')");
 			}
 		}catch(SQLException e){
 			e.printStackTrace();

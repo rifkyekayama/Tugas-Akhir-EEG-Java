@@ -214,18 +214,22 @@ public class PelatihanSistem extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getActionCommand().equals("mulaiPelatihan")){
-				CorePelatihanSistem corePelatihanSistem = new CorePelatihanSistem();
-				corePelatihanSistem.execute();
-//				double[][][] sinyalUnsegmenRileks, sinyalUnsegmenNonRileks;
-//				Object[][][][] init;
-//				double[][] belajar;
-//				Wavelet wavelet = new Wavelet();
-//				LVQ lvq = new LVQ();
-//				sinyalUnsegmenRileks = wavelet.unSegmenEEG(dbAction.getDataLatihRileks(), dbAction.getSamplingRate());
-//				sinyalUnsegmenNonRileks = wavelet.unSegmenEEG(dbAction.getDataLatihNonRileks(), dbAction.getSamplingRate());
-//				init = lvq.initLVQ(sinyalUnsegmenRileks, sinyalUnsegmenNonRileks);
-//				belajar = lvq.pembelajaran(init[0], init[1], init[2], Double.parseDouble(txtLearningRate.getText()), Double.parseDouble(txtPenguranganLR.getText()), Integer.parseInt(txtMaksimumEpoch.getText()), Double.parseDouble(txtMinimumError.getText()));
-//				dbAction.inputHasilBobot(belajar);
+				if(txtMaksimumEpoch.getText().isEmpty()){
+					JOptionPane.showMessageDialog(null, "Kolom Maksimum Epoch tidak boleh kosong", "Peirngatan", JOptionPane.WARNING_MESSAGE);
+				}else if(txtMinimumError.getText().isEmpty()){
+					JOptionPane.showMessageDialog(null, "Kolom Minimum Error tidak boleh kosong", "Peirngatan", JOptionPane.WARNING_MESSAGE);
+				}else if(txtLearningRate.getText().isEmpty()){
+					JOptionPane.showMessageDialog(null, "Kolom Learning Rate tidak boleh kosong", "Peirngatan", JOptionPane.WARNING_MESSAGE);
+				}else if(txtPenguranganLR.getText().isEmpty()){
+					JOptionPane.showMessageDialog(null, "Kolom Pengurangan Learning Rate tidak boleh kosong", "Peirngatan", JOptionPane.WARNING_MESSAGE);
+				}else if(dbAction.getDataLatihRileks().length == 0){
+					JOptionPane.showMessageDialog(null, "Data latih kelas RILEKS tidak boleh kosong", "Peirngatan", JOptionPane.WARNING_MESSAGE);
+				}else if(dbAction.getDataLatihNonRileks().length == 0){
+					JOptionPane.showMessageDialog(null, "Data latih kelas Non-RILEKS tidak boleh kosong", "Peirngatan", JOptionPane.WARNING_MESSAGE);
+				}else{
+					CorePelatihanSistem corePelatihanSistem = new CorePelatihanSistem();
+					corePelatihanSistem.execute();
+				}
 			}
 		}
 	}
