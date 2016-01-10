@@ -39,7 +39,7 @@ public class KelolaDataLatih extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	protected JButton btnPilihDataEEG, btnSubmitDataEEG;
-	protected JLabel lblFileDataEEG;
+	protected JLabel lblFileDataEEG, isLockedKanal1, isLockedKanal2;
 	protected JComboBox<?> cmbKelas, cmbKanal1, cmbKanal2;
 	protected JTextField txtSegmentasi, txtSamplingrate;
 	protected JCheckBox cbGunakanKanal2;
@@ -65,6 +65,7 @@ public class KelolaDataLatih extends JPanel {
 		centerTable.setHorizontalAlignment(SwingConstants.CENTER);
 		add(getContent());
 		add(new Layout("Kelola Data Latih"));
+		updateStatusKanal();
 	}
 	
 	public JPanel getContent(){
@@ -140,6 +141,12 @@ public class KelolaDataLatih extends JPanel {
 		cbGunakanKanal2.addActionListener(new ButtonController());
 		panelFormDataLatih.add(cbGunakanKanal2);
 		
+		isLockedKanal1 = new JLabel("Locked!");
+		isLockedKanal1.setFont(isLockedKanal1.getFont().deriveFont(Font.BOLD, 15f));
+		isLockedKanal1.setForeground(Color.red);
+		isLockedKanal1.setBounds(90, 310, 150, 30);
+		panelFormDataLatih.add(isLockedKanal1);
+		
 		JLabel lblKanal1 = new JLabel("Kanal 1 :");
 		lblKanal1.setFont(lblKanal1.getFont().deriveFont(Font.BOLD, 15f));
 		lblKanal1.setBounds(15, 310, 205, 30);
@@ -149,6 +156,12 @@ public class KelolaDataLatih extends JPanel {
 		cmbKanal1.setBackground(Color.white);
 		cmbKanal1.setBounds(15, 340, 205, 30);
 		panelFormDataLatih.add(cmbKanal1);
+		
+		isLockedKanal2 = new JLabel("Locked!");
+		isLockedKanal2.setFont(isLockedKanal2.getFont().deriveFont(Font.BOLD, 15f));
+		isLockedKanal2.setForeground(Color.red);
+		isLockedKanal2.setBounds(305, 310, 150, 30);
+		panelFormDataLatih.add(isLockedKanal2);
 		
 		JLabel lblKanal2 = new JLabel("Kanal 2 :");
 		lblKanal2.setFont(lblKanal2.getFont().deriveFont(Font.BOLD, 15f));
@@ -243,6 +256,33 @@ public class KelolaDataLatih extends JPanel {
 		tableDataLatih.getColumnModel().getColumn(3).setMaxWidth(70);
 	}
 	
+	public void updateStatusKanal(){
+		int[] kanal;
+		if(dbAction.getKanal() != null){
+			kanal = dbAction.getKanal();
+			if(kanal.length == 2){
+				cmbKanal1.setSelectedIndex(kanal[0]-1);
+				cmbKanal1.setEnabled(false);
+				cmbKanal2.setSelectedIndex(kanal[1]-1);
+				cmbKanal2.setEnabled(false);
+				cbGunakanKanal2.setSelected(true);
+				cbGunakanKanal2.setVisible(false);
+			}else{
+				cmbKanal1.setSelectedIndex(kanal[0]-1);
+				cmbKanal1.setEnabled(false);
+				cbGunakanKanal2.setSelected(false);
+				cbGunakanKanal2.setVisible(false);
+			}
+			isLockedKanal1.setVisible(true);
+			isLockedKanal2.setVisible(true);
+		}else{
+			resetFormDataLatih();
+			cbGunakanKanal2.setVisible(true);
+			isLockedKanal1.setVisible(false);
+			isLockedKanal2.setVisible(false);
+		}
+	}
+	
 	public void resetFormDataLatih(){
 		fullPathDataEEG = null;
 		lblFileDataEEG.setText("No file chosen");
@@ -333,7 +373,7 @@ public class KelolaDataLatih extends JPanel {
 				}else if(cmbKanal2.isEnabled() == true && (String)cmbKanal2.getSelectedItem() == "Pilih salah satu..."){
 					JOptionPane.showMessageDialog(null, "Pilihan Kanal 2 tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else{
-					if(cmbKanal2.isEnabled() == false){
+					if(cbGunakanKanal2.isSelected() == false){
 						wavelet = new Wavelet(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), null);
 						CoreKelolaDataLatih coreKelolaDataLatih = new CoreKelolaDataLatih(wavelet);
 						coreKelolaDataLatih.execute();
@@ -381,7 +421,7 @@ public class KelolaDataLatih extends JPanel {
 					sinyalKanal2 = wavelet.segmentasiEEG(wavelet.lineOfSinyal, wavelet.kanalToInt(wavelet.kanal2), wavelet.segmentasi, wavelet.samplingRate);
 					kanalMerge = new String[sinyalKanal1.length][sinyalKanal1[0].length+sinyalKanal2[0].length];
 					kanalMerge = wavelet.gabungkanArray(sinyalKanal1, sinyalKanal2);
-					kanal = Integer.toString(wavelet.kanalToInt(wavelet.kanal1))+","+Integer.toString(wavelet.kanalToInt(wavelet.kanal1));
+					kanal = Integer.toString(wavelet.kanalToInt(wavelet.kanal1))+","+Integer.toString(wavelet.kanalToInt(wavelet.kanal2));
 					dbAction.inputSegmentasiSinyal(kanalMerge, wavelet.kelasToInt(wavelet.kelas), naracoba, wavelet.samplingRate, kanal);
 				}
 			}
@@ -391,8 +431,8 @@ public class KelolaDataLatih extends JPanel {
 		@Override
 		public void done(){
 			JOptionPane.showMessageDialog(null, "Proses Segmentasi Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-			Home.refreshAllElement();
 			resetFormDataLatih();
+			Home.refreshAllElement();
 			progressSubmitDataEEG.setValue(100);
 			lblStatusLoading.setVisible(false);
 			progressSubmitDataEEG.setValue(0);

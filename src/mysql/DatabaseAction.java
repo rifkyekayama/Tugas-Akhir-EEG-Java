@@ -89,6 +89,27 @@ public class DatabaseAction {
 		return jumNonRileks;
 	}
 	
+	public int[] getKanal(){
+		int[] kanal = null;
+		int i;
+		String[] temp;
+		try{
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT DISTINCT kanal FROM Data_Latih");
+			rs.last();
+			if(rs.getRow() != 0){
+				kanal = new int[rs.getString("kanal").split(",").length];
+				temp = rs.getString("kanal").split(",");
+				for(i=0;i<temp.length;i++){
+					kanal[i] = Integer.parseInt(temp[i]);
+				}
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return kanal;
+	}
+	
 	public DefaultTableModel getListDataLatih(){
 		DefaultTableModel listDataLatih = new DefaultTableModel(){
 			private static final long serialVersionUID = 1L;
@@ -177,6 +198,23 @@ public class DatabaseAction {
 		}
 		
 		return listDataBobot;
+	}
+	
+	public boolean isBobotNotNull(){
+		boolean isBobotNotNull = false;
+		try{
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM Koefisien_Bobot");
+			rs.last();
+			if(rs.getRow() != 0){
+				isBobotNotNull = true;
+			}else{
+				isBobotNotNull = false;
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return isBobotNotNull;
 	}
 	
 	public void inputSegmentasiSinyal(String[][] sinyal, int kelas, int naracoba, int samplingRate, String kanal){
@@ -313,13 +351,11 @@ public class DatabaseAction {
 				bobotw2 = rs.getString("w2").split(" ");
 				
 				bobotPelatihan = new double[2][bobotw1.length];
-				for(i=0;i<bobotPelatihan.length;i++){
-					for(j=0;j<bobotw1.length;j++){
-						bobotPelatihan[i][j] = Double.parseDouble(bobotw1[j]);
-					}
-					for(k=j;k<bobotw2.length;k++){
-						bobotPelatihan[i][k] = Double.parseDouble(bobotw2[k-j]);
-					}
+				for(i=0;i<bobotw1.length;i++){
+					bobotPelatihan[0][i] = Double.parseDouble(bobotw1[i]);
+				}
+				for(i=0;i<bobotw2.length;i++){
+					bobotPelatihan[1][i] = Double.parseDouble(bobotw2[i]);
 				}
 			}
 		}catch(SQLException e){

@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -40,8 +41,10 @@ public class PengujianSistem extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	protected JPanel panelHasilRileks, panelHasilNonRileks, panelHasilPengujian;
 	protected JButton btnPilihDataEEG, btnSubmitDataEEG;
-	protected JLabel lblFileDataEEG, lblHasilPengujian, lblJumPresentaseRileks, lblJumPresentaseNonRileks;
+	protected JLabel lblFileDataEEG, lblHasilPengujian, lblJumPresentaseRileks, lblJumPresentaseNonRileks,
+					 isLockedKanal1, isLockedKanal2;
 	protected JComboBox<?> cmbKanal1, cmbKanal2;
 	protected JTextField txtSegmentasi, txtSamplingrate;
 	protected JCheckBox cbGunakanKanal2;
@@ -66,6 +69,7 @@ public class PengujianSistem extends JPanel {
 		centerTable.setHorizontalAlignment(SwingConstants.CENTER);
 		add(getContent());
 		add(new Layout("Pengujian Sistem"));
+		updateStatusKanal();
 	}
 	
 	public JPanel getContent(){
@@ -131,6 +135,12 @@ public class PengujianSistem extends JPanel {
 		cbGunakanKanal2.addActionListener(new ButtonController());
 		panelFormDataUji.add(cbGunakanKanal2);
 		
+		isLockedKanal1 = new JLabel("Locked!");
+		isLockedKanal1.setFont(isLockedKanal1.getFont().deriveFont(Font.BOLD, 15f));
+		isLockedKanal1.setForeground(Color.red);
+		isLockedKanal1.setBounds(90, 220, 150, 30);
+		panelFormDataUji.add(isLockedKanal1);
+		
 		JLabel lblKanal1 = new JLabel("Kanal 1 :");
 		lblKanal1.setFont(lblKanal1.getFont().deriveFont(Font.BOLD, 15f));
 		lblKanal1.setBounds(15, 220, 205, 30);
@@ -140,6 +150,12 @@ public class PengujianSistem extends JPanel {
 		cmbKanal1.setBackground(Color.white);
 		cmbKanal1.setBounds(15, 250, 205, 30);
 		panelFormDataUji.add(cmbKanal1);
+		
+		isLockedKanal2 = new JLabel("Locked!");
+		isLockedKanal2.setFont(isLockedKanal2.getFont().deriveFont(Font.BOLD, 15f));
+		isLockedKanal2.setForeground(Color.red);
+		isLockedKanal2.setBounds(305, 220, 150, 30);
+		panelFormDataUji.add(isLockedKanal2);
 		
 		JLabel lblKanal2 = new JLabel("Kanal 2 :");
 		lblKanal2.setFont(lblKanal2.getFont().deriveFont(Font.BOLD, 15f));
@@ -200,10 +216,11 @@ public class PengujianSistem extends JPanel {
 		scrollTableDataUji.setVisible(true);
 		panelTableDataUji.add(scrollTableDataUji, BorderLayout.CENTER);
 		
-		JPanel panelHasilRileks = new JPanel();
+		panelHasilRileks = new JPanel();
 		panelHasilRileks.setLayout(null);
 		panelHasilRileks.setBackground(new Color(0, 192, 239));
 		panelHasilRileks.setBounds(0, 430, panelFormDataUji.getWidth()/2, 50);
+		panelHasilRileks.setVisible(false);
 		
 		JLabel lblPresentaseRileks = new JLabel("Rileks = ");
 		lblPresentaseRileks.setFont(lblPresentaseRileks.getFont().deriveFont(Font.BOLD, 15f));
@@ -217,10 +234,11 @@ public class PengujianSistem extends JPanel {
 		lblJumPresentaseRileks.setBounds(130, 10, 200, 30);
 		panelHasilRileks.add(lblJumPresentaseRileks);
 		
-		JPanel panelHasilNonRileks = new JPanel();
+		panelHasilNonRileks = new JPanel();
 		panelHasilNonRileks.setLayout(null);
 		panelHasilNonRileks.setBackground(new Color(221, 75, 57));
 		panelHasilNonRileks.setBounds(panelHasilRileks.getWidth(), 430, panelFormDataUji.getWidth()/2, 50);
+		panelHasilNonRileks.setVisible(false);
 		
 		lblJumPresentaseNonRileks = new JLabel("0.0%");
 		lblJumPresentaseNonRileks.setFont(lblJumPresentaseNonRileks.getFont().deriveFont(Font.BOLD, 20f));
@@ -234,9 +252,10 @@ public class PengujianSistem extends JPanel {
 		lblPresentaseNonRileks.setBounds(10, 10, 200, 30);
 		panelHasilNonRileks.add(lblPresentaseNonRileks);
 		
-		JPanel panelHasilPengujian = new JPanel(new GridBagLayout());
+		panelHasilPengujian = new JPanel(new GridBagLayout());
 		panelHasilPengujian.setBackground(new Color(0, 166, 90));
 		panelHasilPengujian.setBounds(0, 480, panelFormDataUji.getWidth(), 50);
+		panelHasilPengujian.setVisible(false);
 		
 		lblHasilPengujian = new JLabel("-");
 		lblHasilPengujian.setFont(lblHasilPengujian.getFont().deriveFont(Font.BOLD, 23f));
@@ -311,6 +330,33 @@ public class PengujianSistem extends JPanel {
 			lblHasilPengujian.setText("Rileks");
 		}else{
 			lblHasilPengujian.setText("Non-Rileks");
+		}
+	}
+	
+	public void updateStatusKanal(){
+		int[] kanal;
+		if(dbAction.getKanal() != null){
+			kanal = dbAction.getKanal();
+			if(kanal.length == 2){
+				cmbKanal1.setSelectedIndex(kanal[0]-1);
+				cmbKanal1.setEnabled(false);
+				cmbKanal2.setSelectedIndex(kanal[1]-1);
+				cmbKanal2.setEnabled(false);
+				cbGunakanKanal2.setSelected(true);
+				cbGunakanKanal2.setVisible(false);
+			}else{
+				cmbKanal1.setSelectedIndex(kanal[0]-1);
+				cmbKanal1.setEnabled(false);
+				cbGunakanKanal2.setSelected(false);
+				cbGunakanKanal2.setVisible(false);
+			}
+			isLockedKanal1.setVisible(true);
+			isLockedKanal2.setVisible(true);
+		}else{
+			resetFormDataUji();
+			cbGunakanKanal2.setVisible(true);
+			isLockedKanal1.setVisible(false);
+			isLockedKanal2.setVisible(false);
 		}
 	}
 	
@@ -389,8 +435,11 @@ public class PengujianSistem extends JPanel {
 					JOptionPane.showMessageDialog(null, "Pilihan Kanal 1 tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else if(cmbKanal2.isEnabled() == true && (String)cmbKanal2.getSelectedItem() == "Pilih salah satu..."){
 					JOptionPane.showMessageDialog(null, "Pilihan Kanal 2 tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				}else if(!dbAction.isBobotNotNull()){
+					JOptionPane.showMessageDialog(null, "Belum Melakukan Pelatihan!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+					Home.changeCard("panelPelatihanSistem");
 				}else{
-					if(cmbKanal2.isEnabled() == false){
+					if(cbGunakanKanal2.isSelected() == false){
 						wavelet = new Wavelet(fullPathDataEEG, Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), null);
 						CorePengujianSistem coreKelolaDataLatih = new CorePengujianSistem(wavelet);
 						coreKelolaDataLatih.execute();
@@ -441,7 +490,12 @@ public class PengujianSistem extends JPanel {
 				if(wavelet.kanal2 == null){
 					sinyalKanal1 = new String[(int) Math.floor(wavelet.lineOfSinyal.getItemCount()/(wavelet.samplingRate*wavelet.segmentasi))][wavelet.lineOfSinyal.getItemCount()-1];
 					sinyalKanal1 = wavelet.segmentasiEEG(wavelet.lineOfSinyal, wavelet.kanalToInt(wavelet.kanal1), wavelet.segmentasi, wavelet.samplingRate);
-					
+					for(j=0;j<sinyalKanal1.length;j++){
+						if(itemp < wavelet.pathFile.length){
+							sinyalFull[itemp] = sinyalKanal1[j];
+							itemp++;
+						}
+					}
 				}else{
 					sinyalKanal1 = new String[(int) Math.floor(wavelet.lineOfSinyal.getItemCount()/(wavelet.samplingRate*wavelet.segmentasi))][wavelet.lineOfSinyal.getItemCount()-1];
 					sinyalKanal1 = wavelet.segmentasiEEG(wavelet.lineOfSinyal, wavelet.kanalToInt(wavelet.kanal1), wavelet.segmentasi, wavelet.samplingRate);
@@ -464,6 +518,7 @@ public class PengujianSistem extends JPanel {
 			hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.getNeuronPengujian(unsegmenDataUji));
 			lblStatusLoading.setText("Update Tabel Bobot");
 			progressSubmitDataEEG.setValue(90);
+			System.out.println(Arrays.toString(hasilPengujian));
 			updateTablePengujian(initTableModelPengujian(hasilPengujian));
 			updateStatusPengujian(lvq.getJumlahHasilUjiRileks(hasilPengujian), lvq.getJumlahHasilUjiNonRileks(hasilPengujian), hasilPengujian.length);
 			return null;
@@ -473,10 +528,13 @@ public class PengujianSistem extends JPanel {
 		public void done(){
 			progressSubmitDataEEG.setValue(100);
 			JOptionPane.showMessageDialog(null, "Proses Pengujian Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-			Home.refreshAllElement();
 			resetFormDataUji();
+			Home.refreshAllElement();
 			lblStatusLoading.setVisible(false);
 			progressSubmitDataEEG.setValue(0);
+			panelHasilRileks.setVisible(true);
+			panelHasilNonRileks.setVisible(true);
+			panelHasilPengujian.setVisible(true);
 		}
 	}
 }
