@@ -275,7 +275,6 @@ public class DatabaseAction {
 	}
 	
 	public void inputHasilBobot(double[][] bobot){
-//		int i=0;
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM Koefisien_Bobot");
@@ -295,5 +294,37 @@ public class DatabaseAction {
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
+	}
+	
+	public double[][] getBobotPelatihan(){
+		double[][] bobotPelatihan = null;
+		String[] bobotw1, bobotw2;
+		int i=0, j=0, k=0;;
+		try{
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM Koefisien_Bobot");
+			rs.last();
+			if(rs.getRow() != 0){
+				rs.first();
+				bobotw1 = new String[rs.getString("w1").split(" ").length];
+				bobotw2 = new String[rs.getString("w2").split(" ").length];
+				
+				bobotw1 = rs.getString("w1").split(" ");
+				bobotw2 = rs.getString("w2").split(" ");
+				
+				bobotPelatihan = new double[2][bobotw1.length];
+				for(i=0;i<bobotPelatihan.length;i++){
+					for(j=0;j<bobotw1.length;j++){
+						bobotPelatihan[i][j] = Double.parseDouble(bobotw1[j]);
+					}
+					for(k=j;k<bobotw2.length;k++){
+						bobotPelatihan[i][k] = Double.parseDouble(bobotw2[k-j]);
+					}
+				}
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return bobotPelatihan;
 	}
 }

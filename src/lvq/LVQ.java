@@ -122,6 +122,21 @@ public class LVQ {
 		return result;
 	}
 	
+	public String[] pengujian(double[] w1, double[] w2, double[][] data){
+		String[] hasil = new String[data.length];
+		int i=0,jarak=0;
+		
+		for(i=0;i<data.length;i++){
+			jarak = cariJarakBobot(w1, w2, data[i]);
+			if(jarak == 1){
+				hasil[i] = "Rileks";
+			}else{
+				hasil[i] = "Non-Rileks";
+			}
+		}
+		return hasil;
+	}
+	
 	public double[] objectToDouble(Object[] data){
 		double[] result = new double[data.length];
 		int i=0;
@@ -129,5 +144,38 @@ public class LVQ {
 			result[i] = (double) data[i];
 		}
 		return result;
+	}
+	
+	public double[][] string2DtoDouble(String[][] data){
+		double[][] result = new double[data.length][data[0].length];
+		int i=0, j=0;
+		for(i=0;i<result.length;i++){
+			for(j=0;j<result[i].length;j++){
+				result[i][j] = Double.parseDouble(data[i][j]);
+			}
+		}
+		return result;
+	}
+	
+	public int getJumlahHasilUjiRileks(String[] data){
+		int jumlah=0, i=0;
+		
+		for(i=0;i<data.length;i++){
+			if(data[i] == "Rileks"){
+				jumlah++;
+			}
+		}
+		return jumlah;
+	}
+	
+	public int getJumlahHasilUjiNonRileks(String[] data){
+		int jumlah=0, i=0;
+		
+		for(i=0;i<data.length;i++){
+			if(data[i] == "Non-Rileks"){
+				jumlah++;
+			}
+		}
+		return jumlah;
 	}
 }

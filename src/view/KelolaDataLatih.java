@@ -193,6 +193,7 @@ public class KelolaDataLatih extends JPanel {
 		JLabel lblTitleTableDataLatih = new JLabel("Tabel Data Latih");
 		lblTitleTableDataLatih.setForeground(new Color(68, 68, 68));
 		lblTitleTableDataLatih.setBounds(15, 0, 150, 30);
+		panelLihatDataLatih.add(lblTitleTableDataLatih);
 		
 		JPanel panelTableDataLatih = new JPanel();
 		panelTableDataLatih.setLayout(new BorderLayout());
@@ -242,7 +243,7 @@ public class KelolaDataLatih extends JPanel {
 		tableDataLatih.getColumnModel().getColumn(3).setMaxWidth(70);
 	}
 	
-	public void resetFormTableDataLatih(){
+	public void resetFormDataLatih(){
 		fullPathDataEEG = null;
 		lblFileDataEEG.setText("No file chosen");
 		cmbKelas.setSelectedIndex(0);
@@ -391,7 +392,7 @@ public class KelolaDataLatih extends JPanel {
 		public void done(){
 			JOptionPane.showMessageDialog(null, "Proses Segmentasi Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
 			Home.refreshAllElement();
-			resetFormTableDataLatih();
+			resetFormDataLatih();
 			progressSubmitDataEEG.setValue(100);
 			lblStatusLoading.setVisible(false);
 			progressSubmitDataEEG.setValue(0);

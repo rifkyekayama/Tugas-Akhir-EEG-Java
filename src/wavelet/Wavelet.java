@@ -28,6 +28,14 @@ public class Wavelet {
 		this.kanal2 = kanal2;
 	}
 	
+	public Wavelet(String[] pathFile, int segmentasi, int samplingRate, String kanal1, String kanal2){
+		this.pathFile = pathFile;
+		this.segmentasi = segmentasi;
+		this.samplingRate = samplingRate;
+		this.kanal1 = kanal1;
+		this.kanal2 = kanal2;
+	}
+	
 	public int kelasToInt(String kelas){
 		int indexKelas = 0;
 		switch (kelas) {
@@ -358,8 +366,6 @@ public class Wavelet {
 		Object[][][] neuron = new Object[sinyalEEG.length][2][sinyalEEG[0].length*hasilWavelet.length];
 		int i=0, j=0, k=0, iTemp=0;
 		
-		hasilWavelet = transformasiWavelet(sinyalEEG[19][119], true, true, true);
-		
 		for(i=0;i<sinyalEEG.length;i++){
 			for(j=0;j<sinyalEEG[i].length;j++){
 				hasilWavelet = transformasiWavelet(sinyalEEG[i][j], true, true, true);
@@ -374,6 +380,26 @@ public class Wavelet {
 			iTemp=0;
 		}
 		
+		return neuron;
+	}
+	
+	public double[][] getNeuronPengujian(double[][][] dataUji){
+		double[] hasilWavelet = new double[transformasiWavelet(dataUji[0][0], true, true, true).length];
+		double[][] neuron = new double[dataUji.length][dataUji[0].length*hasilWavelet.length];
+		int i=0, j=0, k=0, iTemp=0;
+		
+		for(i=0;i<dataUji.length;i++){
+			for(j=0;j<dataUji[i].length;j++){
+				hasilWavelet = transformasiWavelet(dataUji[i][j], true, true, true);
+				for(k=0;k<hasilWavelet.length;k++){
+					if(iTemp < neuron[i].length){
+						neuron[i][iTemp] = hasilWavelet[k];
+						iTemp++;
+					}
+				}
+			}
+			iTemp=0;
+		}
 		return neuron;
 	}
 	
