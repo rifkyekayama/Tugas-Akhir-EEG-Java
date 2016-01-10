@@ -207,6 +207,12 @@ public class KelolaDataLatih extends JPanel {
 		tableDataLatih.getColumnModel().getColumn(0).setCellRenderer(centerTable);
 		tableDataLatih.getColumnModel().getColumn(2).setCellRenderer(centerTable);
 		tableDataLatih.getColumnModel().getColumn(3).setCellRenderer(centerTable);
+		tableDataLatih.getColumnModel().getColumn(0).setMinWidth(50);
+		tableDataLatih.getColumnModel().getColumn(0).setMaxWidth(50);
+		tableDataLatih.getColumnModel().getColumn(2).setMinWidth(80);
+		tableDataLatih.getColumnModel().getColumn(2).setMaxWidth(80);
+		tableDataLatih.getColumnModel().getColumn(3).setMinWidth(70);
+		tableDataLatih.getColumnModel().getColumn(3).setMaxWidth(70);
 		
 		scrollTableDataLatih = new JScrollPane(tableDataLatih);
 		scrollTableDataLatih.setVisible(true);
@@ -228,6 +234,12 @@ public class KelolaDataLatih extends JPanel {
 		tableDataLatih.getColumnModel().getColumn(0).setCellRenderer(centerTable);
 		tableDataLatih.getColumnModel().getColumn(2).setCellRenderer(centerTable);
 		tableDataLatih.getColumnModel().getColumn(3).setCellRenderer(centerTable);
+		tableDataLatih.getColumnModel().getColumn(0).setMinWidth(50);
+		tableDataLatih.getColumnModel().getColumn(0).setMaxWidth(50);
+		tableDataLatih.getColumnModel().getColumn(2).setMinWidth(80);
+		tableDataLatih.getColumnModel().getColumn(2).setMaxWidth(80);
+		tableDataLatih.getColumnModel().getColumn(3).setMinWidth(70);
+		tableDataLatih.getColumnModel().getColumn(3).setMaxWidth(70);
 	}
 	
 	public void resetFormTableDataLatih(){

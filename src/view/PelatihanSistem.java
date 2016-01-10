@@ -151,6 +151,8 @@ public class PelatihanSistem extends JPanel {
 		tableBobot.getColumnModel().getColumn(0).setCellRenderer(centerTable);
 		tableBobot.getColumnModel().getColumn(1).setCellRenderer(centerTable);
 		tableBobot.getColumnModel().getColumn(2).setCellRenderer(centerTable);
+		tableBobot.getColumnModel().getColumn(0).setMinWidth(50);
+		tableBobot.getColumnModel().getColumn(0).setMaxWidth(50);
 		
 		scrollTableBobot = new JScrollPane(tableBobot);
 		scrollTableBobot.setVisible(true);
@@ -173,6 +175,8 @@ public class PelatihanSistem extends JPanel {
 		tableBobot.getColumnModel().getColumn(0).setCellRenderer(centerTable);
 		tableBobot.getColumnModel().getColumn(1).setCellRenderer(centerTable);
 		tableBobot.getColumnModel().getColumn(2).setCellRenderer(centerTable);
+		tableBobot.getColumnModel().getColumn(0).setMinWidth(50);
+		tableBobot.getColumnModel().getColumn(0).setMaxWidth(50);
 	}
 	
 	class MouseController implements MouseListener{
