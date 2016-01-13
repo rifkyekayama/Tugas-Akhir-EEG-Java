@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 import view.Home;
+import wavelet.Wavelet;
 
 public class DatabaseAction {
 	
@@ -129,13 +130,15 @@ public class DatabaseAction {
 		listDataLatih.addColumn("Data EEG");
 		listDataLatih.addColumn("Kelas");
 		listDataLatih.addColumn("Naracoba");
+		listDataLatih.addColumn("Kanal");
 		int no=1;
+		String[] kanalTemp;
 		
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM Data_Latih");
 			while(rs.next()){
-				Object[] data = new Object[4];
+				Object[] data = new Object[5];
 				data[0] = no++;
 				data[1] = rs.getString("data_eeg");
 				if(rs.getInt("kelas") == 1){
@@ -144,6 +147,13 @@ public class DatabaseAction {
 					data[2] = "Non-Rileks";
 				}
 				data[3] = rs.getString("naracoba");
+				kanalTemp = new String[rs.getString("kanal").split(",").length];
+				kanalTemp = rs.getString("kanal").split(",");
+				if(kanalTemp.length > 1){
+					data[4] = Wavelet.intToKanal(Integer.parseInt(kanalTemp[0]))+" dan "+Wavelet.intToKanal(Integer.parseInt(kanalTemp[1]));
+				}else{
+					data[4] = Wavelet.intToKanal(Integer.parseInt(kanalTemp[0]));
+				}
 				listDataLatih.addRow(data);
 			}
 		}catch(SQLException e){
@@ -337,7 +347,7 @@ public class DatabaseAction {
 	public double[][] getBobotPelatihan(){
 		double[][] bobotPelatihan = null;
 		String[] bobotw1, bobotw2;
-		int i=0, j=0, k=0;;
+		int i=0;
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM Koefisien_Bobot");

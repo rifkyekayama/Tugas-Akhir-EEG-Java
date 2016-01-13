@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -320,10 +319,11 @@ public class PengujianSistem extends JPanel {
 		cmbKanal2.setEnabled(false);
 	}
 	
-	public void updateStatusPengujian(int jumRileks, int jumNonRileks, int jumDataUji){
+	public void updateStatusPengujian(double jumRileks, double jumNonRileks, double jumDataUji){
 		double totalRileks, totalNonRileks;
-		totalRileks = Math.ceil((jumRileks/jumDataUji)*100);
-		totalNonRileks = Math.ceil((jumNonRileks/jumDataUji)*100);
+		totalRileks = (jumRileks/jumDataUji)*100;
+		totalNonRileks = (jumNonRileks/jumDataUji)*100;
+		
 		lblJumPresentaseRileks.setText(Double.toString(totalRileks)+"%");
 		lblJumPresentaseNonRileks.setText(Double.toString(totalNonRileks)+"%");
 		if(totalRileks >= totalNonRileks){
@@ -518,9 +518,8 @@ public class PengujianSistem extends JPanel {
 			hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.getNeuronPengujian(unsegmenDataUji));
 			lblStatusLoading.setText("Update Tabel Bobot");
 			progressSubmitDataEEG.setValue(90);
-			System.out.println(Arrays.toString(hasilPengujian));
 			updateTablePengujian(initTableModelPengujian(hasilPengujian));
-			updateStatusPengujian(lvq.getJumlahHasilUjiRileks(hasilPengujian), lvq.getJumlahHasilUjiNonRileks(hasilPengujian), hasilPengujian.length);
+			updateStatusPengujian((double)lvq.getJumlahHasilUjiRileks(hasilPengujian), (double)lvq.getJumlahHasilUjiNonRileks(hasilPengujian), (double)hasilPengujian.length);
 			return null;
 		}
 		
@@ -530,6 +529,7 @@ public class PengujianSistem extends JPanel {
 			JOptionPane.showMessageDialog(null, "Proses Pengujian Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
 			resetFormDataUji();
 			Home.refreshAllElement();
+			updateStatusKanal();
 			lblStatusLoading.setVisible(false);
 			progressSubmitDataEEG.setValue(0);
 			panelHasilRileks.setVisible(true);

@@ -276,9 +276,10 @@ public class PelatihanSistem extends JPanel {
 		public void done(){
 			progressBarPelatihan.setValue(100);
 			lblStatusLoading.setVisible(false);
-			JOptionPane.showMessageDialog(null, "Proses pelatihan beres", "Pelatihan", JOptionPane.INFORMATION_MESSAGE);
 			progressBarPelatihan.setValue(0);
 			Home.refreshAllElement();
+			updateTableDataBobot();
+			JOptionPane.showMessageDialog(null, "Proses pelatihan beres", "Pelatihan", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 }

@@ -102,11 +102,6 @@ public class Home extends JFrame {
 		dashboard.lblJumSegmentasi.setText(Integer.toString(dbAction.getJumSegmentasi()));
 		dashboard.lblJumRileks.setText(Integer.toString(dbAction.getJumRileks()));
 		dashboard.lblJumNonRileks.setText(Integer.toString(dbAction.getJumNonRileks()));
-		
-		kelolaDataLatih.updateTableDataLatih();
-		kelolaDataLatih.updateStatusKanal();
-		pelatihanSistem.updateTableDataBobot();
-		pengujianSistem.updateStatusKanal();
 	}
 	
 	public static void changeCard(String cardName){

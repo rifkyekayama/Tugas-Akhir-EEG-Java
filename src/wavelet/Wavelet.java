@@ -46,6 +46,27 @@ public class Wavelet {
 		return indexKelas;
 	}
 	
+	public static String intToKanal(int kanal){
+		String kanalTemp = null;
+		switch(kanal){
+			case 2: kanalTemp = "AF3"; break;
+			case 3: kanalTemp = "F7"; break;
+			case 4: kanalTemp = "F3"; break;
+			case 5: kanalTemp = "FC5"; break;
+			case 6: kanalTemp = "T7"; break;
+			case 7: kanalTemp = "P7"; break;
+			case 8: kanalTemp = "O1"; break;
+			case 9: kanalTemp = "O2"; break;
+			case 10: kanalTemp = "P8"; break;
+			case 11: kanalTemp = "T8"; break;
+			case 12: kanalTemp = "FC6"; break;
+			case 13: kanalTemp = "F4"; break;
+			case 14: kanalTemp = "AF4"; break;
+			default:break;
+		}
+		return kanalTemp;
+	}
+	
 	public int kanalToInt(String kanal){
 		int indexKanal = 0;
 		switch (kanal) {

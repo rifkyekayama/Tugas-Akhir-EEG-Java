@@ -221,12 +221,15 @@ public class KelolaDataLatih extends JPanel {
 		tableDataLatih.getColumnModel().getColumn(0).setCellRenderer(centerTable);
 		tableDataLatih.getColumnModel().getColumn(2).setCellRenderer(centerTable);
 		tableDataLatih.getColumnModel().getColumn(3).setCellRenderer(centerTable);
+		tableDataLatih.getColumnModel().getColumn(4).setCellRenderer(centerTable);
 		tableDataLatih.getColumnModel().getColumn(0).setMinWidth(50);
 		tableDataLatih.getColumnModel().getColumn(0).setMaxWidth(50);
 		tableDataLatih.getColumnModel().getColumn(2).setMinWidth(80);
 		tableDataLatih.getColumnModel().getColumn(2).setMaxWidth(80);
 		tableDataLatih.getColumnModel().getColumn(3).setMinWidth(70);
 		tableDataLatih.getColumnModel().getColumn(3).setMaxWidth(70);
+		tableDataLatih.getColumnModel().getColumn(4).setMinWidth(80);
+		tableDataLatih.getColumnModel().getColumn(4).setMaxWidth(80);
 		
 		scrollTableDataLatih = new JScrollPane(tableDataLatih);
 		scrollTableDataLatih.setVisible(true);
@@ -248,12 +251,15 @@ public class KelolaDataLatih extends JPanel {
 		tableDataLatih.getColumnModel().getColumn(0).setCellRenderer(centerTable);
 		tableDataLatih.getColumnModel().getColumn(2).setCellRenderer(centerTable);
 		tableDataLatih.getColumnModel().getColumn(3).setCellRenderer(centerTable);
+		tableDataLatih.getColumnModel().getColumn(4).setCellRenderer(centerTable);
 		tableDataLatih.getColumnModel().getColumn(0).setMinWidth(50);
 		tableDataLatih.getColumnModel().getColumn(0).setMaxWidth(50);
 		tableDataLatih.getColumnModel().getColumn(2).setMinWidth(80);
 		tableDataLatih.getColumnModel().getColumn(2).setMaxWidth(80);
 		tableDataLatih.getColumnModel().getColumn(3).setMinWidth(70);
 		tableDataLatih.getColumnModel().getColumn(3).setMaxWidth(70);
+		tableDataLatih.getColumnModel().getColumn(4).setMinWidth(80);
+		tableDataLatih.getColumnModel().getColumn(4).setMaxWidth(80);
 	}
 	
 	public void updateStatusKanal(){
@@ -430,10 +436,12 @@ public class KelolaDataLatih extends JPanel {
 		
 		@Override
 		public void done(){
-			JOptionPane.showMessageDialog(null, "Proses Segmentasi Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
 			resetFormDataLatih();
+			updateTableDataLatih();
+			updateStatusKanal();
 			Home.refreshAllElement();
 			progressSubmitDataEEG.setValue(100);
+			JOptionPane.showMessageDialog(null, "Proses Segmentasi Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
 			lblStatusLoading.setVisible(false);
 			progressSubmitDataEEG.setValue(0);
 		}
