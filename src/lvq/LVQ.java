@@ -92,7 +92,7 @@ public class LVQ {
 		bobot1 = objectToDouble(w1[0][0]);
 		bobot2 = objectToDouble(w2[1][0]);
 		
-		while(epoch < maxEpoch || learningRate < error){
+		while(epoch < maxEpoch && learningRate > error){
 			for(i=2;i<data.length-2;i++){
 				jarak = cariJarakBobot(bobot1, bobot2, objectToDouble(data[i][0]));
 				if(jarak == (int)data[i][1][0]){

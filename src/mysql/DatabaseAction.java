@@ -37,11 +37,14 @@ public class DatabaseAction {
 			if(rs.next()){
 				maxNaracoba = rs.getInt(1);
 			}
+			stmt.close();
+			rs.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
 		}
+		
 		return maxNaracoba;
 	}
 	
@@ -54,6 +57,8 @@ public class DatabaseAction {
 			if(rs.next()){
 				jumSegmentasi = rs.getInt(1);
 			}
+			stmt.close();
+			rs.close();
 		}catch(SQLException e){
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -69,6 +74,8 @@ public class DatabaseAction {
 			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM Data_Latih WHERE kelas=1");
 			rs.last();
 			jumRileks = rs.getRow();
+			stmt.close();
+			rs.close();
 		}catch(SQLException e){
 			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
 		}
@@ -83,6 +90,8 @@ public class DatabaseAction {
 			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM Data_Latih WHERE kelas=-1");
 			rs.last();
 			jumNonRileks = rs.getRow();
+			stmt.close();
+			rs.close();
 		}catch(SQLException e){
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -105,6 +114,8 @@ public class DatabaseAction {
 					kanal[i] = Integer.parseInt(temp[i]);
 				}
 			}
+			stmt.close();
+			rs.close();
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -156,6 +167,8 @@ public class DatabaseAction {
 				}
 				listDataLatih.addRow(data);
 			}
+			stmt.close();
+			rs.close();
 		}catch(SQLException e){
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -202,6 +215,8 @@ public class DatabaseAction {
 					listDataBobot.addRow(data);
 				}
 			}
+			stmt.close();
+			rs.close();
 		}catch(SQLException e){
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -221,6 +236,8 @@ public class DatabaseAction {
 			}else{
 				isBobotNotNull = false;
 			}
+			stmt.close();
+			rs.close();
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -234,6 +251,8 @@ public class DatabaseAction {
 				stmt = koneksi.createStatement();
 				stmt.executeUpdate("INSERT INTO Data_Latih (data_eeg, kelas, naracoba, sampling_rate, kanal) VALUES ('"+tempSinyal+"', '"+kelas+"', '"+naracoba+"', '"+samplingRate+"', '"+kanal+"')");
 			}
+			stmt.close();
+			rs.close();
 		}catch(SQLException e){
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -267,6 +286,8 @@ public class DatabaseAction {
 					i++;
 				}
 			}
+			stmt.close();
+			rs.close();
 		}catch(SQLException e){
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "getDataLatihRileks error = "+e, "Error", JOptionPane.ERROR_MESSAGE);
@@ -301,6 +322,8 @@ public class DatabaseAction {
 					i++;
 				}
 			}
+			stmt.close();
+			rs.close();
 		}catch(SQLException e){
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "getDataLatihNonRileks error = "+e, "Error", JOptionPane.ERROR_MESSAGE);
@@ -316,6 +339,8 @@ public class DatabaseAction {
 			if(rs.next()){
 				samplingRate = rs.getInt(1);
 			}
+			stmt.close();
+			rs.close();
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -339,6 +364,8 @@ public class DatabaseAction {
 				stmt = koneksi.createStatement();
 				stmt.executeUpdate("INSERT INTO Koefisien_Bobot (w1, w2) VALUES ('"+tempBobotRileks+"', '"+tempBobotNonRileks+"')");
 			}
+			stmt.close();
+			rs.close();
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -368,6 +395,8 @@ public class DatabaseAction {
 					bobotPelatihan[1][i] = Double.parseDouble(bobotw2[i]);
 				}
 			}
+			stmt.close();
+			rs.close();
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
