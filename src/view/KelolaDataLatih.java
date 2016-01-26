@@ -63,15 +63,6 @@ public class KelolaDataLatih extends JPanel {
 		tableModel = dbAction.getListDataLatih();
 		centerTable = new DefaultTableCellRenderer();
 		centerTable.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		JPanel panelOverlay = new JPanel();
-		panelOverlay.setLayout(null);
-		panelOverlay.setBounds(0, 0, 1200, 650);
-		panelOverlay.setBackground(new Color(0, 0, 0, 200));
-		add(panelOverlay);
-		
-		
-		
 		add(getContent());
 		add(new Layout("Kelola Data Latih"));
 		updateStatusKanal();
