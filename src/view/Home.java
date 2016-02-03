@@ -39,6 +39,8 @@ public class Home extends JFrame {
 	public Home() throws SQLException{
 		super("Identifikasi Kondisi Rileks - 3411121013 Rifky Ekayama");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setUndecorated(true);
+		setAlwaysOnTop(true);
 		setResizable(false);
 		setSize(1200, 650);
 		setLocationRelativeTo(null);

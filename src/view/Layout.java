@@ -26,7 +26,7 @@ public class Layout extends JPanel {
 	public JLabel lblJudulAtas, titlePage, lblAvaHeader, lblNamaHeader, lblAvaSidebar,
 				  lblNamaSidebar, lblNimSidebar, lblMainNavigation, lblLVQ, iconLVQ,
 				  iconLVQDrop, lblFooterCopyright, lblFooterNama, lblFooterKelas;
-	public JButton btnDashboard, btnKelolaDataLatih, btnPelatihan, btnPengujian;
+	public JButton btnDashboard, btnKelolaDataLatih, btnPelatihan, btnPengujian, btnExit;
 
 	public Layout(String title){
 		setSize(1200,650);
@@ -153,6 +153,17 @@ public class Layout extends JPanel {
 		btnPengujian.addActionListener(new ButtonController());
 		panelSidebar.add(btnPengujian);
 		
+		btnExit = new JButton("Keluar");
+		btnExit.setHorizontalAlignment(SwingConstants.LEFT);
+		btnExit.setForeground(Color.white);
+		btnExit.setBackground(new Color(34, 45, 50));
+		btnExit.setBounds(0, 420, 270, 50);
+		btnExit.setActionCommand("btnExit");
+		btnExit.setBorderPainted(false);
+		btnExit.addMouseListener(new MouseController());
+		btnExit.addActionListener(new ButtonController());
+		panelSidebar.add(btnExit);
+		
 		panelFooter = new JPanel();
 		panelFooter.setLayout(null);
 		panelFooter.setBackground(Color.white);
@@ -225,6 +236,8 @@ public class Layout extends JPanel {
 				Home.changeCard("panelPelatihanSistem");
 			}else if(e.getActionCommand().equals("btnPengujian")){
 				Home.changeCard("panelPengujianSistem");
+			}else if(e.getActionCommand().equals("btnExit")){
+				System.exit(0);
 			}
 		}
 	}
