@@ -33,7 +33,7 @@ public class DatabaseAction {
 		
 		try {
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT MAX(naracoba) FROM Data_Latih");
+			rs = stmt.executeQuery("SELECT MAX(naracoba) FROM data_latih");
 			if(rs.next()){
 				maxNaracoba = rs.getInt(1);
 			}
@@ -53,7 +53,7 @@ public class DatabaseAction {
 		
 		try{
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT COUNT(*) AS total FROM Data_Latih");
+			rs = stmt.executeQuery("SELECT COUNT(*) AS total FROM data_latih");
 			if(rs.next()){
 				jumSegmentasi = rs.getInt(1);
 			}
@@ -71,7 +71,7 @@ public class DatabaseAction {
 		
 		try{
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM Data_Latih WHERE kelas=1");
+			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM data_latih WHERE kelas=1");
 			rs.last();
 			jumRileks = rs.getRow();
 			stmt.close();
@@ -87,7 +87,7 @@ public class DatabaseAction {
 		
 		try{
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM Data_Latih WHERE kelas=-1");
+			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM data_latih WHERE kelas=-1");
 			rs.last();
 			jumNonRileks = rs.getRow();
 			stmt.close();
@@ -105,7 +105,7 @@ public class DatabaseAction {
 		String[] temp;
 		try{
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT DISTINCT kanal FROM Data_Latih");
+			rs = stmt.executeQuery("SELECT DISTINCT kanal FROM data_latih");
 			rs.last();
 			if(rs.getRow() != 0){
 				kanal = new int[rs.getString("kanal").split(",").length];
@@ -147,7 +147,7 @@ public class DatabaseAction {
 		
 		try{
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM Data_Latih");
+			rs = stmt.executeQuery("SELECT * FROM data_latih");
 			while(rs.next()){
 				Object[] data = new Object[5];
 				data[0] = no++;
@@ -199,7 +199,7 @@ public class DatabaseAction {
 		
 		try{
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM Koefisien_Bobot");
+			rs = stmt.executeQuery("SELECT * FROM koefisien_bobot");
 			rs.last();
 			if(rs.getRow() != 0){
 				rs.first();
@@ -229,7 +229,7 @@ public class DatabaseAction {
 		boolean isBobotNotNull = false;
 		try{
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM Koefisien_Bobot");
+			rs = stmt.executeQuery("SELECT * FROM koefisien_bobot");
 			rs.last();
 			if(rs.getRow() != 0){
 				isBobotNotNull = true;
@@ -249,7 +249,7 @@ public class DatabaseAction {
 			for(int i=0;i<sinyal.length;i++){
 				String tempSinyal = Arrays.toString(sinyal[i]).substring(1, Arrays.toString(sinyal[i]).length()-1).replaceAll(",", "");
 				stmt = koneksi.createStatement();
-				stmt.executeUpdate("INSERT INTO Data_Latih (data_eeg, kelas, naracoba, sampling_rate, kanal) VALUES ('"+tempSinyal+"', '"+kelas+"', '"+naracoba+"', '"+samplingRate+"', '"+kanal+"')");
+				stmt.executeUpdate("INSERT INTO data_latih (data_eeg, kelas, naracoba, sampling_rate, kanal) VALUES ('"+tempSinyal+"', '"+kelas+"', '"+naracoba+"', '"+samplingRate+"', '"+kanal+"')");
 			}
 			stmt.close();
 			rs.close();
@@ -265,7 +265,7 @@ public class DatabaseAction {
 		int i=0, j=0;
 		try{
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM Data_Latih WHERE kelas=1");
+			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=1");
 			rs.last();
 			if(rs.getRow() == 0){
 				JOptionPane.showMessageDialog(null, "Data latih kelas Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -301,7 +301,7 @@ public class DatabaseAction {
 		int i=0, j=0;
 		try{
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM Data_Latih WHERE kelas=-1");
+			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=-1");
 			rs.last();
 			if(rs.getRow() == 0){
 				JOptionPane.showMessageDialog(null, "Data latih kelas Non-Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -335,7 +335,7 @@ public class DatabaseAction {
 		int samplingRate = 0;
 		try{
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT DISTINCT sampling_rate FROM Data_Latih");
+			rs = stmt.executeQuery("SELECT DISTINCT sampling_rate FROM data_latih");
 			if(rs.next()){
 				samplingRate = rs.getInt(1);
 			}
@@ -350,19 +350,19 @@ public class DatabaseAction {
 	public void inputHasilBobot(double[][] bobot){
 		try{
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM Koefisien_Bobot");
+			rs = stmt.executeQuery("SELECT * FROM koefisien_bobot");
 			rs.last();
 			if(rs.getRow() != 0){
 				rs.first();
 				String tempBobotRileks = Arrays.toString(bobot[0]).substring(1, Arrays.toString(bobot[0]).length()-1).replaceAll(",", "");
 				String tempBobotNonRileks = Arrays.toString(bobot[1]).substring(1, Arrays.toString(bobot[1]).length()-1).replaceAll(",", "");
 				stmt = koneksi.createStatement();
-				stmt.executeUpdate("UPDATE Koefisien_Bobot SET w1='"+tempBobotRileks+"', w2='"+tempBobotNonRileks+"' WHERE id='"+rs.getInt("id")+"'");
+				stmt.executeUpdate("UPDATE koefisien_bobot SET w1='"+tempBobotRileks+"', w2='"+tempBobotNonRileks+"' WHERE id='"+rs.getInt("id")+"'");
 			}else{				
 				String tempBobotRileks = Arrays.toString(bobot[0]).substring(1, Arrays.toString(bobot[0]).length()-1).replaceAll(",", "");
 				String tempBobotNonRileks = Arrays.toString(bobot[1]).substring(1, Arrays.toString(bobot[1]).length()-1).replaceAll(",", "");
 				stmt = koneksi.createStatement();
-				stmt.executeUpdate("INSERT INTO Koefisien_Bobot (w1, w2) VALUES ('"+tempBobotRileks+"', '"+tempBobotNonRileks+"')");
+				stmt.executeUpdate("INSERT INTO koefisien_bobot (w1, w2) VALUES ('"+tempBobotRileks+"', '"+tempBobotNonRileks+"')");
 			}
 			stmt.close();
 			rs.close();
@@ -377,7 +377,7 @@ public class DatabaseAction {
 		int i=0;
 		try{
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM Koefisien_Bobot");
+			rs = stmt.executeQuery("SELECT * FROM koefisien_bobot");
 			rs.last();
 			if(rs.getRow() != 0){
 				rs.first();

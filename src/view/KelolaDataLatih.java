@@ -346,27 +346,25 @@ public class KelolaDataLatih extends JPanel {
 					cmbKanal2.setEnabled(true);
 				}
 			}else if(e.getActionCommand().equals("pilihDataEEG")){
-//				FileNameExtensionFilter filterFile = new FileNameExtensionFilter("CSV FILE", "csv");
-//				inputDataEEG.setCurrentDirectory(inputDataEEG.getCurrentDirectory());
-//				inputDataEEG.setFileFilter(filterFile);
-//				inputDataEEG.setFileSelectionMode(JFileChooser.FILES_ONLY);
-//				inputDataEEG.setMultiSelectionEnabled(true);
-//				if(inputDataEEG.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
-//					File file1[] = inputDataEEG.getSelectedFiles();
-//					String fullName = (String)file1[0].getName();
-//					fullPathDataEEG = new String[file1.length];
-//					if(file1.length > 1){
-//						lblFileDataEEG.setText(file1.length+" files");
-//						for(int i=0; i<file1.length; i++){
-//							fullPathDataEEG[i] = (String)file1[i].getAbsolutePath();
-//						}
-//					}else{
-//						lblFileDataEEG.setText(fullName);
-//						fullPathDataEEG[0] = (String)file1[0].getAbsolutePath();
-//					}
-//				}
-				
-				new FormDataLatih();
+				FileNameExtensionFilter filterFile = new FileNameExtensionFilter("CSV FILE", "csv");
+				inputDataEEG.setCurrentDirectory(inputDataEEG.getCurrentDirectory());
+				inputDataEEG.setFileFilter(filterFile);
+				inputDataEEG.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				inputDataEEG.setMultiSelectionEnabled(true);
+				if(inputDataEEG.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
+					File file1[] = inputDataEEG.getSelectedFiles();
+					String fullName = (String)file1[0].getName();
+					fullPathDataEEG = new String[file1.length];
+					if(file1.length > 1){
+						lblFileDataEEG.setText(file1.length+" files");
+						for(int i=0; i<file1.length; i++){
+							fullPathDataEEG[i] = (String)file1[i].getAbsolutePath();
+						}
+					}else{
+						lblFileDataEEG.setText(fullName);
+						fullPathDataEEG[0] = (String)file1[0].getAbsolutePath();
+					}
+				}
 			}else if(e.getActionCommand().equals("submitDataEEG")){
 				if(fullPathDataEEG == null){
 					JOptionPane.showMessageDialog(null, "Sinyal EEG belum dipilih", "Peringatan", JOptionPane.WARNING_MESSAGE);
