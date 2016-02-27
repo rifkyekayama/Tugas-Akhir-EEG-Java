@@ -12,6 +12,7 @@ import java.awt.event.MouseListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
@@ -26,7 +27,7 @@ public class Layout extends JPanel {
 	public JLabel lblJudulAtas, titlePage, lblAvaHeader, lblNamaHeader, lblAvaSidebar,
 				  lblNamaSidebar, lblNimSidebar, lblMainNavigation, lblLVQ, iconLVQ,
 				  iconLVQDrop, lblFooterCopyright, lblFooterNama, lblFooterKelas;
-	public JButton btnDashboard, btnKelolaDataLatih, btnPelatihan, btnPengujian, btnExit;
+	public JButton btnDashboard, btnKelolaDataLatih, btnEkstraksiWavelet, btnPelatihan, btnPengujian, btnExit;
 
 	public Layout(String title){
 		setSize(1200,650);
@@ -113,14 +114,25 @@ public class Layout extends JPanel {
 		btnKelolaDataLatih.addActionListener(new ButtonController());
 		panelSidebar.add(btnKelolaDataLatih);
 		
+		btnEkstraksiWavelet = new JButton(" Ekstraksi Wavelet", new ImageIcon(getClass().getResource("/resource/iconWavelet.png")));
+		btnEkstraksiWavelet.setHorizontalAlignment(SwingConstants.LEFT);
+		btnEkstraksiWavelet.setForeground(Color.white);
+		btnEkstraksiWavelet.setBackground(new Color(34, 45, 50));
+		btnEkstraksiWavelet.setBounds(0, 270, 270, 50);
+		btnEkstraksiWavelet.setActionCommand("btnEkstraksiWavelet");
+		btnEkstraksiWavelet.setBorderPainted(false);
+		btnEkstraksiWavelet.addMouseListener(new MouseController());
+		btnEkstraksiWavelet.addActionListener(new ButtonController());
+		panelSidebar.add(btnEkstraksiWavelet);
+		
 		panelLVQ = new JPanel();
 		panelLVQ.setLayout(null);
 		panelLVQ.setBackground(new Color(30, 40, 44));
-		panelLVQ.setBounds(0, 270, 270, 50);
+		panelLVQ.setBounds(0, 320, 270, 50);
 		
-		lblLVQ = new JLabel("LVQ");
+		lblLVQ = new JLabel("Sistem Identifikasi");
 		lblLVQ.setForeground(Color.white);
-		lblLVQ.setBounds(43, -25, 120, 100);
+		lblLVQ.setBounds(43, -25, 150, 100);
 		panelLVQ.add(lblLVQ);
 		
 		iconLVQ = new JLabel(new ImageIcon(getClass().getResource("/resource/iconLVQ.png")));
@@ -135,7 +147,7 @@ public class Layout extends JPanel {
 		btnPelatihan.setForeground(new Color(127, 157, 161));
 		btnPelatihan.setHorizontalAlignment(SwingConstants.LEFT);
 		btnPelatihan.setBackground(new Color(44, 59, 65));
-		btnPelatihan.setBounds(0, 320, 270, 50);
+		btnPelatihan.setBounds(0, 370, 270, 50);
 		btnPelatihan.setActionCommand("btnPelatihan");
 		btnPelatihan.setBorderPainted(false);
 		btnPelatihan.addMouseListener(new MouseController());
@@ -146,18 +158,18 @@ public class Layout extends JPanel {
 		btnPengujian.setForeground(new Color(127, 157, 161));
 		btnPengujian.setHorizontalAlignment(SwingConstants.LEFT);
 		btnPengujian.setBackground(new Color(44, 59, 65));
-		btnPengujian.setBounds(0, 370, 270, 50);
+		btnPengujian.setBounds(0, 420, 270, 50);
 		btnPengujian.setActionCommand("btnPengujian");
 		btnPengujian.setBorderPainted(false);
 		btnPengujian.addMouseListener(new MouseController());
 		btnPengujian.addActionListener(new ButtonController());
 		panelSidebar.add(btnPengujian);
 		
-		btnExit = new JButton("Keluar");
+		btnExit = new JButton("Keluar", new ImageIcon(getClass().getResource("/resource/iconExit.png")));
 		btnExit.setHorizontalAlignment(SwingConstants.LEFT);
 		btnExit.setForeground(Color.white);
 		btnExit.setBackground(new Color(34, 45, 50));
-		btnExit.setBounds(0, 420, 270, 50);
+		btnExit.setBounds(0, 470, 270, 50);
 		btnExit.setActionCommand("btnExit");
 		btnExit.setBorderPainted(false);
 		btnExit.addMouseListener(new MouseController());
@@ -232,12 +244,17 @@ public class Layout extends JPanel {
 				Home.changeCard("panelDashboard");
 			}else if(e.getActionCommand().equals("btnKelolaDataLatih")){
 				Home.changeCard("panelKelolaDataLatih");
+			}else if(e.getActionCommand().equals("btnEkstraksiWavelet")){
+				Home.changeCard("panelEkstraksiWavelet");
 			}else if(e.getActionCommand().equals("btnPelatihan")){
 				Home.changeCard("panelPelatihanSistem");
 			}else if(e.getActionCommand().equals("btnPengujian")){
 				Home.changeCard("panelPengujianSistem");
 			}else if(e.getActionCommand().equals("btnExit")){
-				System.exit(0);
+				int dialogResult = JOptionPane.showConfirmDialog(null, "Apakah yakin akan keluar?", "Konfirmasi Keluar", JOptionPane.YES_NO_OPTION);
+				if(dialogResult == JOptionPane.YES_OPTION){
+					System.exit(0);
+				}
 			}
 		}
 	}

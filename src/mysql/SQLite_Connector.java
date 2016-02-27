@@ -17,11 +17,6 @@ public class SQLite_Connector {
 	private String sql = null;
 	private Statement stmt = null;
 	
-	public SQLite_Connector() throws SQLException {
-		connect = getKoneksi();
-		createDatabase();
-	}
-	
 	public Connection getKoneksi() throws SQLException {
 		if(connect == null){
 			try {
@@ -42,6 +37,7 @@ public class SQLite_Connector {
 	
 	public void createDatabase(){
 		try {
+			connect = getKoneksi();
 			stmt = connect.createStatement();
 			DatabaseMetaData dbm = connect.getMetaData();
 			
@@ -49,11 +45,11 @@ public class SQLite_Connector {
 			if(tabelDataLatih.next() == false){
 				sql = "CREATE TABLE data_latih "+
 					  "(id INTEGER PRIMARY 	KEY    	AUTOINCREMENT," +
-					  "data_eeg			LONGTEXT," +
+					  "data_eeg			TEXT," +
 					  "kelas			INTEGER," +
 					  "naracoba			INTEGER," +
 					  "sampling_rate	INTEGER," +
-					  "kanal			VARCHAR(5))";
+					  "kanal			TEXT)";
 				stmt.executeUpdate(sql);
 			}
 
@@ -61,8 +57,8 @@ public class SQLite_Connector {
 			if(tabelKoefisienBobot.next() == false){
 				sql = "CREATE TABLE koefisien_bobot "+
 						  "(id INTEGER PRIMARY 	KEY	AUTOINCREMENT," +
-						  "w1			LONGTEXT," +
-						  "w2			LONGTEXT)";
+						  "w1			TEXT," +
+						  "w2			TEXT)";
 				stmt.executeUpdate(sql);
 			}
 			stmt.close();

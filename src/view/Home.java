@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -18,7 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import mysql.DatabaseAction;
-import mysql.MySQL_Connector;
+import mysql.SQLite_Connector;
 
 public class Home extends JFrame {
 	
@@ -32,6 +33,7 @@ public class Home extends JFrame {
 	public JLabel labelJudul;
 	private static Dashboard dashboard = new Dashboard();
 	private static KelolaDataLatih kelolaDataLatih = new KelolaDataLatih();
+	private static EkstraksiWavelet ekstraksiWavelet = new EkstraksiWavelet();
 	private static PelatihanSistem pelatihanSistem = new PelatihanSistem();
 	private static PengujianSistem pengujianSistem = new PengujianSistem();
 	private static DatabaseAction dbAction = new DatabaseAction();
@@ -40,21 +42,24 @@ public class Home extends JFrame {
 		super("Identifikasi Kondisi Rileks - 3411121013 Rifky Ekayama");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
-		setSize(1200, 650);
+		setSize(1200, 675);
 		setLocationRelativeTo(null);
 		setVisible(true);
 		setDefaultLookAndFeelDecorated(false);
 		
-		MySQL_Connector koneksi = new MySQL_Connector();
-		if(koneksi.getKoneksi() != null){
+		SQLite_Connector koneksi = new SQLite_Connector();
+		Connection conn = koneksi.getKoneksi();
+		if(conn != null){
 			mainPanel = new JPanel(new CardLayout());
 			mainPanel.add(getPanelHome(), "panelAwal");
 			mainPanel.add(dashboard, "panelDashboard");
 			mainPanel.add(kelolaDataLatih, "panelKelolaDataLatih");
+			mainPanel.add(ekstraksiWavelet, "ekstraksiWavelet");
 			mainPanel.add(pelatihanSistem, "panelPelatihanSistem");
 			mainPanel.add(pengujianSistem, "panelPengujianSistem");
 			add(mainPanel);
 		}
+		conn.close();
 	}
 	
 	public JPanel getPanelHome(){

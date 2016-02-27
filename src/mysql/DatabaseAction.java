@@ -17,7 +17,7 @@ public class DatabaseAction {
 	Connection koneksi = null;
 	Statement stmt = null;
 	ResultSet rs = null;
-	MySQL_Connector konektor = new MySQL_Connector();
+	SQLite_Connector konektor = new SQLite_Connector();
 	
 	public DatabaseAction(){
 		try {
@@ -72,8 +72,9 @@ public class DatabaseAction {
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM data_latih WHERE kelas=1");
-			rs.last();
-			jumRileks = rs.getRow();
+			if(rs.next()){
+				jumRileks = rs.getInt(1);
+			}
 			stmt.close();
 			rs.close();
 		}catch(SQLException e){
@@ -88,8 +89,9 @@ public class DatabaseAction {
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM data_latih WHERE kelas=-1");
-			rs.last();
-			jumNonRileks = rs.getRow();
+			if(rs.next()){
+				jumNonRileks = rs.getInt(1);
+			}
 			stmt.close();
 			rs.close();
 		}catch(SQLException e){
@@ -106,8 +108,7 @@ public class DatabaseAction {
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT DISTINCT kanal FROM data_latih");
-			rs.last();
-			if(rs.getRow() != 0){
+			if(rs.next() && rs.getInt(1) != 0){
 				kanal = new int[rs.getString("kanal").split(",").length];
 				temp = rs.getString("kanal").split(",");
 				for(i=0;i<temp.length;i++){
@@ -200,9 +201,8 @@ public class DatabaseAction {
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM koefisien_bobot");
-			rs.last();
-			if(rs.getRow() != 0){
-				rs.first();
+			if(rs.next() && rs.getInt(1) != 0){
+//				rs.first();
 				bobotW1 = new String[rs.getString("w1").split(" ").length];
 				bobotW2 = new String[rs.getString("w2").split(" ").length];
 				bobotW1 = rs.getString("w1").split(" ");
@@ -230,8 +230,7 @@ public class DatabaseAction {
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM koefisien_bobot");
-			rs.last();
-			if(rs.getRow() != 0){
+			if(rs.next() && rs.getInt(1) != 0){
 				isBobotNotNull = true;
 			}else{
 				isBobotNotNull = false;
@@ -266,13 +265,9 @@ public class DatabaseAction {
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=1");
-			rs.last();
-			if(rs.getRow() == 0){
-				JOptionPane.showMessageDialog(null, "Data latih kelas Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				Home.changeCard("panelKelolaDataLatih");
-			}else{
-				sinyalDataLatih = new double[rs.getRow()][rs.getString("data_eeg").split(" ").length];
-				rs.first();
+			if(rs.next() && rs.getInt(1) != 0){
+				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("data_eeg").split(" ").length];
+//				rs.first();
 				sinyalTemp = rs.getString("data_eeg").split(" ");
 				for(j=0;j<sinyalTemp.length;j++){
 					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
@@ -285,6 +280,9 @@ public class DatabaseAction {
 					}
 					i++;
 				}
+			}else{
+				JOptionPane.showMessageDialog(null, "Data latih kelas Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				Home.changeCard("panelKelolaDataLatih");
 			}
 			stmt.close();
 			rs.close();
@@ -302,13 +300,9 @@ public class DatabaseAction {
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=-1");
-			rs.last();
-			if(rs.getRow() == 0){
-				JOptionPane.showMessageDialog(null, "Data latih kelas Non-Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				Home.changeCard("panelKelolaDataLatih");
-			}else{
-				sinyalDataLatih = new double[rs.getRow()][rs.getString("data_eeg").split(" ").length];
-				rs.first();
+			if(rs.next() && rs.getInt(1) != 0){
+				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("data_eeg").split(" ").length];
+//				rs.first();
 				sinyalTemp = rs.getString("data_eeg").split(" ");
 				for(j=0;j<sinyalTemp.length;j++){
 					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
@@ -321,6 +315,9 @@ public class DatabaseAction {
 					}
 					i++;
 				}
+			}else{
+				JOptionPane.showMessageDialog(null, "Data latih kelas Non-Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				Home.changeCard("panelKelolaDataLatih");
 			}
 			stmt.close();
 			rs.close();
@@ -351,9 +348,8 @@ public class DatabaseAction {
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM koefisien_bobot");
-			rs.last();
-			if(rs.getRow() != 0){
-				rs.first();
+			if(rs.next() && rs.getInt(1) != 0){
+//				rs.first();
 				String tempBobotRileks = Arrays.toString(bobot[0]).substring(1, Arrays.toString(bobot[0]).length()-1).replaceAll(",", "");
 				String tempBobotNonRileks = Arrays.toString(bobot[1]).substring(1, Arrays.toString(bobot[1]).length()-1).replaceAll(",", "");
 				stmt = koneksi.createStatement();
@@ -378,9 +374,8 @@ public class DatabaseAction {
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM koefisien_bobot");
-			rs.last();
-			if(rs.getRow() != 0){
-				rs.first();
+			if(rs.next() && rs.getInt(1) != 0){
+//				rs.first();
 				bobotw1 = new String[rs.getString("w1").split(" ").length];
 				bobotw2 = new String[rs.getString("w2").split(" ").length];
 				
