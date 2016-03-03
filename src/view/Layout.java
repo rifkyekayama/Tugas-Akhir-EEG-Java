@@ -246,6 +246,8 @@ public class Layout extends JPanel {
 				Home.changeCard("panelKelolaDataLatih");
 			}else if(e.getActionCommand().equals("btnEkstraksiWavelet")){
 				Home.changeCard("panelEkstraksiWavelet");
+			}else if(e.getActionCommand().equals("btnEkstraksiWavelet")){
+				Home.changeCard("panelEkstraksiWavelet");
 			}else if(e.getActionCommand().equals("btnPelatihan")){
 				Home.changeCard("panelPelatihanSistem");
 			}else if(e.getActionCommand().equals("btnPengujian")){

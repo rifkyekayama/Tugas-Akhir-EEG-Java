@@ -332,6 +332,59 @@ public class Wavelet {
 		return DAAAA5_5;
 	}
 	
+	public double[][][] ekstraksiWavelet(double[][] sinyalEEG, boolean isAlfaUse, boolean isBetaUse, boolean isTetaUse){
+		double[][][] hasilSinyal = null;
+		double[] alfaTemp = null, betaTemp = null, tetaTemp = null;
+		int idx = 0, alfaLength = 0, betaLength = 0, tetaLength = 0, arrayLength = 0;
+		int i=0, j=0;
+		
+		if(isAlfaUse == true){
+			idx++;
+			alfaLength = getAlfa(sinyalEEG[0]).length;
+		}
+		if(isBetaUse == true){
+			idx++;
+			betaLength = getBeta(sinyalEEG[0]).length;
+		}
+		if(isTetaUse == true){
+			idx++;
+			tetaLength = getTeta(sinyalEEG[0]).length;
+		}
+		arrayLength = Math.max(tetaLength, Math.max(alfaLength, betaLength));
+		hasilSinyal = new double[sinyalEEG.length][idx][arrayLength];
+		
+		for(i=0;i<sinyalEEG.length;i++){
+			if(isAlfaUse == true){
+				alfaTemp = getAlfa(sinyalEEG[i]);
+				for(j=0;j<alfaTemp.length;j++){
+					hasilSinyal[i][0][j] = alfaTemp[j];
+				}
+			}else{
+				hasilSinyal[i][0] = null;
+			}
+			
+			if(isBetaUse == true){
+				betaTemp = getBeta(sinyalEEG[i]);
+				for(j=0;j<betaTemp.length;j++){
+					hasilSinyal[i][1][j] = betaTemp[j];
+				}
+			}else{
+				hasilSinyal[i][1] = null;
+			}
+			
+			if(isTetaUse == true){
+				tetaTemp = getTeta(sinyalEEG[i]);
+				for(j=0;j<tetaTemp.length;j++){
+					hasilSinyal[i][2][j] = tetaTemp[j];
+				}
+			}else{
+				hasilSinyal[i][2] = null;
+			}
+		}
+		
+		return hasilSinyal;
+	}
+	
 	public double[] transformasiWavelet(double[] sinyalEEG, boolean isAlfaUse, boolean isBetaUse, boolean isTetaUse){
 		double[] alfa, beta, teta, hasilSinyal;
 		int i, i_temp=0, idx=0;

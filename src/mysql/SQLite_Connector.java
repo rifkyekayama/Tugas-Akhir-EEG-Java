@@ -36,6 +36,12 @@ public class SQLite_Connector {
 	}
 	
 	public void createDatabase(){
+		createTableDataLatih();
+		createTableKoefisienBobot();
+		createTableWavelet();
+	}
+	
+	public void createTableDataLatih(){
 		try {
 			connect = getKoneksi();
 			stmt = connect.createStatement();
@@ -52,7 +58,39 @@ public class SQLite_Connector {
 					  "kanal			TEXT)";
 				stmt.executeUpdate(sql);
 			}
-
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void createTableWavelet(){
+		try {
+			connect = getKoneksi();
+			stmt = connect.createStatement();
+			DatabaseMetaData dbm = connect.getMetaData();
+			
+			ResultSet tabelWavelet = dbm.getTables(null, null, "wavelet", null);
+			if(tabelWavelet.next() == false){
+				sql = "CREATE TABLE wavelet "+
+					  "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
+					  "gel_alfa 		TEXT," +
+					  "gel_beta			TEXT," +
+					  "gel_teta			TEXT)";
+				stmt.executeQuery(sql);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void createTableKoefisienBobot(){
+		try {
+			connect = getKoneksi();
+			stmt = connect.createStatement();
+			DatabaseMetaData dbm = connect.getMetaData();
+			
 			ResultSet tabelKoefisienBobot = dbm.getTables(null, null, "koefisien_bobot", null);
 			if(tabelKoefisienBobot.next() == false){
 				sql = "CREATE TABLE koefisien_bobot "+
@@ -61,10 +99,9 @@ public class SQLite_Connector {
 						  "w2			TEXT)";
 				stmt.executeUpdate(sql);
 			}
-			stmt.close();
-		} catch (SQLException e1) {
+		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			System.err.println(e1.getClass().getName() + ": " + e1.getMessage());
+			e.printStackTrace();
 		}
 	}
 }

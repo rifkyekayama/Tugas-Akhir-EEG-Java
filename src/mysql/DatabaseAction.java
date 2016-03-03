@@ -9,6 +9,11 @@ import java.util.Arrays;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
+import org.jfree.data.time.Second;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.xy.XYDataset;
+
 import view.Home;
 import wavelet.Wavelet;
 
@@ -225,6 +230,58 @@ public class DatabaseAction {
 		return listDataBobot;
 	}
 	
+	public DefaultTableModel getListDataWavelet(){
+		DefaultTableModel listDataWavelet = new DefaultTableModel(){
+			private static final long serialVersionUID = 1L;
+
+		    @SuppressWarnings({ "rawtypes", "unchecked" })
+			@Override
+		    public Class getColumnClass(int column) {
+		        return getValueAt(0, column).getClass();
+		    }
+
+		    @Override
+		    public boolean isCellEditable(int row, int column) {
+		        return false;
+		    }
+		};
+		listDataWavelet.addColumn("No");
+		listDataWavelet.addColumn("Alfa");
+		listDataWavelet.addColumn("Beta");
+		listDataWavelet.addColumn("Teta");
+		int i=0;
+		String[] alfa, beta, teta;
+		
+		try{
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM wavelet");
+			if(rs.next() && rs.getInt(1) != 0){
+//				rs.first();
+				alfa = new String[rs.getString("gel_alfa").split(" ").length];
+				beta = new String[rs.getString("gel_beta").split(" ").length];
+				teta = new String[rs.getString("gel_teta").split(" ").length];
+				alfa = rs.getString("gel_alfa").split(" ");
+				beta = rs.getString("gel_beta").split(" ");
+				teta = rs.getString("gel_teta").split(" ");
+				for(i=0;i<alfa.length;i++){
+					Object[] data = new Object[4];
+					data[0] = (i+1);
+					data[1] = alfa[i];
+					data[2] = beta[i];
+					data[3] = teta[i];
+					listDataWavelet.addRow(data);
+				}
+			}
+			stmt.close();
+			rs.close();
+		}catch(SQLException e){
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
+		}
+		
+		return listDataWavelet;
+	}
+	
 	public boolean isBobotNotNull(){
 		boolean isBobotNotNull = false;
 		try{
@@ -258,6 +315,41 @@ public class DatabaseAction {
 		}
 	}
 	
+	public double[][] getDataLatih(){
+		double[][] sinyalDataLatih = null;
+		String[] sinyalTemp;
+		int i=0, j=0;
+		try {
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM data_latih");
+			if(rs.next() && rs.getInt(1) != 0){
+				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("data_eeg").split(" ").length];
+				sinyalTemp = rs.getString("data_eeg").split(" ");
+				for(j=0;j<sinyalTemp.length;j++){
+					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
+				}
+				i++;
+				while(rs.next()){
+					sinyalTemp = rs.getString("data_eeg").split(" ");
+					for(j=0;j<sinyalTemp.length;j++){
+						sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
+					}
+					i++;
+				}
+			}else{
+				JOptionPane.showMessageDialog(null, "Data latih kelas Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				Home.changeCard("panelKelolaDataLatih");
+			}
+			stmt.close();
+			rs.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return sinyalDataLatih;
+	}
+	
 	public double[][] getDataLatihRileks(){
 		double[][] sinyalDataLatih = null;
 		String[] sinyalTemp;
@@ -265,6 +357,41 @@ public class DatabaseAction {
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=1");
+			if(rs.next() && rs.getInt(1) != 0){
+				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("data_eeg").split(" ").length];
+//				rs.first();
+				sinyalTemp = rs.getString("data_eeg").split(" ");
+				for(j=0;j<sinyalTemp.length;j++){
+					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
+				}
+				i++;
+				while(rs.next()){
+					sinyalTemp = rs.getString("data_eeg").split(" ");
+					for(j=0;j<sinyalTemp.length;j++){
+						sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
+					}
+					i++;
+				}
+			}else{
+				JOptionPane.showMessageDialog(null, "Data latih kelas Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				Home.changeCard("panelKelolaDataLatih");
+			}
+			stmt.close();
+			rs.close();
+		}catch(SQLException e){
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "getDataLatihRileks error = "+e, "Error", JOptionPane.ERROR_MESSAGE);
+		}
+		return sinyalDataLatih;
+	}
+	
+	public double[][] getDataLatihRileksByNaracoba(int naracoba){
+		double[][] sinyalDataLatih = null;
+		String[] sinyalTemp;
+		int i=0, j=0;
+		try{
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=1 AND naracoba="+naracoba);
 			if(rs.next() && rs.getInt(1) != 0){
 				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("data_eeg").split(" ").length];
 //				rs.first();
@@ -328,6 +455,41 @@ public class DatabaseAction {
 		return sinyalDataLatih;
 	}
 	
+	public double[][] getDataLatihNonRileksByNaracoba(int naracoba){
+		double[][] sinyalDataLatih = null;
+		String[] sinyalTemp;
+		int i=0, j=0;
+		try{
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=-1 AND naracoba="+naracoba);
+			if(rs.next() && rs.getInt(1) != 0){
+				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("data_eeg").split(" ").length];
+//				rs.first();
+				sinyalTemp = rs.getString("data_eeg").split(" ");
+				for(j=0;j<sinyalTemp.length;j++){
+					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
+				}
+				i++;
+				while(rs.next()){
+					sinyalTemp = rs.getString("data_eeg").split(" ");
+					for(j=0;j<sinyalTemp.length;j++){
+						sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
+					}
+					i++;
+				}
+			}else{
+				JOptionPane.showMessageDialog(null, "Data latih kelas Non-Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				Home.changeCard("panelKelolaDataLatih");
+			}
+			stmt.close();
+			rs.close();
+		}catch(SQLException e){
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "getDataLatihNonRileks error = "+e, "Error", JOptionPane.ERROR_MESSAGE);
+		}
+		return sinyalDataLatih;
+	}
+	
 	public int getSamplingRate(){
 		int samplingRate = 0;
 		try{
@@ -342,6 +504,13 @@ public class DatabaseAction {
 			e.printStackTrace();
 		}
 		return samplingRate;
+	}
+	
+	public XYDataset createDataSetSinyalAsli(){
+		final TimeSeries seriesRileks = new TimeSeries("Sinyal Rileks");
+		Second current = new Second();
+		
+		return new TimeSeriesCollection();
 	}
 	
 	public void inputHasilBobot(double[][] bobot){

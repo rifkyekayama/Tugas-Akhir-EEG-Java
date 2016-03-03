@@ -257,7 +257,7 @@ public class PelatihanSistem extends JPanel {
 			lblStatusLoading.setText("unsegmen data sinya EEG Rileks");
 			progressBarPelatihan.setValue(25);
 			sinyalUnsegmenRileks = wavelet.unSegmenEEG(dbAction.getDataLatihRileks(), dbAction.getSamplingRate());
-			lblStatusLoading.setText("unsegmen data sinya EEG Non-Rileks");
+			lblStatusLoading.setText("unsegmen data sinyal EEG Non-Rileks");
 			progressBarPelatihan.setValue(50);
 			sinyalUnsegmenNonRileks = wavelet.unSegmenEEG(dbAction.getDataLatihNonRileks(), dbAction.getSamplingRate());
 			lblStatusLoading.setText("Inisialisasi neuron dan bobot awal LVQ");

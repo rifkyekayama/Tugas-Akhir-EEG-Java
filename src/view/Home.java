@@ -33,6 +33,7 @@ public class Home extends JFrame {
 	public JLabel labelJudul;
 	private static Dashboard dashboard = new Dashboard();
 	private static KelolaDataLatih kelolaDataLatih = new KelolaDataLatih();
+	private static EditDataLatih editDataLatih = new EditDataLatih();
 	private static EkstraksiWavelet ekstraksiWavelet = new EkstraksiWavelet();
 	private static PelatihanSistem pelatihanSistem = new PelatihanSistem();
 	private static PengujianSistem pengujianSistem = new PengujianSistem();
@@ -54,7 +55,8 @@ public class Home extends JFrame {
 			mainPanel.add(getPanelHome(), "panelAwal");
 			mainPanel.add(dashboard, "panelDashboard");
 			mainPanel.add(kelolaDataLatih, "panelKelolaDataLatih");
-			mainPanel.add(ekstraksiWavelet, "ekstraksiWavelet");
+			mainPanel.add(editDataLatih, "panelEditDataLatih");
+			mainPanel.add(ekstraksiWavelet, "panelEkstraksiWavelet");
 			mainPanel.add(pelatihanSistem, "panelPelatihanSistem");
 			mainPanel.add(pengujianSistem, "panelPengujianSistem");
 			add(mainPanel);
@@ -107,6 +109,8 @@ public class Home extends JFrame {
 		dashboard.lblJumSegmentasi.setText(Integer.toString(dbAction.getJumSegmentasi()));
 		dashboard.lblJumRileks.setText(Integer.toString(dbAction.getJumRileks()));
 		dashboard.lblJumNonRileks.setText(Integer.toString(dbAction.getJumNonRileks()));
+		kelolaDataLatih.updateTableDataLatih();
+		editDataLatih.updateTableEditDataLatih();
 	}
 	
 	public static void changeCard(String cardName){

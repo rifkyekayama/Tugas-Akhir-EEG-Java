@@ -55,6 +55,7 @@ public class KelolaDataLatih extends JPanel {
 	protected DatabaseAction dbAction;
 	protected Wavelet wavelet;
 	protected String[] fullPathDataEEG;
+	protected EditDataLatih editDataLatih = new EditDataLatih();
 	
 	public KelolaDataLatih(){
 		setSize(1200, 650);
@@ -88,7 +89,7 @@ public class KelolaDataLatih extends JPanel {
 		lblPilihDataEEG.setBounds(15, 30, 150, 30);
 		panelFormDataLatih.add(lblPilihDataEEG);
 		
-		btnPilihDataEEG = new JButton("Choose File");
+		btnPilihDataEEG = new JButton("Pilih File");
 		btnPilihDataEEG.setBackground(Color.lightGray);
 		btnPilihDataEEG.setActionCommand("pilihDataEEG");
 		btnPilihDataEEG.setBorderPainted(false);
@@ -97,7 +98,7 @@ public class KelolaDataLatih extends JPanel {
 		btnPilihDataEEG.setBounds(15, 60, 120, 25);
 		panelFormDataLatih.add(btnPilihDataEEG);
 		
-		lblFileDataEEG = new JLabel("No file chosen");
+		lblFileDataEEG = new JLabel("Tidak ada file dipilih.");
 		lblFileDataEEG.setBounds(140, 60, 300, 30);
 		panelFormDataLatih.add(lblFileDataEEG);
 		
@@ -141,7 +142,7 @@ public class KelolaDataLatih extends JPanel {
 		cbGunakanKanal2.addActionListener(new ButtonController());
 		panelFormDataLatih.add(cbGunakanKanal2);
 		
-		isLockedKanal1 = new JLabel("Locked!");
+		isLockedKanal1 = new JLabel("Dikunci!");
 		isLockedKanal1.setFont(isLockedKanal1.getFont().deriveFont(Font.BOLD, 15f));
 		isLockedKanal1.setForeground(Color.red);
 		isLockedKanal1.setBounds(90, 310, 150, 30);
@@ -157,7 +158,7 @@ public class KelolaDataLatih extends JPanel {
 		cmbKanal1.setBounds(15, 340, 205, 30);
 		panelFormDataLatih.add(cmbKanal1);
 		
-		isLockedKanal2 = new JLabel("Locked!");
+		isLockedKanal2 = new JLabel("Dikunci!");
 		isLockedKanal2.setFont(isLockedKanal2.getFont().deriveFont(Font.BOLD, 15f));
 		isLockedKanal2.setForeground(Color.red);
 		isLockedKanal2.setBounds(305, 310, 150, 30);
@@ -174,7 +175,7 @@ public class KelolaDataLatih extends JPanel {
 		cmbKanal2.setEnabled(false);
 		panelFormDataLatih.add(cmbKanal2);
 		
-		btnSubmitDataEEG = new JButton("Submit");
+		btnSubmitDataEEG = new JButton("Mulai");
 		btnSubmitDataEEG.setForeground(Color.white);
 		btnSubmitDataEEG.setBackground(new Color(60, 137, 185));
 		btnSubmitDataEEG.setActionCommand("submitDataEEG");
@@ -201,7 +202,7 @@ public class KelolaDataLatih extends JPanel {
 		JPanel panelLihatDataLatih = new JPanel();
 		panelLihatDataLatih.setLayout(null);
 		panelLihatDataLatih.setBackground(Color.white);
-		panelLihatDataLatih.setBounds(460, 0, 450, 539);
+		panelLihatDataLatih.setBounds(460, 0, 450, 460);
 		
 		JLabel lblTitleTableDataLatih = new JLabel("Tabel Data Latih");
 		lblTitleTableDataLatih.setForeground(new Color(68, 68, 68));
@@ -211,7 +212,7 @@ public class KelolaDataLatih extends JPanel {
 		JPanel panelTableDataLatih = new JPanel();
 		panelTableDataLatih.setLayout(new BorderLayout());
 		panelTableDataLatih.setBackground(Color.white);
-		panelTableDataLatih.setBounds(15, 30, panelLihatDataLatih.getWidth()-30, 480);
+		panelTableDataLatih.setBounds(15, 30, panelLihatDataLatih.getWidth()-30, 415);
 		panelLihatDataLatih.add(panelTableDataLatih);
 		
 		tableDataLatih = new JTable(tableModel);
@@ -235,10 +236,26 @@ public class KelolaDataLatih extends JPanel {
 		scrollTableDataLatih.setVisible(true);
 		panelTableDataLatih.add(scrollTableDataLatih, BorderLayout.CENTER);
 		
+		JPanel panelEditDataLatih = new JPanel();
+		panelEditDataLatih.setLayout(null);
+		panelEditDataLatih.setBackground(Color.white);
+		panelEditDataLatih.setBounds(panelLihatDataLatih.getX(), panelLihatDataLatih.getHeight()+10, panelLihatDataLatih.getWidth(), 60);
+		
+		JButton btnEditDataLatih = new JButton("Edit Data Latih");
+		btnEditDataLatih.setActionCommand("btnEditDataLatih");
+		btnEditDataLatih.setBackground(new Color(60, 137, 185));
+		btnEditDataLatih.setForeground(Color.white);
+		btnEditDataLatih.setBorderPainted(false);
+		btnEditDataLatih.addMouseListener(new MouseController());
+		btnEditDataLatih.addActionListener(new ButtonController());
+		btnEditDataLatih.setBounds(15, 15, panelEditDataLatih.getWidth()-(15*2), panelEditDataLatih.getHeight()-(15*2));
+		panelEditDataLatih.add(btnEditDataLatih);
+		
 		panelContent.add(panelFormDataLatih);
 		panelContent.add(panelLihatDataLatih);
 		panelContent.add(progressSubmitDataEEG);
 		panelContent.add(panelStatusLoading);
+		panelContent.add(panelEditDataLatih);
 		return panelContent;
 	}
 	
@@ -291,7 +308,7 @@ public class KelolaDataLatih extends JPanel {
 	
 	public void resetFormDataLatih(){
 		fullPathDataEEG = null;
-		lblFileDataEEG.setText("No file chosen");
+		lblFileDataEEG.setText("Tidak ada file dipilih.");
 		cmbKelas.setSelectedIndex(0);
 		txtSegmentasi.setText("60");;
 		txtSamplingrate.setText("128");;
@@ -389,6 +406,8 @@ public class KelolaDataLatih extends JPanel {
 						coreKelolaDataLatih.execute();
 					}
 				}
+			}else if(e.getActionCommand().equals("btnEditDataLatih")){
+				Home.changeCard("panelEditDataLatih");
 			}
 		}
 	}
@@ -437,7 +456,6 @@ public class KelolaDataLatih extends JPanel {
 		@Override
 		public void done(){
 			resetFormDataLatih();
-			updateTableDataLatih();
 			updateStatusKanal();
 			Home.refreshAllElement();
 			progressSubmitDataEEG.setValue(100);
