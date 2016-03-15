@@ -205,7 +205,7 @@ public class DatabaseAction {
 		
 		try{
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM koefisien_bobot");
+			rs = stmt.executeQuery("SELECT * FROM lvq");
 			if(rs.next() && rs.getInt(1) != 0){
 //				rs.first();
 				bobotW1 = new String[rs.getString("w1").split(" ").length];
@@ -257,12 +257,12 @@ public class DatabaseAction {
 			rs = stmt.executeQuery("SELECT * FROM wavelet");
 			if(rs.next() && rs.getInt(1) != 0){
 //				rs.first();
-				alfa = new String[rs.getString("gel_alfa").split(" ").length];
-				beta = new String[rs.getString("gel_beta").split(" ").length];
-				teta = new String[rs.getString("gel_teta").split(" ").length];
-				alfa = rs.getString("gel_alfa").split(" ");
-				beta = rs.getString("gel_beta").split(" ");
-				teta = rs.getString("gel_teta").split(" ");
+				alfa = new String[rs.getString("alfa").split(" ").length];
+				beta = new String[rs.getString("beta").split(" ").length];
+				teta = new String[rs.getString("teta").split(" ").length];
+				alfa = rs.getString("alfa").split(" ");
+				beta = rs.getString("beta").split(" ");
+				teta = rs.getString("teta").split(" ");
 				for(i=0;i<alfa.length;i++){
 					Object[] data = new Object[4];
 					data[0] = (i+1);
@@ -286,7 +286,7 @@ public class DatabaseAction {
 		boolean isBobotNotNull = false;
 		try{
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM koefisien_bobot");
+			rs = stmt.executeQuery("SELECT * FROM lvq");
 			if(rs.next() && rs.getInt(1) != 0){
 				isBobotNotNull = true;
 			}else{
@@ -516,18 +516,18 @@ public class DatabaseAction {
 	public void inputHasilBobot(double[][] bobot){
 		try{
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM koefisien_bobot");
+			rs = stmt.executeQuery("SELECT * FROM lvq");
 			if(rs.next() && rs.getInt(1) != 0){
 //				rs.first();
 				String tempBobotRileks = Arrays.toString(bobot[0]).substring(1, Arrays.toString(bobot[0]).length()-1).replaceAll(",", "");
 				String tempBobotNonRileks = Arrays.toString(bobot[1]).substring(1, Arrays.toString(bobot[1]).length()-1).replaceAll(",", "");
 				stmt = koneksi.createStatement();
-				stmt.executeUpdate("UPDATE koefisien_bobot SET w1='"+tempBobotRileks+"', w2='"+tempBobotNonRileks+"' WHERE id='"+rs.getInt("id")+"'");
+				stmt.executeUpdate("UPDATE lvq SET w1='"+tempBobotRileks+"', w2='"+tempBobotNonRileks+"' WHERE id='"+rs.getInt("id")+"'");
 			}else{				
 				String tempBobotRileks = Arrays.toString(bobot[0]).substring(1, Arrays.toString(bobot[0]).length()-1).replaceAll(",", "");
 				String tempBobotNonRileks = Arrays.toString(bobot[1]).substring(1, Arrays.toString(bobot[1]).length()-1).replaceAll(",", "");
 				stmt = koneksi.createStatement();
-				stmt.executeUpdate("INSERT INTO koefisien_bobot (w1, w2) VALUES ('"+tempBobotRileks+"', '"+tempBobotNonRileks+"')");
+				stmt.executeUpdate("INSERT INTO lvq (w1, w2) VALUES ('"+tempBobotRileks+"', '"+tempBobotNonRileks+"')");
 			}
 			stmt.close();
 			rs.close();
@@ -542,7 +542,7 @@ public class DatabaseAction {
 		int i=0;
 		try{
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM koefisien_bobot");
+			rs = stmt.executeQuery("SELECT * FROM lvq");
 			if(rs.next() && rs.getInt(1) != 0){
 //				rs.first();
 				bobotw1 = new String[rs.getString("w1").split(" ").length];
@@ -565,5 +565,50 @@ public class DatabaseAction {
 			e.printStackTrace();
 		}
 		return bobotPelatihan;
+	}
+	
+	public int getKelasFromDataLatih(int naracoba){
+		int hasilNaracoba = 0;
+		try {
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE naracoba="+Integer.toString(naracoba));
+			hasilNaracoba = rs.getInt("kelas");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return hasilNaracoba;
+	}
+	
+	public boolean editDataLatih(int indexKelas, int naracoba){
+		try {
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("UPDATE data_latih SET kelas="+Integer.toString(indexKelas)+" WHERE naracoba="+Integer.toString(naracoba));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true;
+	}
+	
+	public boolean hapusDataLatih(String naracoba){
+		String sql;
+		Boolean hasil;
+		
+		try {
+			koneksi.setAutoCommit(false);
+			stmt = koneksi.createStatement();
+			if(naracoba == "Semua"){
+				sql = "DELETE FROM data_latih;";
+			}else{
+				sql = "DELETE FROM data_latih WHERE naracoba="+Integer.parseInt(naracoba)+";";
+			}
+			rs = stmt.executeQuery("SELECT * FROM data_latih");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return true;
 	}
 }

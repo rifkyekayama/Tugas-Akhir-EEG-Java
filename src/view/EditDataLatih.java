@@ -12,6 +12,7 @@ import java.awt.event.MouseListener;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -31,8 +32,8 @@ public class EditDataLatih extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	protected DefaultTableModel tableModel;
-	protected JComboBox<?> cmbNaracobaEdit, cmbKelas;
-	protected JButton btnEditDataLatih;
+	protected JComboBox<?> cmbNaracobaEdit, cmbNaracobaHapus, cmbKelas;
+	protected JButton btnEditDataLatih, btnHapusDataLatih;
 	protected JTable tableDataLatih;
 	protected JScrollPane scrollTableDataLatih;
 	protected DefaultTableCellRenderer centerTable;
@@ -54,6 +55,13 @@ public class EditDataLatih extends JPanel {
 		for(i=0;i<dbAction.getJumNaracoba();i++){
 			naracobaEdit[i+1] = Integer.toString(i+1);
 		}
+		
+		naracobaHapus = new String[dbAction.getJumNaracoba()+2];
+		naracobaHapus[0] = "-";
+		for(i=0;i<dbAction.getJumNaracoba();i++){
+			naracobaHapus[i+1] = Integer.toString(i+1);
+		}
+		naracobaHapus[naracobaHapus.length-1] = "Semua";
 		
 		add(getContent());
 		add(new Layout("Edit Data Latih"));
@@ -86,6 +94,8 @@ public class EditDataLatih extends JPanel {
 		cmbNaracobaEdit = new JComboBox<>(naracobaEdit);
 		cmbNaracobaEdit.setBounds(120, 60, 150, 30);
 		cmbNaracobaEdit.setBackground(Color.white);
+		cmbNaracobaEdit.setActionCommand("cmbNaracobaEdit");
+		cmbNaracobaEdit.addActionListener(new ButtonController());
 		panelFormEditDataLatih.add(cmbNaracobaEdit);
 		
 		JLabel lblKelas = new JLabel("Pilih Kelas");
@@ -102,17 +112,43 @@ public class EditDataLatih extends JPanel {
 		btnEditDataLatih.setForeground(Color.white);
 		btnEditDataLatih.setBackground(new Color(60, 137, 185));
 		btnEditDataLatih.setBounds(15, 190, panelFormEditDataLatih.getWidth()-30, 50);
+		btnEditDataLatih.setActionCommand("btnEditDataLatih");
+		btnEditDataLatih.addMouseListener(new MouseController());
+		btnEditDataLatih.addActionListener(new ButtonController());
 		panelFormEditDataLatih.add(btnEditDataLatih);
 		
 		JPanel panelHapusDataLatih = new JPanel();
 		panelHapusDataLatih.setLayout(null);
 		panelHapusDataLatih.setBackground(Color.white);
-		panelHapusDataLatih.setBounds(0, 270, 450, 260);
+		panelHapusDataLatih.setBounds(0, 270, 450, 190);
 		
 		JLabel lblTitleHapusDataLatih = new JLabel("Hapus Data Latih");
 		lblTitleHapusDataLatih.setForeground(new Color(68, 68, 68));
 		lblTitleHapusDataLatih.setBounds(15, 0, 150, 30);
 		panelHapusDataLatih.add(lblTitleHapusDataLatih);
+		
+		JLabel lblNaracobaHapus = new JLabel("Naracoba ke-");
+		lblNaracobaHapus.setBounds(15, 60, 100, 30);
+		panelHapusDataLatih.add(lblNaracobaHapus);
+		
+		JLabel lblPilihNaracobaHapus = new JLabel("Pilih Naracoba");
+		lblPilihNaracobaHapus.setFont(lblPilihNaracobaHapus.getFont().deriveFont(Font.BOLD, 15f));
+		lblPilihNaracobaHapus.setBounds(15, 30, 150, 30);
+		panelHapusDataLatih.add(lblPilihNaracobaHapus);
+		
+		cmbNaracobaHapus = new JComboBox<>(naracobaHapus);
+		cmbNaracobaHapus.setBounds(120, 60, 150, 30);
+		cmbNaracobaHapus.setBackground(Color.white);
+		panelHapusDataLatih.add(cmbNaracobaHapus);
+		
+		btnHapusDataLatih = new JButton("Hapus Data Latih");
+		btnHapusDataLatih.setForeground(Color.white);
+		btnHapusDataLatih.setBackground(new Color(60, 137, 185));
+		btnHapusDataLatih.setBounds(15, 110, panelHapusDataLatih.getWidth()-30, 50);
+		btnHapusDataLatih.setActionCommand("btnHapusDataLatih");
+		btnHapusDataLatih.addMouseListener(new MouseController());
+		btnHapusDataLatih.addActionListener(new ButtonController());
+		panelHapusDataLatih.add(btnHapusDataLatih);
 		
 		JPanel panelLihatDataLatih = new JPanel();
 		panelLihatDataLatih.setLayout(null);
@@ -233,6 +269,39 @@ public class EditDataLatih extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			if(e.getActionCommand().equals("btnKelolaDataLatih")){
 				Home.changeCard("panelKelolaDataLatih");
+			}else if(e.getActionCommand().equals("cmbNaracobaEdit")){
+				if((String)cmbNaracobaEdit.getSelectedItem() != "-"){
+					int kelasNaracoba = dbAction.getKelasFromDataLatih(Integer.parseInt((String)cmbNaracobaEdit.getSelectedItem()));
+					if(kelasNaracoba == 1){
+						cmbKelas.setSelectedIndex(1);
+					}else if(kelasNaracoba == -1){
+						cmbKelas.setSelectedIndex(2);
+					}
+				}else{
+					cmbKelas.setSelectedIndex(0);
+				}
+			}else if(e.getActionCommand().equals("btnEditDataLatih")){
+				int indexKelas = 0;
+				if((String)cmbNaracobaEdit.getSelectedItem() != "-"){
+					if(cmbKelas.getSelectedIndex() == 1){
+						indexKelas = 1;
+					}else if(cmbKelas.getSelectedIndex() == 2){
+						indexKelas = -1;
+					}
+					dbAction.editDataLatih(indexKelas, Integer.parseInt((String)cmbNaracobaEdit.getSelectedItem()));
+				}
+			}else if(e.getActionCommand().equals("btnHapusDataLatih")){
+				if((String)cmbNaracobaHapus.getSelectedItem() == "-"){
+					JOptionPane.showMessageDialog(null, "Pilihan naracoba tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				}else{
+					boolean hasilHapus = dbAction.hapusDataLatih((String)cmbNaracobaHapus.getSelectedItem());
+					if(hasilHapus == true){
+						Home.refreshAllElement();
+						JOptionPane.showMessageDialog(null, "Data latih berhasil dihapus.", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+					}else if(hasilHapus == false){
+						JOptionPane.showMessageDialog(null, "Data latih gagal dihapus.", "Error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
 			}
 		}
 		

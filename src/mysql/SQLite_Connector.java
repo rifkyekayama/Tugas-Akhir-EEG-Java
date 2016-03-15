@@ -50,8 +50,7 @@ public class SQLite_Connector {
 			ResultSet tabelDataLatih = dbm.getTables(null, null, "data_latih", null);
 			if(tabelDataLatih.next() == false){
 				sql = "CREATE TABLE data_latih "+
-					  "(id INTEGER PRIMARY 	KEY    	AUTOINCREMENT," +
-					  "data_eeg			TEXT," +
+					  "(data_eeg			TEXT," +
 					  "kelas			INTEGER," +
 					  "naracoba			INTEGER," +
 					  "sampling_rate	INTEGER," +
@@ -73,11 +72,10 @@ public class SQLite_Connector {
 			ResultSet tabelWavelet = dbm.getTables(null, null, "wavelet", null);
 			if(tabelWavelet.next() == false){
 				sql = "CREATE TABLE wavelet "+
-					  "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
-					  "gel_alfa 		TEXT," +
-					  "gel_beta			TEXT," +
-					  "gel_teta			TEXT)";
-				stmt.executeQuery(sql);
+					  "(alfa 		TEXT," +
+					  "beta			TEXT," +
+					  "teta			TEXT)";
+				stmt.executeUpdate(sql);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -91,11 +89,10 @@ public class SQLite_Connector {
 			stmt = connect.createStatement();
 			DatabaseMetaData dbm = connect.getMetaData();
 			
-			ResultSet tabelKoefisienBobot = dbm.getTables(null, null, "koefisien_bobot", null);
+			ResultSet tabelKoefisienBobot = dbm.getTables(null, null, "lvq", null);
 			if(tabelKoefisienBobot.next() == false){
-				sql = "CREATE TABLE koefisien_bobot "+
-						  "(id INTEGER PRIMARY 	KEY	AUTOINCREMENT," +
-						  "w1			TEXT," +
+				sql = "CREATE TABLE lvq "+
+						  "(w1			TEXT," +
 						  "w2			TEXT)";
 				stmt.executeUpdate(sql);
 			}
