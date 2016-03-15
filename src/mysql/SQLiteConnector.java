@@ -9,7 +9,7 @@ import java.sql.Statement;
 
 import javax.swing.JOptionPane;
 
-public class SQLite_Connector {
+public class SQLiteConnector {
 	
 	private Connection connect;
 	private String driverName = "org.sqlite.JDBC";
@@ -50,10 +50,10 @@ public class SQLite_Connector {
 			ResultSet tabelDataLatih = dbm.getTables(null, null, "data_latih", null);
 			if(tabelDataLatih.next() == false){
 				sql = "CREATE TABLE data_latih "+
-					  "(data_eeg			TEXT," +
+					  "(dataEeg			TEXT," +
 					  "kelas			INTEGER," +
 					  "naracoba			INTEGER," +
-					  "sampling_rate	INTEGER," +
+					  "samplingRate	INTEGER," +
 					  "kanal			TEXT)";
 				stmt.executeUpdate(sql);
 			}

@@ -22,7 +22,7 @@ public class DatabaseAction {
 	Connection koneksi = null;
 	Statement stmt = null;
 	ResultSet rs = null;
-	SQLite_Connector konektor = new SQLite_Connector();
+	SQLiteConnector konektor = new SQLiteConnector();
 	
 	public DatabaseAction(){
 		try {

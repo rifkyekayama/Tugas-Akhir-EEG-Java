@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 import javax.swing.UIManager;
 
-import mysql.SQLite_Connector;
+import mysql.SQLiteConnector;
 import view.*;
 
 public class Main {
@@ -18,7 +18,7 @@ public class Main {
 		java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                	SQLite_Connector koneksi = new SQLite_Connector();
+                	SQLiteConnector koneksi = new SQLiteConnector();
                 	koneksi.createDatabase();
 					new Home().setVisible(true);
 				} catch (SQLException e) {

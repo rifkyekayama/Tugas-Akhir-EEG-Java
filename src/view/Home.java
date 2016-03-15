@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import mysql.DatabaseAction;
-import mysql.SQLite_Connector;
+import mysql.SQLiteConnector;
 
 public class Home extends JFrame {
 	
@@ -48,7 +48,7 @@ public class Home extends JFrame {
 		setVisible(true);
 		setDefaultLookAndFeelDecorated(false);
 		
-		SQLite_Connector koneksi = new SQLite_Connector();
+		SQLiteConnector koneksi = new SQLiteConnector();
 		Connection conn = koneksi.getKoneksi();
 		if(conn != null){
 			mainPanel = new JPanel(new CardLayout());
