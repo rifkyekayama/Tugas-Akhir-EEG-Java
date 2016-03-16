@@ -23,6 +23,7 @@ import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import dataLatih.DataLatih;
 import lvq.LVQ;
 import mysql.DatabaseAction;
 import wavelet.Wavelet;
@@ -42,6 +43,7 @@ public class PelatihanSistem extends JPanel {
 	protected JScrollPane scrollTableBobot;
 	protected DefaultTableCellRenderer centerTable;
 	protected DatabaseAction dbAction = new DatabaseAction();
+	protected DataLatih dataLatih = new DataLatih();
 	
 	public PelatihanSistem(){
 		setSize(1200, 650);
@@ -256,10 +258,10 @@ public class PelatihanSistem extends JPanel {
 			// TODO Auto-generated method stub
 			lblStatusLoading.setText("unsegmen data sinya EEG Rileks");
 			progressBarPelatihan.setValue(25);
-			sinyalUnsegmenRileks = wavelet.unSegmenEEG(dbAction.getDataLatihRileks(), dbAction.getSamplingRate());
+			sinyalUnsegmenRileks = dataLatih.unSegmenEEG(dbAction.getDataLatihRileks(), dbAction.getSamplingRate());
 			lblStatusLoading.setText("unsegmen data sinyal EEG Non-Rileks");
 			progressBarPelatihan.setValue(50);
-			sinyalUnsegmenNonRileks = wavelet.unSegmenEEG(dbAction.getDataLatihNonRileks(), dbAction.getSamplingRate());
+			sinyalUnsegmenNonRileks = dataLatih.unSegmenEEG(dbAction.getDataLatihNonRileks(), dbAction.getSamplingRate());
 			lblStatusLoading.setText("Inisialisasi neuron dan bobot awal LVQ");
 			progressBarPelatihan.setValue(60);
 			init = lvq.initLVQ(sinyalUnsegmenRileks, sinyalUnsegmenNonRileks);

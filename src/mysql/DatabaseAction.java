@@ -14,8 +14,8 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 
+import dataLatih.DataLatih;
 import view.Home;
-import wavelet.Wavelet;
 
 public class DatabaseAction {
 	
@@ -157,7 +157,7 @@ public class DatabaseAction {
 			while(rs.next()){
 				Object[] data = new Object[5];
 				data[0] = no++;
-				data[1] = rs.getString("data_eeg");
+				data[1] = rs.getString("dataEeg");
 				if(rs.getInt("kelas") == 1){
 					data[2] = "Rileks";
 				}else{
@@ -167,9 +167,9 @@ public class DatabaseAction {
 				kanalTemp = new String[rs.getString("kanal").split(",").length];
 				kanalTemp = rs.getString("kanal").split(",");
 				if(kanalTemp.length > 1){
-					data[4] = Wavelet.intToKanal(Integer.parseInt(kanalTemp[0]))+" dan "+Wavelet.intToKanal(Integer.parseInt(kanalTemp[1]));
+					data[4] = DataLatih.intToKanal(Integer.parseInt(kanalTemp[0]))+" dan "+DataLatih.intToKanal(Integer.parseInt(kanalTemp[1]));
 				}else{
-					data[4] = Wavelet.intToKanal(Integer.parseInt(kanalTemp[0]));
+					data[4] = DataLatih.intToKanal(Integer.parseInt(kanalTemp[0]));
 				}
 				listDataLatih.addRow(data);
 			}
@@ -305,7 +305,7 @@ public class DatabaseAction {
 			for(int i=0;i<sinyal.length;i++){
 				String tempSinyal = Arrays.toString(sinyal[i]).substring(1, Arrays.toString(sinyal[i]).length()-1).replaceAll(",", "");
 				stmt = koneksi.createStatement();
-				stmt.executeUpdate("INSERT INTO data_latih (data_eeg, kelas, naracoba, sampling_rate, kanal) VALUES ('"+tempSinyal+"', '"+kelas+"', '"+naracoba+"', '"+samplingRate+"', '"+kanal+"')");
+				stmt.executeUpdate("INSERT INTO data_latih (dataEeg, kelas, naracoba, samplingRate, kanal) VALUES ('"+tempSinyal+"', '"+kelas+"', '"+naracoba+"', '"+samplingRate+"', '"+kanal+"')");
 			}
 			stmt.close();
 			rs.close();
@@ -323,14 +323,14 @@ public class DatabaseAction {
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih");
 			if(rs.next() && rs.getInt(1) != 0){
-				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("data_eeg").split(" ").length];
-				sinyalTemp = rs.getString("data_eeg").split(" ");
+				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("dataEeg").split(" ").length];
+				sinyalTemp = rs.getString("dataEeg").split(" ");
 				for(j=0;j<sinyalTemp.length;j++){
 					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
 				}
 				i++;
 				while(rs.next()){
-					sinyalTemp = rs.getString("data_eeg").split(" ");
+					sinyalTemp = rs.getString("dataEeg").split(" ");
 					for(j=0;j<sinyalTemp.length;j++){
 						sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
 					}
@@ -358,15 +358,15 @@ public class DatabaseAction {
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=1");
 			if(rs.next() && rs.getInt(1) != 0){
-				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("data_eeg").split(" ").length];
+				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("dataEeg").split(" ").length];
 //				rs.first();
-				sinyalTemp = rs.getString("data_eeg").split(" ");
+				sinyalTemp = rs.getString("dataEeg").split(" ");
 				for(j=0;j<sinyalTemp.length;j++){
 					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
 				}
 				i++;
 				while(rs.next()){
-					sinyalTemp = rs.getString("data_eeg").split(" ");
+					sinyalTemp = rs.getString("dataEeg").split(" ");
 					for(j=0;j<sinyalTemp.length;j++){
 						sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
 					}
@@ -393,15 +393,15 @@ public class DatabaseAction {
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=1 AND naracoba="+naracoba);
 			if(rs.next() && rs.getInt(1) != 0){
-				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("data_eeg").split(" ").length];
+				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("dataEeg").split(" ").length];
 //				rs.first();
-				sinyalTemp = rs.getString("data_eeg").split(" ");
+				sinyalTemp = rs.getString("dataEeg").split(" ");
 				for(j=0;j<sinyalTemp.length;j++){
 					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
 				}
 				i++;
 				while(rs.next()){
-					sinyalTemp = rs.getString("data_eeg").split(" ");
+					sinyalTemp = rs.getString("dataEeg").split(" ");
 					for(j=0;j<sinyalTemp.length;j++){
 						sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
 					}
@@ -428,15 +428,15 @@ public class DatabaseAction {
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=-1");
 			if(rs.next() && rs.getInt(1) != 0){
-				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("data_eeg").split(" ").length];
+				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("dataEeg").split(" ").length];
 //				rs.first();
-				sinyalTemp = rs.getString("data_eeg").split(" ");
+				sinyalTemp = rs.getString("dataEeg").split(" ");
 				for(j=0;j<sinyalTemp.length;j++){
 					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
 				}
 				i++;
 				while(rs.next()){
-					sinyalTemp = rs.getString("data_eeg").split(" ");
+					sinyalTemp = rs.getString("dataEeg").split(" ");
 					for(j=0;j<sinyalTemp.length;j++){
 						sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
 					}
@@ -463,15 +463,15 @@ public class DatabaseAction {
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=-1 AND naracoba="+naracoba);
 			if(rs.next() && rs.getInt(1) != 0){
-				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("data_eeg").split(" ").length];
+				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("dataEeg").split(" ").length];
 //				rs.first();
-				sinyalTemp = rs.getString("data_eeg").split(" ");
+				sinyalTemp = rs.getString("dataEeg").split(" ");
 				for(j=0;j<sinyalTemp.length;j++){
 					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
 				}
 				i++;
 				while(rs.next()){
-					sinyalTemp = rs.getString("data_eeg").split(" ");
+					sinyalTemp = rs.getString("dataEeg").split(" ");
 					for(j=0;j<sinyalTemp.length;j++){
 						sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
 					}
@@ -494,7 +494,7 @@ public class DatabaseAction {
 		int samplingRate = 0;
 		try{
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT DISTINCT sampling_rate FROM data_latih");
+			rs = stmt.executeQuery("SELECT DISTINCT samplingRate FROM data_latih");
 			if(rs.next()){
 				samplingRate = rs.getInt(1);
 			}

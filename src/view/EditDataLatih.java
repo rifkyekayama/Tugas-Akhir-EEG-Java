@@ -21,8 +21,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import mysql.DatabaseAction;
-import view.KelolaDataLatih.ButtonController;
-import view.KelolaDataLatih.MouseController;
 
 public class EditDataLatih extends JPanel {
 

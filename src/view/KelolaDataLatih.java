@@ -28,6 +28,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import dataLatih.DataLatih;
 import mysql.DatabaseAction;
 import wavelet.Wavelet;
 
@@ -54,6 +55,7 @@ public class KelolaDataLatih extends JPanel {
 	protected String[] kanal = {"Pilih salah satu...", "AF3", "F7", "F3", "FC5", "T7", "P7", "O1", "O2", "P8", "T8", "FC6", "F4", "F8", "AF4"};
 	protected DatabaseAction dbAction;
 	protected Wavelet wavelet;
+	protected DataLatih dataLatih;
 	protected String[] fullPathDataEEG;
 	protected EditDataLatih editDataLatih = new EditDataLatih();
 	
@@ -397,12 +399,12 @@ public class KelolaDataLatih extends JPanel {
 					JOptionPane.showMessageDialog(null, "Pilihan Kanal 2 tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else{
 					if(cbGunakanKanal2.isSelected() == false){
-						wavelet = new Wavelet(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), null);
-						CoreKelolaDataLatih coreKelolaDataLatih = new CoreKelolaDataLatih(wavelet);
+						dataLatih = new DataLatih(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), null);
+						CoreKelolaDataLatih coreKelolaDataLatih = new CoreKelolaDataLatih(dataLatih);
 						coreKelolaDataLatih.execute();
 					}else{
-						wavelet = new Wavelet(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), (String)cmbKanal2.getSelectedItem());
-						CoreKelolaDataLatih coreKelolaDataLatih = new CoreKelolaDataLatih(wavelet);
+						dataLatih = new DataLatih(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), (String)cmbKanal2.getSelectedItem());
+						CoreKelolaDataLatih coreKelolaDataLatih = new CoreKelolaDataLatih(dataLatih);
 						coreKelolaDataLatih.execute();
 					}
 				}
@@ -414,11 +416,11 @@ public class KelolaDataLatih extends JPanel {
 	
 	class CoreKelolaDataLatih extends SwingWorker<Void, Void> {
 		
-		Wavelet wavelet;
+		DataLatih dataLatih;
 		
-		public CoreKelolaDataLatih(Wavelet wavelet) {
+		public CoreKelolaDataLatih(DataLatih dataLatih) {
 			// TODO Auto-generated constructor stub
-			this.wavelet = wavelet;
+			this.dataLatih = dataLatih;
 			lblStatusLoading.setVisible(true);
 		}
 
@@ -428,26 +430,26 @@ public class KelolaDataLatih extends JPanel {
 			String[][] sinyalKanal1, sinyalKanal2, kanalMerge;
 			int naracoba = dbAction.getJumNaracoba()+1;
 			String kanal = null;
-			int i, progress=0, progressDistance = 100/wavelet.pathFile.length;
-			for(i=0; i<wavelet.pathFile.length; i++){
+			int i, progress=0, progressDistance = 100/dataLatih.pathFile.length;
+			for(i=0; i<dataLatih.pathFile.length; i++){
 				lblStatusLoading.setText("membaca EEG signal ke "+(i+1));
 				progressSubmitDataEEG.setValue(progress+=progressDistance);
 				
-				wavelet.lineOfSinyal = wavelet.readCsv(wavelet.pathFile[i]);
-				if(wavelet.kanal2 == null){
-					sinyalKanal1 = new String[(int) Math.floor(wavelet.lineOfSinyal.getItemCount()/(wavelet.samplingRate*wavelet.segmentasi))][wavelet.lineOfSinyal.getItemCount()-1];
-					sinyalKanal1 = wavelet.segmentasiEEG(wavelet.lineOfSinyal, wavelet.kanalToInt(wavelet.kanal1), wavelet.segmentasi, wavelet.samplingRate);
-					kanal = Integer.toString(wavelet.kanalToInt(wavelet.kanal1));
-					dbAction.inputSegmentasiSinyal(sinyalKanal1, wavelet.kelasToInt(wavelet.kelas), naracoba, wavelet.samplingRate, kanal);
+				dataLatih.dataEeg = dataLatih.readCsv(dataLatih.pathFile[i]);
+				if(dataLatih.kanal2 == null){
+					sinyalKanal1 = new String[(int) Math.floor(dataLatih.dataEeg.getItemCount()/(dataLatih.samplingRate*dataLatih.segmentasi))][dataLatih.dataEeg.getItemCount()-1];
+					sinyalKanal1 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal1), dataLatih.segmentasi, dataLatih.samplingRate);
+					kanal = Integer.toString(dataLatih.kanalToInt(dataLatih.kanal1));
+					dbAction.inputSegmentasiSinyal(sinyalKanal1, dataLatih.kelasToInt(dataLatih.kelas), naracoba, dataLatih.samplingRate, kanal);
 				}else{
-					sinyalKanal1 = new String[(int) Math.floor(wavelet.lineOfSinyal.getItemCount()/(wavelet.samplingRate*wavelet.segmentasi))][wavelet.lineOfSinyal.getItemCount()-1];
-					sinyalKanal1 = wavelet.segmentasiEEG(wavelet.lineOfSinyal, wavelet.kanalToInt(wavelet.kanal1), wavelet.segmentasi, wavelet.samplingRate);
-					sinyalKanal2 = new String[(int) Math.floor(wavelet.lineOfSinyal.getItemCount()/(wavelet.samplingRate*wavelet.segmentasi))][wavelet.lineOfSinyal.getItemCount()-1];
-					sinyalKanal2 = wavelet.segmentasiEEG(wavelet.lineOfSinyal, wavelet.kanalToInt(wavelet.kanal2), wavelet.segmentasi, wavelet.samplingRate);
+					sinyalKanal1 = new String[(int) Math.floor(dataLatih.dataEeg.getItemCount()/(dataLatih.samplingRate*dataLatih.segmentasi))][dataLatih.dataEeg.getItemCount()-1];
+					sinyalKanal1 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal1), dataLatih.segmentasi, dataLatih.samplingRate);
+					sinyalKanal2 = new String[(int) Math.floor(dataLatih.dataEeg.getItemCount()/(dataLatih.samplingRate*dataLatih.segmentasi))][dataLatih.dataEeg.getItemCount()-1];
+					sinyalKanal2 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal2), dataLatih.segmentasi, dataLatih.samplingRate);
 					kanalMerge = new String[sinyalKanal1.length][sinyalKanal1[0].length+sinyalKanal2[0].length];
-					kanalMerge = wavelet.gabungkanArray(sinyalKanal1, sinyalKanal2);
-					kanal = Integer.toString(wavelet.kanalToInt(wavelet.kanal1))+","+Integer.toString(wavelet.kanalToInt(wavelet.kanal2));
-					dbAction.inputSegmentasiSinyal(kanalMerge, wavelet.kelasToInt(wavelet.kelas), naracoba, wavelet.samplingRate, kanal);
+					kanalMerge = dataLatih.gabungkanArray(sinyalKanal1, sinyalKanal2);
+					kanal = Integer.toString(dataLatih.kanalToInt(dataLatih.kanal1))+","+Integer.toString(dataLatih.kanalToInt(dataLatih.kanal2));
+					dbAction.inputSegmentasiSinyal(kanalMerge, dataLatih.kelasToInt(dataLatih.kelas), naracoba, dataLatih.samplingRate, kanal);
 				}
 			}
 			return null;

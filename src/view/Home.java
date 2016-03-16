@@ -48,9 +48,9 @@ public class Home extends JFrame {
 		setVisible(true);
 		setDefaultLookAndFeelDecorated(false);
 		
-		SQLiteConnector koneksi = new SQLiteConnector();
-		Connection conn = koneksi.getKoneksi();
-		if(conn != null){
+//		SQLiteConnector koneksi = new SQLiteConnector();
+//		Connection conn = koneksi.getKoneksi();
+//		if(conn != null){
 			mainPanel = new JPanel(new CardLayout());
 			mainPanel.add(getPanelHome(), "panelAwal");
 			mainPanel.add(dashboard, "panelDashboard");
@@ -60,8 +60,8 @@ public class Home extends JFrame {
 			mainPanel.add(pelatihanSistem, "panelPelatihanSistem");
 			mainPanel.add(pengujianSistem, "panelPengujianSistem");
 			add(mainPanel);
-		}
-		conn.close();
+//		}
+//		conn.close();
 	}
 	
 	public JPanel getPanelHome(){
