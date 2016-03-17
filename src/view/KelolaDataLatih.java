@@ -29,7 +29,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import dataLatih.DataLatih;
-import mysql.DatabaseAction;
+import mysql.Database;
 import wavelet.Wavelet;
 
 public class KelolaDataLatih extends JPanel {
@@ -53,7 +53,7 @@ public class KelolaDataLatih extends JPanel {
 	public JLabel lblStatusLoading;
 	protected String[] kelas = {"Pilih salah satu...", "Rileks", "Non-Rileks"};
 	protected String[] kanal = {"Pilih salah satu...", "AF3", "F7", "F3", "FC5", "T7", "P7", "O1", "O2", "P8", "T8", "FC6", "F4", "F8", "AF4"};
-	protected DatabaseAction dbAction;
+	protected Database dbAction;
 	protected Wavelet wavelet;
 	protected DataLatih dataLatih;
 	protected String[] fullPathDataEEG;
@@ -62,7 +62,7 @@ public class KelolaDataLatih extends JPanel {
 	public KelolaDataLatih(){
 		setSize(1200, 650);
 		setLayout(null);
-		dbAction = new DatabaseAction();
+		dbAction = new Database();
 		tableModel = dbAction.getListDataLatih();
 		centerTable = new DefaultTableCellRenderer();
 		centerTable.setHorizontalAlignment(SwingConstants.CENTER);

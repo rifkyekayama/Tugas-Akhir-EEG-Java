@@ -26,7 +26,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 
 import lvq.LVQ;
-import mysql.DatabaseAction;
+import mysql.Database;
 import wavelet.Wavelet;
 
 public class EkstraksiWavelet extends JPanel {
@@ -36,7 +36,8 @@ public class EkstraksiWavelet extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private DatabaseAction dbAction = new DatabaseAction();
+	private Database dbAction = new Database();
+	Wavelet wavelet;
 	private JRadioButton rdWaveletFilter, rdWaveletGelombang, RdDb4, RdDb8;
 	private JCheckBox cbAlfa, cbBeta, cbTeta, cbSinyalRileks, cbSinyalNonRileks, cbGelAlfa, cbGelBeta, cbGelTeta;
 	private JButton btnEkstraksiWavelet, btnLihatGrafik;
@@ -169,7 +170,7 @@ public class EkstraksiWavelet extends JPanel {
 		JPanel panelTabel = new JPanel();
 		panelTabel.setLayout(new BorderLayout());
 		panelTabel.setBackground(Color.white);
-		panelTabel.setBounds(0, 30, 450, 230);
+		panelTabel.setBounds(15, 30, 420, 215);
 		panelTabelWavelet.add(panelTabel);
 		
 		tableDataWavelet = new JTable(tableWavelet);
@@ -269,6 +270,10 @@ public class EkstraksiWavelet extends JPanel {
 		return null;
 	}
 	
+	public void ekstraksiWavelet(boolean boolAlfa, boolean boolBeta, boolean boolTeta){
+		
+	}
+	
 	class MouseController implements MouseListener{
 
 		@Override
@@ -309,6 +314,7 @@ public class EkstraksiWavelet extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getActionCommand().equals("btnEkstraksiWavelet")){
+				wavelet = new Wavelet();
 				if(cbAlfa.isSelected()){
 					boolAlfa = true;
 				}
@@ -318,9 +324,7 @@ public class EkstraksiWavelet extends JPanel {
 				if(cbTeta.isSelected()){
 					boolTeta = true;
 				}
-				
-				Wavelet wavelet = new Wavelet();
-				
+				ekstraksiWavelet(boolAlfa, boolBeta, boolTeta);
 			}else if(e.getActionCommand().equals("btnLihatGrafik")){
 				
 			}

@@ -15,7 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import mysql.DatabaseAction;
+import mysql.Database;
 
 public class Dashboard extends JPanel {
 	
@@ -24,7 +24,7 @@ public class Dashboard extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	public JLabel lblJumNaracoba, lblJumSegmentasi, lblJumRileks, lblJumNonRileks;
-	protected DatabaseAction dbAction;
+	protected Database dbAction;
 	
 	public Dashboard(){
 		setSize(1200, 650);
@@ -32,7 +32,7 @@ public class Dashboard extends JPanel {
 		add(getContent());
 		add(new Layout("Dashboard"));
 		
-		dbAction = new DatabaseAction();
+		dbAction = new Database();
 		
 		lblJumNaracoba.setText(Integer.toString(dbAction.getJumNaracoba()));
 		lblJumSegmentasi.setText(Integer.toString(dbAction.getJumSegmentasi()));

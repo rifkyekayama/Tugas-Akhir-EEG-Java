@@ -31,10 +31,10 @@ import javax.swing.table.DefaultTableModel;
 
 import dataLatih.DataLatih;
 import lvq.LVQ;
-import mysql.DatabaseAction;
+import mysql.Database;
 import wavelet.Wavelet;
 
-public class PengujianSistem extends JPanel {
+public class Pengujian extends JPanel {
 
 	/**
 	 * 
@@ -56,16 +56,16 @@ public class PengujianSistem extends JPanel {
 	public JProgressBar progressSubmitDataEEG;
 	public JLabel lblStatusLoading;
 	protected String[] kanal = {"Pilih salah satu...", "AF3", "F7", "F3", "FC5", "T7", "P7", "O1", "O2", "P8", "T8", "FC6", "F4", "F8", "AF4"};
-	protected DatabaseAction dbAction;
+	protected Database dbAction;
 	protected Wavelet wavelet;
 	protected DataLatih dataLatih;
 	protected String[] fullPathDataEEG;
 	protected int i=0;
 	
-	public PengujianSistem(){
+	public Pengujian(){
 		setSize(1200, 650);
 		setLayout(null);
-		dbAction = new DatabaseAction();
+		dbAction = new Database();
 		centerTable = new DefaultTableCellRenderer();
 		centerTable.setHorizontalAlignment(SwingConstants.CENTER);
 		add(getContent());

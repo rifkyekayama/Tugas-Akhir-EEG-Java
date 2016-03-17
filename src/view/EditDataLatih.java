@@ -20,7 +20,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-import mysql.DatabaseAction;
+import mysql.Database;
 
 public class EditDataLatih extends JPanel {
 
@@ -35,7 +35,7 @@ public class EditDataLatih extends JPanel {
 	protected JTable tableDataLatih;
 	protected JScrollPane scrollTableDataLatih;
 	protected DefaultTableCellRenderer centerTable;
-	protected DatabaseAction dbAction;
+	protected Database dbAction;
 	private String[] naracobaEdit, naracobaHapus;
 	protected String[] kelas = {"Pilih salah satu...", "Rileks", "Non-Rileks"};
 	protected int i=0;
@@ -43,7 +43,7 @@ public class EditDataLatih extends JPanel {
 	public EditDataLatih() {
 		setSize(1200, 650);
 		setLayout(null);
-		dbAction = new DatabaseAction();
+		dbAction = new Database();
 		tableModel = dbAction.getListDataLatih();
 		centerTable = new DefaultTableCellRenderer();
 		centerTable.setHorizontalAlignment(SwingConstants.CENTER);

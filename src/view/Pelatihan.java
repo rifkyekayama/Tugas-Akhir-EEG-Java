@@ -25,10 +25,10 @@ import javax.swing.table.DefaultTableModel;
 
 import dataLatih.DataLatih;
 import lvq.LVQ;
-import mysql.DatabaseAction;
+import mysql.Database;
 import wavelet.Wavelet;
 
-public class PelatihanSistem extends JPanel {
+public class Pelatihan extends JPanel {
 	
 	/**
 	 * 
@@ -42,13 +42,13 @@ public class PelatihanSistem extends JPanel {
 	protected JTable tableBobot;
 	protected JScrollPane scrollTableBobot;
 	protected DefaultTableCellRenderer centerTable;
-	protected DatabaseAction dbAction = new DatabaseAction();
+	protected Database dbAction = new Database();
 	protected DataLatih dataLatih = new DataLatih();
 	
-	public PelatihanSistem(){
+	public Pelatihan(){
 		setSize(1200, 650);
 		setLayout(null);
-		dbAction = new DatabaseAction();
+		dbAction = new Database();
 		tableModel = dbAction.getListDataBobot();
 		centerTable = new DefaultTableCellRenderer();
 		centerTable.setHorizontalAlignment(SwingConstants.CENTER);

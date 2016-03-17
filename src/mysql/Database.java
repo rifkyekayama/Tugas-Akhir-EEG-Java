@@ -17,14 +17,14 @@ import org.jfree.data.xy.XYDataset;
 import dataLatih.DataLatih;
 import view.Home;
 
-public class DatabaseAction {
+public class Database {
 	
 	Connection koneksi = null;
 	Statement stmt = null;
 	ResultSet rs = null;
 	SQLiteConnector konektor = new SQLiteConnector();
 	
-	public DatabaseAction(){
+	public Database(){
 		try {
 			koneksi = konektor.getKoneksi();
 		} catch (SQLException e) {
