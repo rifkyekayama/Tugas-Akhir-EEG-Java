@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -443,15 +444,11 @@ public class Pengujian extends JPanel {
 				}else{
 					if(cbGunakanKanal2.isSelected() == false){
 						dataLatih = new DataLatih(fullPathDataEEG, null, Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), null);
-						//wavelet = new Wavelet(fullPathDataEEG, Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), null);
-						CorePengujianSistem coreKelolaDataLatih = new CorePengujianSistem(dataLatih);
-						coreKelolaDataLatih.execute();
 					}else{
 						dataLatih = new DataLatih(fullPathDataEEG, null, Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), (String)cmbKanal2.getSelectedItem());
-						//wavelet = new Wavelet(fullPathDataEEG, Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), (String)cmbKanal2.getSelectedItem());
-						CorePengujianSistem coreKelolaDataLatih = new CorePengujianSistem(dataLatih);
-						coreKelolaDataLatih.execute();
 					}
+					CorePengujianSistem corePengujianSistem = new CorePengujianSistem(dataLatih);
+					corePengujianSistem.execute();
 				}
 			}
 		}
@@ -459,7 +456,7 @@ public class Pengujian extends JPanel {
 	
 	class CorePengujianSistem extends SwingWorker<Void, Void>{
 		
-		Wavelet wavelet;
+		Wavelet wavelet = new Wavelet();
 		DataLatih dataLatih;
 		
 		public CorePengujianSistem(DataLatih dataLatih) {
@@ -474,8 +471,8 @@ public class Pengujian extends JPanel {
 			String[] hasilPengujian;
 			String[][] sinyalKanal1, sinyalKanal2, sinyalFull, sinyalTemp;
 			double[][] bobotPelatihan;
-			double[][][] unsegmenDataUji;
 			LVQ lvq = new LVQ();
+			wavelet = new Wavelet();
 			int i, itemp=0, j, progress=0, progressDistance = 70/dataLatih.pathFile.length;
 			if(dataLatih.kanal2 == null){
 				sinyalFull = new String[dataLatih.pathFile.length][dataLatih.samplingRate*dataLatih.segmentasi];
@@ -507,7 +504,6 @@ public class Pengujian extends JPanel {
 					sinyalKanal2 = new String[(int) Math.floor(dataLatih.dataEeg.getItemCount()/(dataLatih.samplingRate*dataLatih.segmentasi))][dataLatih.dataEeg.getItemCount()-1];
 					sinyalKanal2 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal2), dataLatih.segmentasi, dataLatih.samplingRate);
 					sinyalTemp = dataLatih.gabungkanArray(sinyalKanal1, sinyalKanal2);
-					
 					for(j=0;j<sinyalTemp.length;j++){
 						if(itemp < dataLatih.pathFile.length){
 							sinyalFull[itemp] = sinyalTemp[j];
@@ -518,9 +514,11 @@ public class Pengujian extends JPanel {
 			}
 			lblStatusLoading.setText("Proses Pengujian dengan LVQ");
 			progressSubmitDataEEG.setValue(80);
-			unsegmenDataUji = dataLatih.unSegmenEEG(lvq.string2DtoDouble(sinyalFull), Integer.parseInt(txtSamplingrate.getText()));
 			bobotPelatihan = dbAction.getBobotPelatihan();
-			hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.getNeuronPengujian(unsegmenDataUji));
+			hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.getNeuronPengujian(lvq.string2DtoDouble(sinyalFull)));
+			
+			System.out.println(Arrays.deepToString(hasilPengujian));
+			
 			lblStatusLoading.setText("Update Tabel Bobot");
 			progressSubmitDataEEG.setValue(90);
 			updateTablePengujian(initTableModelPengujian(hasilPengujian));

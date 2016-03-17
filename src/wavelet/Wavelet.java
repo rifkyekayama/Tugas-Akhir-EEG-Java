@@ -211,59 +211,6 @@ public class Wavelet {
 		return DAAAA5_5;
 	}
 	
-//	public double[][][] ekstraksiWavelet(double[][] sinyalEEG, boolean isAlfaUse, boolean isBetaUse, boolean isTetaUse){
-//		double[][][] hasilSinyal = null;
-//		double[] alfaTemp = null, betaTemp = null, tetaTemp = null;
-//		int idx = 0, alfaLength = 0, betaLength = 0, tetaLength = 0, arrayLength = 0;
-//		int i=0, j=0;
-//		
-//		if(isAlfaUse == true){
-//			idx++;
-//			alfaLength = getAlfa(sinyalEEG[0]).length;
-//		}
-//		if(isBetaUse == true){
-//			idx++;
-//			betaLength = getBeta(sinyalEEG[0]).length;
-//		}
-//		if(isTetaUse == true){
-//			idx++;
-//			tetaLength = getTeta(sinyalEEG[0]).length;
-//		}
-//		arrayLength = Math.max(tetaLength, Math.max(alfaLength, betaLength));
-//		hasilSinyal = new double[sinyalEEG.length][idx][arrayLength];
-//		
-//		for(i=0;i<sinyalEEG.length;i++){
-//			if(isAlfaUse == true){
-//				alfaTemp = getAlfa(sinyalEEG[i]);
-//				for(j=0;j<alfaTemp.length;j++){
-//					hasilSinyal[i][0][j] = alfaTemp[j];
-//				}
-//			}else{
-//				hasilSinyal[i][0] = null;
-//			}
-//			
-//			if(isBetaUse == true){
-//				betaTemp = getBeta(sinyalEEG[i]);
-//				for(j=0;j<betaTemp.length;j++){
-//					hasilSinyal[i][1][j] = betaTemp[j];
-//				}
-//			}else{
-//				hasilSinyal[i][1] = null;
-//			}
-//			
-//			if(isTetaUse == true){
-//				tetaTemp = getTeta(sinyalEEG[i]);
-//				for(j=0;j<tetaTemp.length;j++){
-//					hasilSinyal[i][2][j] = tetaTemp[j];
-//				}
-//			}else{
-//				hasilSinyal[i][2] = null;
-//			}
-//		}
-//		
-//		return hasilSinyal;
-//	}
-	
 	public double[] transformasiWavelet(double[] sinyalEEG, boolean isAlfaUse, boolean isBetaUse, boolean isTetaUse){
 		double[] alfa, beta, teta, hasilSinyal;
 		int i, i_temp=0, idx=0;
@@ -313,65 +260,22 @@ public class Wavelet {
 		return hasilSinyal;
 	}
 	
-	public Object[][][] getNeuron(double[][][] sinyalEEG, String kelas){
-		double[] hasilWavelet = new double[transformasiWavelet(sinyalEEG[0][0], true, true, true).length];
-		Object[] objectKelas = new Object[]{(Integer)dataLatih.kelasToInt(kelas)};
-		Object[][][] neuron = new Object[sinyalEEG.length][2][sinyalEEG[0].length*hasilWavelet.length];
-		int i=0, j=0, k=0, iTemp=0;
-		
-		for(i=0;i<sinyalEEG.length;i++){
-			for(j=0;j<sinyalEEG[i].length;j++){
-				hasilWavelet = transformasiWavelet(sinyalEEG[i][j], true, true, true);
-				for(k=0;k<hasilWavelet.length;k++){
-					if(iTemp < neuron[i][0].length){
-						neuron[i][0][iTemp] = hasilWavelet[k];
-						iTemp++;
-					}
-				}
-			}
-			neuron[i][1] = objectKelas;
-			iTemp=0;
-		}
-		
-		return neuron;
-	}
-	
-	public double[][] getNeuronPengujian(double[][][] dataUji){
-		double[] hasilWavelet = new double[transformasiWavelet(dataUji[0][0], true, true, true).length];
-		double[][] neuron = new double[dataUji.length][dataUji[0].length*hasilWavelet.length];
+	public double[][] getNeuronPengujian(double[][] dataUji){
+		double[] hasilWavelet = new double[transformasiWavelet(dataUji[0], true, true, true).length];
+		double[][] neuron = new double[dataUji.length][hasilWavelet.length];
 		int i=0, j=0, k=0, iTemp=0;
 		
 		for(i=0;i<dataUji.length;i++){
-			for(j=0;j<dataUji[i].length;j++){
-				hasilWavelet = transformasiWavelet(dataUji[i][j], true, true, true);
-				for(k=0;k<hasilWavelet.length;k++){
-					if(iTemp < neuron[i].length){
-						neuron[i][iTemp] = hasilWavelet[k];
-						iTemp++;
-					}
-				}
-			}
-			iTemp=0;
+			hasilWavelet = transformasiWavelet(dataUji[i], true, true, true);
+//			for(k=0;k<hasilWavelet.length;k++){
+//				if(iTemp < neuron[i].length){
+//					neuron[i][iTemp] = hasilWavelet[k];
+//					iTemp++;
+//				}
+//			}
+//			iTemp=0;
+			dataUji[i] = hasilWavelet;
 		}
 		return neuron;
-	}
-	
-	public Object[][][][] getBobot(Object[][][] neuron){
-		Object[][][][] bobotAndNeuron = new Object[2][neuron.length][neuron[0].length][neuron[0][0].length];
-		int i=0, j=0;
-		
-		for(i=0;i<neuron[0][0].length;i++){
-			bobotAndNeuron[0][0][0][i] = neuron[0][0][i];
-		}
-		bobotAndNeuron[0][0][1] = neuron[0][1];
-		
-		for(i=1;i<neuron.length;i++){
-			for(j=0;j<neuron[0][0].length;j++){
-				bobotAndNeuron[1][i][0][j] = neuron[i][0][j];
-			}
-			bobotAndNeuron[1][i][1] = neuron[i][1];
-		}
-		
-		return bobotAndNeuron;
 	}
 }
