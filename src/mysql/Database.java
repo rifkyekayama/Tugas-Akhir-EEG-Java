@@ -399,40 +399,32 @@ public class Database {
 		return hasil;
 	}
 	
-	public double[][] getDataLatihRileks(){
-		double[][] sinyalDataLatih = null;
-		String[] sinyalTemp;
-		int i=0, j=0;
-		try{
-			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=1");
-			if(rs.next() && rs.getInt(1) != 0){
-				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("dataEeg").split(" ").length];
-//				rs.first();
-				sinyalTemp = rs.getString("dataEeg").split(" ");
-				for(j=0;j<sinyalTemp.length;j++){
-					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
-				}
-				i++;
-				while(rs.next()){
-					sinyalTemp = rs.getString("dataEeg").split(" ");
-					for(j=0;j<sinyalTemp.length;j++){
-						sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
-					}
-					i++;
-				}
-			}else{
-				JOptionPane.showMessageDialog(null, "Data latih kelas Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				Home.changeCard("panelKelolaDataLatih");
-			}
-			stmt.close();
-			rs.close();
-		}catch(SQLException e){
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "getDataLatihRileks error = "+e, "Error", JOptionPane.ERROR_MESSAGE);
-		}
-		return sinyalDataLatih;
-	}
+//	public ArrayList<double[]> getDataLatihRileks(){
+//		ArrayList<double[]> sinyalDataLatih = new ArrayList<double[]>();
+//		String[] sinyalTemp;
+//		int i=0, j=0;
+//		try{
+//			stmt = koneksi.createStatement();
+//			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=1");
+//			if(rs.next()){
+//				sinyalTemp = rs.getString("dataEeg").split(" ");
+//				sinyalDataLatih.add(DataLatih.stringToDouble(sinyalTemp));
+//				while(rs.next()){
+//					sinyalTemp = rs.getString("dataEeg").split(" ");
+//					sinyalDataLatih.add(DataLatih.stringToDouble(sinyalTemp));
+//				}
+//			}else{
+//				JOptionPane.showMessageDialog(null, "Data latih kelas Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+//				Home.changeCard("panelKelolaDataLatih");
+//			}
+//			stmt.close();
+//			rs.close();
+//		}catch(SQLException e){
+//			e.printStackTrace();
+//			JOptionPane.showMessageDialog(null, "getDataLatihRileks error = "+e, "Error", JOptionPane.ERROR_MESSAGE);
+//		}
+//		return sinyalDataLatih;
+//	}
 	
 	public double[][] getDataLatihRileksByNaracoba(int naracoba){
 		double[][] sinyalDataLatih = null;
@@ -443,7 +435,6 @@ public class Database {
 			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=1 AND naracoba="+naracoba);
 			if(rs.next() && rs.getInt(1) != 0){
 				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("dataEeg").split(" ").length];
-//				rs.first();
 				sinyalTemp = rs.getString("dataEeg").split(" ");
 				for(j=0;j<sinyalTemp.length;j++){
 					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
@@ -469,40 +460,40 @@ public class Database {
 		return sinyalDataLatih;
 	}
 	
-	public double[][] getDataLatihNonRileks(){
-		double[][] sinyalDataLatih = null;
-		String[] sinyalTemp;
-		int i=0, j=0;
-		try{
-			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=-1");
-			if(rs.next() && rs.getInt(1) != 0){
-				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("dataEeg").split(" ").length];
-//				rs.first();
-				sinyalTemp = rs.getString("dataEeg").split(" ");
-				for(j=0;j<sinyalTemp.length;j++){
-					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
-				}
-				i++;
-				while(rs.next()){
-					sinyalTemp = rs.getString("dataEeg").split(" ");
-					for(j=0;j<sinyalTemp.length;j++){
-						sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
-					}
-					i++;
-				}
-			}else{
-				JOptionPane.showMessageDialog(null, "Data latih kelas Non-Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				Home.changeCard("panelKelolaDataLatih");
-			}
-			stmt.close();
-			rs.close();
-		}catch(SQLException e){
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "getDataLatihNonRileks error = "+e, "Error", JOptionPane.ERROR_MESSAGE);
-		}
-		return sinyalDataLatih;
-	}
+//	public double[][] getDataLatihNonRileks(){
+//		double[][] sinyalDataLatih = null;
+//		String[] sinyalTemp;
+//		int i=0, j=0;
+//		try{
+//			stmt = koneksi.createStatement();
+//			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=-1");
+//			if(rs.next() && rs.getInt(1) != 0){
+//				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("dataEeg").split(" ").length];
+////				rs.first();
+//				sinyalTemp = rs.getString("dataEeg").split(" ");
+//				for(j=0;j<sinyalTemp.length;j++){
+//					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
+//				}
+//				i++;
+//				while(rs.next()){
+//					sinyalTemp = rs.getString("dataEeg").split(" ");
+//					for(j=0;j<sinyalTemp.length;j++){
+//						sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
+//					}
+//					i++;
+//				}
+//			}else{
+//				JOptionPane.showMessageDialog(null, "Data latih kelas Non-Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+//				Home.changeCard("panelKelolaDataLatih");
+//			}
+//			stmt.close();
+//			rs.close();
+//		}catch(SQLException e){
+//			e.printStackTrace();
+//			JOptionPane.showMessageDialog(null, "getDataLatihNonRileks error = "+e, "Error", JOptionPane.ERROR_MESSAGE);
+//		}
+//		return sinyalDataLatih;
+//	}
 	
 	public double[][] getDataLatihNonRileksByNaracoba(int naracoba){
 		double[][] sinyalDataLatih = null;
@@ -537,6 +528,72 @@ public class Database {
 			JOptionPane.showMessageDialog(null, "getDataLatihNonRileks error = "+e, "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		return sinyalDataLatih;
+	}
+	
+	public ArrayList<double[][]> getNeuronRileks(){
+		ArrayList<double[][]> neuron = new ArrayList<double[][]>();
+		try {
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id WHERE data_latih.kelas = 1");
+			while(rs.next()){
+				String[] alfa = rs.getString("alfa").split(" ");
+				String[] beta = rs.getString("beta").split(" ");
+				String[] teta = rs.getString("teta").split(" ");
+				double[][] hasil = new double[2][alfa.length+beta.length+teta.length];
+				int i=0, idx=0;
+				for(i=0;i<alfa.length;i++){
+					hasil[0][idx] = Double.parseDouble(alfa[i]);
+					idx++;
+				}
+				for(i=0;i<beta.length;i++){
+					hasil[0][idx] = Double.parseDouble(beta[i]);
+					idx++;
+				}
+				for(i=0;i<teta.length;i++){
+					hasil[0][idx] = Double.parseDouble(teta[i]);
+					idx++;
+				}
+				hasil[1][0] = rs.getDouble("kelas");
+				neuron.add(hasil);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return neuron;
+	}
+	
+	public ArrayList<double[][]> getNeuronNonRileks(){
+		ArrayList<double[][]> neuron = new ArrayList<double[][]>();
+		try {
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id WHERE data_latih.kelas = -1");
+			while(rs.next()){
+				String[] alfa = rs.getString("alfa").split(" ");
+				String[] beta = rs.getString("beta").split(" ");
+				String[] teta = rs.getString("teta").split(" ");
+				double[][] hasil = new double[2][alfa.length+beta.length+teta.length];
+				int i=0, idx=0;
+				for(i=0;i<alfa.length;i++){
+					hasil[0][idx] = Double.parseDouble(alfa[i]);
+					idx++;
+				}
+				for(i=0;i<beta.length;i++){
+					hasil[0][idx] = Double.parseDouble(beta[i]);
+					idx++;
+				}
+				for(i=0;i<teta.length;i++){
+					hasil[0][idx] = Double.parseDouble(teta[i]);
+					idx++;
+				}
+				hasil[1][0] = rs.getDouble("kelas");
+				neuron.add(hasil);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return neuron;
 	}
 	
 	public int getSamplingRate(){

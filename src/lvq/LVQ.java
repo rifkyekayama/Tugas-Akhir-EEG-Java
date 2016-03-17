@@ -1,5 +1,7 @@
 package lvq;
 
+import java.util.ArrayList;
+
 import wavelet.Wavelet;
 
 public class LVQ {
@@ -83,37 +85,85 @@ public class LVQ {
 		return wTemp;
 	}
 	
-	public double[][] pembelajaran(Object[][][] w1, Object[][][] w2, Object[][][] data, double learningRate, double pengurangLR, int maxEpoch, double error){
+//	public double[][] pembelajaran(Object[][][] w1, Object[][][] w2, Object[][][] data, double learningRate, double pengurangLR, int maxEpoch, double error){
+//		int epoch=0, i=0, jarak;
+//		double[] bobot1 = new double[w1[0][0].length];
+//		double[] bobot2 = new double[w2[1][0].length];
+//		double[][] result = new double[2][bobot1.length];
+//		
+//		bobot1 = objectToDouble(w1[0][0]);
+//		bobot2 = objectToDouble(w2[1][0]);
+//		
+//		while(epoch < maxEpoch && learningRate > error){
+//			for(i=2;i<data.length-2;i++){
+//				jarak = cariJarakBobot(bobot1, bobot2, objectToDouble(data[i][0]));
+//				if(jarak == (int)data[i][1][0]){
+//					if(jarak == 1){
+//						bobot1 = perbaikiBobot(bobot1, objectToDouble(data[i][0]), learningRate, true);
+//					}else{
+//						bobot2 = perbaikiBobot(bobot2, objectToDouble(data[i][0]), learningRate, true);
+//					}
+//				}else{
+//					if(jarak == 1){
+//						bobot1 = perbaikiBobot(bobot1, objectToDouble(data[i][0]), learningRate, false);
+//					}else{
+//						bobot2 = perbaikiBobot(bobot2, objectToDouble(data[i][0]), learningRate, false);
+//					}
+//				}
+//			}
+//			learningRate = learningRate - (pengurangLR * learningRate);
+//			epoch++;
+//		}
+//		
+//		System.out.println(epoch);
+//		
+//		for(i=0;i<bobot1.length;i++){
+//			result[0][i] = bobot1[i];
+//		}
+//		for(i=0;i<bobot2.length;i++){
+//			result[1][i] = bobot2[i];
+//		}
+//		return result;
+//	}
+	
+	public double[][] pembelajaran(ArrayList<double[][]> neuronRileks, ArrayList<double[][]> neuronNonRileks, double learningRate, double pengurangLR, int maxEpoch, double error){
 		int epoch=0, i=0, jarak;
-		double[] bobot1 = new double[w1[0][0].length];
-		double[] bobot2 = new double[w2[1][0].length];
+		double[] bobot1 = new double[neuronRileks.get(0)[0].length];
+		double[] bobot2 = new double[neuronNonRileks.get(0)[0].length];
+		ArrayList<double[][]> data = new ArrayList<double[][]>();
 		double[][] result = new double[2][bobot1.length];
 		
-		bobot1 = objectToDouble(w1[0][0]);
-		bobot2 = objectToDouble(w2[1][0]);
+		bobot1 = neuronRileks.get(0)[0];
+		bobot2 = neuronNonRileks.get(0)[0];
+		
+		for(i=1;i<neuronRileks.size();i++){
+			data.add(neuronRileks.get(i));
+		}
+		
+		for(i=1;i<neuronNonRileks.size();i++){
+			data.add(neuronNonRileks.get(i));
+		}
 		
 		while(epoch < maxEpoch && learningRate > error){
-			for(i=2;i<data.length-2;i++){
-				jarak = cariJarakBobot(bobot1, bobot2, objectToDouble(data[i][0]));
-				if(jarak == (int)data[i][1][0]){
+			for(i=0;i<data.size();i++){
+				jarak = cariJarakBobot(bobot1, bobot2, data.get(i)[0]);
+				if(jarak == (int)data.get(i)[1][0]){
 					if(jarak == 1){
-						bobot1 = perbaikiBobot(bobot1, objectToDouble(data[i][0]), learningRate, true);
+						bobot1 = perbaikiBobot(bobot1, data.get(i)[0], learningRate, true);
 					}else{
-						bobot2 = perbaikiBobot(bobot2, objectToDouble(data[i][0]), learningRate, true);
+						bobot2 = perbaikiBobot(bobot2, data.get(i)[0], learningRate, true);
 					}
 				}else{
 					if(jarak == 1){
-						bobot1 = perbaikiBobot(bobot1, objectToDouble(data[i][0]), learningRate, false);
+						bobot1 = perbaikiBobot(bobot1, data.get(i)[0], learningRate, false);
 					}else{
-						bobot2 = perbaikiBobot(bobot2, objectToDouble(data[i][0]), learningRate, false);
+						bobot2 = perbaikiBobot(bobot2, data.get(i)[0], learningRate, false);
 					}
 				}
 			}
 			learningRate = learningRate - (pengurangLR * learningRate);
 			epoch++;
 		}
-		
-		System.out.println(epoch);
 		
 		for(i=0;i<bobot1.length;i++){
 			result[0][i] = bobot1[i];

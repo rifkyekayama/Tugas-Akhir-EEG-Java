@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -228,9 +229,9 @@ public class Pelatihan extends JPanel {
 					JOptionPane.showMessageDialog(null, "Kolom Learning Rate tidak boleh kosong", "Peirngatan", JOptionPane.WARNING_MESSAGE);
 				}else if(txtPenguranganLR.getText().isEmpty()){
 					JOptionPane.showMessageDialog(null, "Kolom Pengurangan Learning Rate tidak boleh kosong", "Peirngatan", JOptionPane.WARNING_MESSAGE);
-				}else if(dbAction.getDataLatihRileks().length == 0){
+				}else if(dbAction.getNeuronRileks().size() == 0){
 					JOptionPane.showMessageDialog(null, "Data latih kelas RILEKS tidak boleh kosong", "Peirngatan", JOptionPane.WARNING_MESSAGE);
-				}else if(dbAction.getDataLatihNonRileks().length == 0){
+				}else if(dbAction.getNeuronNonRileks().size() == 0){
 					JOptionPane.showMessageDialog(null, "Data latih kelas Non-RILEKS tidak boleh kosong", "Peirngatan", JOptionPane.WARNING_MESSAGE);
 				}else{
 					CorePelatihanSistem corePelatihanSistem = new CorePelatihanSistem();
@@ -241,9 +242,9 @@ public class Pelatihan extends JPanel {
 	}
 	
 	class CorePelatihanSistem extends SwingWorker<Void, Void>{
-
-		double[][][] sinyalUnsegmenRileks, sinyalUnsegmenNonRileks;
-		Object[][][][] init;
+		
+		ArrayList<double[][]> neuronRileks = new ArrayList<double[][]>();
+		ArrayList<double[][]> neuronNonRileks = new ArrayList<double[][]>();
 		double[][] belajar;
 		Wavelet wavelet = new Wavelet();
 		LVQ lvq = new LVQ();
@@ -256,18 +257,15 @@ public class Pelatihan extends JPanel {
 		@Override
 		protected Void doInBackground() throws Exception {
 			// TODO Auto-generated method stub
-			lblStatusLoading.setText("unsegmen data sinya EEG Rileks");
+			lblStatusLoading.setText("Pembangkitan Neuron Rileks");
 			progressBarPelatihan.setValue(25);
-			sinyalUnsegmenRileks = dataLatih.unSegmenEEG(dbAction.getDataLatihRileks(), dbAction.getSamplingRate());
-			lblStatusLoading.setText("unsegmen data sinyal EEG Non-Rileks");
+			neuronRileks = dbAction.getNeuronRileks();
+			lblStatusLoading.setText("Pembangkitan Neuron Tidak Rileks");
 			progressBarPelatihan.setValue(50);
-			sinyalUnsegmenNonRileks = dataLatih.unSegmenEEG(dbAction.getDataLatihNonRileks(), dbAction.getSamplingRate());
-			lblStatusLoading.setText("Inisialisasi neuron dan bobot awal LVQ");
-			progressBarPelatihan.setValue(60);
-			init = lvq.initLVQ(sinyalUnsegmenRileks, sinyalUnsegmenNonRileks);
+			neuronNonRileks = dbAction.getNeuronNonRileks();
 			lblStatusLoading.setText("Pembelajaran LVQ");
 			progressBarPelatihan.setValue(75);
-			belajar = lvq.pembelajaran(init[0], init[1], init[2], Double.parseDouble(txtLearningRate.getText()), Double.parseDouble(txtPenguranganLR.getText()), Integer.parseInt(txtMaksimumEpoch.getText()), Double.parseDouble(txtMinimumError.getText()));
+			belajar = lvq.pembelajaran(neuronRileks, neuronNonRileks, Double.parseDouble(txtLearningRate.getText()), Double.parseDouble(txtPenguranganLR.getText()), Integer.parseInt(txtMaksimumEpoch.getText()), Double.parseDouble(txtMinimumError.getText()));
 			lblStatusLoading.setText("Input hasil pelatihan bobot ke DB");
 			progressBarPelatihan.setValue(90);
 			dbAction.inputHasilBobot(belajar);
