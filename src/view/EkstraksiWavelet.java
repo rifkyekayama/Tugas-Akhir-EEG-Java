@@ -4,21 +4,27 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.GridBagLayout;
+import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -39,15 +45,16 @@ public class EkstraksiWavelet extends JPanel {
 	private Database dbAction = new Database();
 	Wavelet wavelet;
 	private JRadioButton rdWaveletFilter, rdWaveletGelombang, RdDb4, RdDb8;
-	private JCheckBox cbAlfa, cbBeta, cbTeta, cbSinyalRileks, cbSinyalNonRileks, cbGelAlfa, cbGelBeta, cbGelTeta;
+	private JCheckBox cbSinyalRileks, cbSinyalNonRileks, cbGelAlfa, cbGelBeta, cbGelTeta;
 	private JButton btnEkstraksiWavelet, btnLihatGrafik;
+	private JLabel lblStatusLoading;
 	private DefaultTableModel tableWavelet;
 	private DefaultTableCellRenderer centerTable;
 	private JTable tableDataWavelet;
 	private JScrollPane scrollTableDataWavelet;
 	private JComboBox<?> cmbNaracoba;
+	private JProgressBar progressEkstraksiWavelet;
 	private String[] naracoba = new String[dbAction.getJumNaracoba()+1];
-	private Boolean boolAlfa = false, boolBeta = false, boolTeta = false;
 	private int i=0;
 	
 	public EkstraksiWavelet() {
@@ -128,34 +135,32 @@ public class EkstraksiWavelet extends JPanel {
 		groupDaubechies.add(RdDb4);
 		groupDaubechies.add(RdDb8);
 		
-		JLabel lblGelombang = new JLabel("Pilih Gelombang :");
-		lblGelombang.setFont(lblGelombang.getFont().deriveFont(Font.BOLD, 15f));
-		lblGelombang.setBounds(15, 110, 150, 30);
-		panelFormWavelet.add(lblGelombang);
-		
-		cbAlfa = new JCheckBox("Alfa");
-		cbAlfa.setBackground(Color.white);
-		cbAlfa.setBounds(160, 110, 60, 30);
-		panelFormWavelet.add(cbAlfa);
-		
-		cbBeta = new JCheckBox("Beta");
-		cbBeta.setBackground(Color.white);
-		cbBeta.setBounds(220, 110, 60, 30);
-		panelFormWavelet.add(cbBeta);
-		
-		cbTeta = new JCheckBox("Teta");
-		cbTeta.setBackground(Color.white);
-		cbTeta.setBounds(280, 110, 60, 30);
-		panelFormWavelet.add(cbTeta);
-		
 		btnEkstraksiWavelet = new JButton("Mulai Ekstraksi");
 		btnEkstraksiWavelet.setForeground(Color.white);
 		btnEkstraksiWavelet.setBackground(new Color(60, 137, 185));
 		btnEkstraksiWavelet.setActionCommand("btnEkstraksiWavelet");
-		btnEkstraksiWavelet.setBounds(15, 150, panelFormWavelet.getWidth()-30, 50);
+		btnEkstraksiWavelet.setBounds(15, 130, panelFormWavelet.getWidth()-30, 50);
 		btnEkstraksiWavelet.addActionListener(new ButtonController());
 		btnEkstraksiWavelet.addMouseListener(new MouseController());
 		panelFormWavelet.add(btnEkstraksiWavelet);
+		
+		progressEkstraksiWavelet = new JProgressBar();
+		progressEkstraksiWavelet.setBounds(15, 190, 420, 30);
+		progressEkstraksiWavelet.setForeground(new Color(44, 195, 107));
+		progressEkstraksiWavelet.setBackground(new Color(251, 252, 252));
+		progressEkstraksiWavelet.setStringPainted(true);
+		progressEkstraksiWavelet.setVisible(true);
+		panelFormWavelet.add(progressEkstraksiWavelet);
+		
+		JPanel panelStatusLoading = new JPanel();
+		panelStatusLoading.setLayout(new GridBagLayout());
+		panelStatusLoading.setBounds(15, 220, 420, 30);
+		panelStatusLoading.setBackground(Color.white);
+		panelFormWavelet.add(panelStatusLoading);
+		
+		lblStatusLoading = new JLabel("Loading...");
+		lblStatusLoading.setVisible(false);
+		panelStatusLoading.add(lblStatusLoading);
 		
 		JPanel panelTabelWavelet = new JPanel();
 		panelTabelWavelet.setLayout(null);
@@ -181,8 +186,8 @@ public class EkstraksiWavelet extends JPanel {
 		tableDataWavelet.getColumnModel().getColumn(1).setCellRenderer(centerTable);
 		tableDataWavelet.getColumnModel().getColumn(2).setCellRenderer(centerTable);
 		tableDataWavelet.getColumnModel().getColumn(3).setCellRenderer(centerTable);
-		tableDataWavelet.getColumnModel().getColumn(0).setMinWidth(50);
-		tableDataWavelet.getColumnModel().getColumn(0).setMaxWidth(50);
+		tableDataWavelet.getColumnModel().getColumn(0).setMinWidth(30);
+		tableDataWavelet.getColumnModel().getColumn(0).setMaxWidth(30);
 		
 		scrollTableDataWavelet = new JScrollPane(tableDataWavelet);
 		scrollTableDataWavelet.setVisible(true);
@@ -270,8 +275,39 @@ public class EkstraksiWavelet extends JPanel {
 		return null;
 	}
 	
+	public void updateTabelEkstraksiWavelet(){
+		tableDataWavelet.setModel(dbAction.getListDataWavelet());
+		tableDataWavelet.repaint();
+		tableDataWavelet.setRowSelectionAllowed(false);
+		tableDataWavelet.setPreferredScrollableViewportSize(getSize());
+		tableDataWavelet.setFillsViewportHeight(true);
+		tableDataWavelet.getColumnModel().getColumn(0).setCellRenderer(centerTable);
+		tableDataWavelet.getColumnModel().getColumn(1).setCellRenderer(centerTable);
+		tableDataWavelet.getColumnModel().getColumn(2).setCellRenderer(centerTable);
+		tableDataWavelet.getColumnModel().getColumn(3).setCellRenderer(centerTable);
+		tableDataWavelet.getColumnModel().getColumn(0).setMinWidth(30);
+		tableDataWavelet.getColumnModel().getColumn(0).setMaxWidth(30);
+	}
+	
 	public void ekstraksiWavelet(boolean boolAlfa, boolean boolBeta, boolean boolTeta){
+		ArrayList<double[]> sinyalEEG = dbAction.getDataLatih();
+		List idOfDataLatih = dbAction.getIdOfDataLatih();
+		double[] alfa = null, beta = null, teta = null;
+		int i=0;
 		
+		dbAction.deleteEkstraksiWavelet();
+		for(i=0;i<sinyalEEG.size();i++){
+			if(boolAlfa == true){
+				alfa = wavelet.getAlfa(sinyalEEG.get(i));
+			}
+			if(boolBeta == true){
+				beta = wavelet.getBeta(sinyalEEG.get(i));
+			}
+			if(boolTeta == true){
+				teta = wavelet.getTeta(sinyalEEG.get(i));
+			}
+			dbAction.inputEkstraksiWavelet(alfa, beta, teta, Integer.parseInt(idOfDataLatih.getItem(i)));
+		}
 	}
 	
 	class MouseController implements MouseListener{
@@ -314,21 +350,62 @@ public class EkstraksiWavelet extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getActionCommand().equals("btnEkstraksiWavelet")){
-				wavelet = new Wavelet();
-				if(cbAlfa.isSelected()){
-					boolAlfa = true;
-				}
-				if(cbBeta.isSelected()){
-					boolBeta = true;
-				}
-				if(cbTeta.isSelected()){
-					boolTeta = true;
-				}
-				ekstraksiWavelet(boolAlfa, boolBeta, boolTeta);
+//				wavelet = new Wavelet();
+//				ekstraksiWavelet(true, true, true);
+//				Home.refreshAllElement();
+				CoreEkstraksiWavelet coreEkstraksiWavelet = new CoreEkstraksiWavelet();
+				coreEkstraksiWavelet.execute();
 			}else if(e.getActionCommand().equals("btnLihatGrafik")){
 				
 			}
 		}
+	}
+	
+	class CoreEkstraksiWavelet extends SwingWorker<Void, Void>{
 		
+		Wavelet wavelet;
+		ArrayList<double[]> sinyalEEG = dbAction.getDataLatih();
+		List idOfDataLatih = dbAction.getIdOfDataLatih();
+		double[] alfa = null, beta = null, teta = null;
+		int i=0, progress=0, progressDistance;
+		
+		public CoreEkstraksiWavelet() {
+			// TODO Auto-generated constructor stub
+			wavelet = new Wavelet();
+			sinyalEEG = dbAction.getDataLatih();
+			idOfDataLatih = dbAction.getIdOfDataLatih();
+			lblStatusLoading.setVisible(true);
+			progressEkstraksiWavelet.setValue(0);
+			progressDistance = 100/(sinyalEEG.size()*3)+1;
+		}
+
+		@Override
+		protected Void doInBackground() throws Exception {
+			// TODO Auto-generated method stub
+			dbAction.deleteEkstraksiWavelet();
+			updateTabelEkstraksiWavelet();
+			for(i=0;i<sinyalEEG.size();i++){
+				alfa = wavelet.getAlfa(sinyalEEG.get(i));
+				progressEkstraksiWavelet.setValue(progress+=progressDistance);
+				beta = wavelet.getBeta(sinyalEEG.get(i));
+				progressEkstraksiWavelet.setValue(progress+=progressDistance);
+				teta = wavelet.getTeta(sinyalEEG.get(i));
+				progressEkstraksiWavelet.setValue(progress+=progressDistance);
+				dbAction.inputEkstraksiWavelet(alfa, beta, teta, Integer.parseInt(idOfDataLatih.getItem(i)));
+				updateTabelEkstraksiWavelet();
+			}
+			return null;
+		}
+		
+		@Override
+		protected void done() {
+			// TODO Auto-generated method stub
+			super.done();
+			Home.refreshAllElement();
+			progressEkstraksiWavelet.setValue(100);
+			JOptionPane.showMessageDialog(null, "Proses Ekstraksi Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+			lblStatusLoading.setVisible(false);
+			progressEkstraksiWavelet.setValue(0);
+		}
 	}
 }

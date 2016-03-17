@@ -441,6 +441,7 @@ public class KelolaDataLatih extends JPanel {
 					sinyalKanal1 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal1), dataLatih.segmentasi, dataLatih.samplingRate);
 					kanal = Integer.toString(dataLatih.kanalToInt(dataLatih.kanal1));
 					dbAction.inputSegmentasiSinyal(sinyalKanal1, dataLatih.kelasToInt(dataLatih.kelas), naracoba, dataLatih.samplingRate, kanal);
+					updateTableDataLatih();
 				}else{
 					sinyalKanal1 = new String[(int) Math.floor(dataLatih.dataEeg.getItemCount()/(dataLatih.samplingRate*dataLatih.segmentasi))][dataLatih.dataEeg.getItemCount()-1];
 					sinyalKanal1 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal1), dataLatih.segmentasi, dataLatih.samplingRate);
@@ -450,6 +451,7 @@ public class KelolaDataLatih extends JPanel {
 					kanalMerge = dataLatih.gabungkanArray(sinyalKanal1, sinyalKanal2);
 					kanal = Integer.toString(dataLatih.kanalToInt(dataLatih.kanal1))+","+Integer.toString(dataLatih.kanalToInt(dataLatih.kanal2));
 					dbAction.inputSegmentasiSinyal(kanalMerge, dataLatih.kelasToInt(dataLatih.kelas), naracoba, dataLatih.samplingRate, kanal);
+					updateTableDataLatih();
 				}
 			}
 			return null;

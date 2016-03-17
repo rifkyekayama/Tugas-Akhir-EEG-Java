@@ -114,6 +114,17 @@ public class DataLatih {
 		return indexKanal;
 	}
 	
+	public static double[] stringToDouble(String[] data){
+		double[] hasil = new double[data.length];
+		int i=0;
+		
+		for(i=0;i<data.length;i++){
+			hasil[i] = Double.parseDouble(data[i]);
+		}
+		
+		return hasil;
+	}
+	
 	public String[][] segmentasiEEG(List lineOfSinyal, int kanal, int segmentasi, int sampling){
 		int fs=0, waktu=0, i=1, j=0, k=0, l=0;
 		int jumSegmen = (int) Math.floor(lineOfSinyal.getItemCount()/(sampling*segmentasi));

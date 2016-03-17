@@ -23,6 +23,28 @@ public class Wavelet {
 		return hasilSinyal;
 	}
 	
+	public double[] downSamplingGenap(double[] sinyalEEG){
+		double[] hasilSinyal = new double[sinyalEEG.length/2];
+		int i=0, j=1;
+		
+		for(i=0;i<hasilSinyal.length;i++){
+			hasilSinyal[i] = sinyalEEG[j];
+			j+=2;
+		}
+		return hasilSinyal;
+	}
+	
+	public double[] downSamplingGanjil(double[] sinyalEEG){
+		double[] hasilSinyal = new double[sinyalEEG.length/2];
+		int i=0, j=0;
+		
+		for(i=0;i<hasilSinyal.length;i++){
+			hasilSinyal[i] = sinyalEEG[j];
+			j+=2;
+		}
+		return hasilSinyal;
+	}
+	
 	public double[] konvolusiLow(double[] sinyalEEG){
 		double[] lowPassFilter = {0.482962913144534, 0.836516303737808, 0.224143868042013, -0.129409522551260};
 		double[] LPF_temp = new double[sinyalEEG.length];
@@ -85,22 +107,28 @@ public class Wavelet {
 		A1_1 = downSampling(sinyalEEG, 2);
 		
 		AA2 = konvolusiLow(A1_1);
-		AA2_2 = downSampling(AA2, 2);
+//		AA2_2 = downSampling(AA2, 2);
+		AA2_2 = downSamplingGanjil(AA2);
 		
 		AAA3 = konvolusiLow(AA2_2);
-		AAA3_3 = downSampling(AAA3, 2);
+//		AAA3_3 = downSampling(AAA3, 2);
+		AAA3_3 = downSamplingGanjil(AAA3);
 		
 		DAAA4 = konvolusiHigh(AAA3_3);
-		DAAA4_4 = downSampling(DAAA4, 2);
+//		DAAA4_4 = downSampling(DAAA4, 2);
+		DAAA4_4 = downSamplingGenap(DAAA4);
 		
 		ADAAA5 = konvolusiHigh(DAAA4_4);
-		ADAAA5_5 = downSampling(ADAAA5, 2);
+//		ADAAA5_5 = downSampling(ADAAA5, 2);
+		ADAAA5_5 = downSamplingGenap(ADAAA5);
 		
 		DDAAA5 = konvolusiHigh(DAAA4_4);
-		DDAAA5_5 = downSampling(DDAAA5, 2);
+//		DDAAA5_5 = downSampling(DDAAA5, 2);
+		DDAAA5_5 = downSamplingGenap(DDAAA5);
 		
 		ADDAAA6 = konvolusiLow(DDAAA5_5);
-		ADDAAA6_6 = downSampling(ADDAAA6, 2);
+//		ADDAAA6_6 = downSampling(ADDAAA6, 2);
+		ADDAAA6_6 = downSamplingGanjil(ADDAAA6);
 		
 		hasilSinyal = new double[ADAAA5_5.length + ADDAAA6_6.length];
 		for(i=0;i<ADAAA5_5.length;i++){
@@ -123,22 +151,28 @@ public class Wavelet {
 		A1_1 = downSampling(sinyalEEG, 2);
 		
 		AA2 = konvolusiLow(A1_1);
-		AA2_2 = downSampling(AA2, 2);
+//		AA2_2 = downSampling(AA2, 2);
+		AA2_2 = downSamplingGanjil(AA2);
 		
 		AAA3 = konvolusiLow(AA2_2);
-		AAA3_3 = downSampling(AAA3, 2);
+//		AAA3_3 = downSampling(AAA3, 2);
+		AAA3_3 = downSamplingGanjil(AAA3);
 		
 		DAA3 = konvolusiHigh(AA2_2);
-		DAA3_3 = downSampling(DAA3, 2);
+//		DAA3_3 = downSampling(DAA3, 2);
+		DAA3_3 = downSamplingGenap(DAA3);
 		
 		DAAA4 = konvolusiHigh(AAA3_3);
-		DAAA4_4 = downSampling(DAAA4, 2);
+//		DAAA4_4 = downSampling(DAAA4, 2);
+		DAAA4_4 = downSamplingGenap(DAAA4);
 		
 		DDAAA5 = konvolusiHigh(DAAA4_4);
-		DDAAA5_5 = downSampling(DDAAA5, 2);
+//		DDAAA5_5 = downSampling(DDAAA5, 2);
+		DDAAA5_5 = downSamplingGenap(DDAAA5);
 		
 		DDDAAA6 = konvolusiHigh(DDAAA5_5);
-		DDDAAA6_6 = downSampling(DDDAAA6, 2);
+//		DDDAAA6_6 = downSampling(DDDAAA6, 2);
+		DDDAAA6_6 = downSamplingGenap(DDDAAA6);
 		
 		hasilSinyal = new double[DAA3_3.length + DDDAAA6_6.length];
 		for(i=0;i<DAA3_3.length;i++){
@@ -159,16 +193,20 @@ public class Wavelet {
 		A1_1 = downSampling(sinyalEEG, 2);
 		
 		AA2 = konvolusiLow(A1_1);
-		AA2_2 = downSampling(AA2, 2);
+//		AA2_2 = downSampling(AA2, 2);
+		AA2_2 = downSamplingGanjil(AA2);
 		
 		AAA3 = konvolusiLow(AA2_2);
-		AAA3_3 = downSampling(AAA3, 2);
+//		AAA3_3 = downSampling(AAA3, 2);
+		AAA3_3 = downSamplingGanjil(AAA3);
 		
 		AAAA4 = konvolusiLow(AAA3_3);
-		AAAA4_4 = downSampling(AAAA4, 2);
+//		AAAA4_4 = downSampling(AAAA4, 2);
+		AAAA4_4 = downSamplingGanjil(AAAA4);
 		
 		DAAAA5 = konvolusiHigh(AAAA4_4);
-		DAAAA5_5 = downSampling(DAAAA5, 2);
+//		DAAAA5_5 = downSampling(DAAAA5, 2);
+		DAAAA5_5 = downSamplingGenap(DAAAA5);
 		
 		return DAAAA5_5;
 	}

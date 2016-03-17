@@ -1,9 +1,11 @@
 package mysql;
 
+import java.awt.List;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.JOptionPane;
@@ -249,28 +251,18 @@ public class Database {
 		listDataWavelet.addColumn("Alfa");
 		listDataWavelet.addColumn("Beta");
 		listDataWavelet.addColumn("Teta");
-		int i=0;
-		String[] alfa, beta, teta;
+		int no=1;
 		
 		try{
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM wavelet");
-			if(rs.next() && rs.getInt(1) != 0){
-//				rs.first();
-				alfa = new String[rs.getString("alfa").split(" ").length];
-				beta = new String[rs.getString("beta").split(" ").length];
-				teta = new String[rs.getString("teta").split(" ").length];
-				alfa = rs.getString("alfa").split(" ");
-				beta = rs.getString("beta").split(" ");
-				teta = rs.getString("teta").split(" ");
-				for(i=0;i<alfa.length;i++){
-					Object[] data = new Object[4];
-					data[0] = (i+1);
-					data[1] = alfa[i];
-					data[2] = beta[i];
-					data[3] = teta[i];
-					listDataWavelet.addRow(data);
-				}
+			while(rs.next()){
+				Object[] data = new Object[4];
+				data[0] = no++;
+				data[1] = rs.getString("alfa");
+				data[2] = rs.getString("beta");
+				data[3] = rs.getString("teta");
+				listDataWavelet.addRow(data);
 			}
 			stmt.close();
 			rs.close();
@@ -315,26 +307,68 @@ public class Database {
 		}
 	}
 	
-	public double[][] getDataLatih(){
-		double[][] sinyalDataLatih = null;
+	public void inputEkstraksiWavelet(double[] alfa, double[] beta, double[] teta, int dataLatih_id){
+		try {
+			String tempSinyalAlfa = Arrays.toString(alfa).substring(1, Arrays.toString(alfa).length()-1).replaceAll(",", "");
+			String tempSinyalBeta = Arrays.toString(beta).substring(1, Arrays.toString(beta).length()-1).replaceAll(",", "");
+			String tempSinyalTeta = Arrays.toString(teta).substring(1, Arrays.toString(teta).length()-1).replaceAll(",", "");
+			stmt = koneksi.createStatement();
+			stmt.executeUpdate("INSERT INTO wavelet (dataLatih_id, alfa, beta, teta) VALUES ('"+dataLatih_id+"', '"+tempSinyalAlfa+"', '"+tempSinyalBeta+"', '"+tempSinyalTeta+"')");
+			stmt.close();
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
+		}
+	}
+	
+	public void deleteEkstraksiWavelet(){
+		try {
+			stmt = koneksi.createStatement();
+			stmt.executeUpdate("DELETE FROM wavelet");
+			stmt.close();
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
+		}
+	}
+	
+	public void inputHasilBobot(double[][] bobot){
+		try{
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM lvq");
+			if(rs.next() && rs.getInt(1) != 0){
+//				rs.first();
+				String tempBobotRileks = Arrays.toString(bobot[0]).substring(1, Arrays.toString(bobot[0]).length()-1).replaceAll(",", "");
+				String tempBobotNonRileks = Arrays.toString(bobot[1]).substring(1, Arrays.toString(bobot[1]).length()-1).replaceAll(",", "");
+				stmt = koneksi.createStatement();
+				stmt.executeUpdate("UPDATE lvq SET w1='"+tempBobotRileks+"', w2='"+tempBobotNonRileks+"' WHERE id='"+rs.getInt("id")+"'");
+			}else{				
+				String tempBobotRileks = Arrays.toString(bobot[0]).substring(1, Arrays.toString(bobot[0]).length()-1).replaceAll(",", "");
+				String tempBobotNonRileks = Arrays.toString(bobot[1]).substring(1, Arrays.toString(bobot[1]).length()-1).replaceAll(",", "");
+				stmt = koneksi.createStatement();
+				stmt.executeUpdate("INSERT INTO lvq (w1, w2) VALUES ('"+tempBobotRileks+"', '"+tempBobotNonRileks+"')");
+			}
+			stmt.close();
+			rs.close();
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public ArrayList<double[]> getDataLatih(){
+		ArrayList<double[]> sinyalDataLatih = new ArrayList<double[]>();
 		String[] sinyalTemp;
-		int i=0, j=0;
 		try {
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih");
 			if(rs.next() && rs.getInt(1) != 0){
-				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("dataEeg").split(" ").length];
 				sinyalTemp = rs.getString("dataEeg").split(" ");
-				for(j=0;j<sinyalTemp.length;j++){
-					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
-				}
-				i++;
+				sinyalDataLatih.add(DataLatih.stringToDouble(sinyalTemp));
 				while(rs.next()){
 					sinyalTemp = rs.getString("dataEeg").split(" ");
-					for(j=0;j<sinyalTemp.length;j++){
-						sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
-					}
-					i++;
+					sinyalDataLatih.add(DataLatih.stringToDouble(sinyalTemp));
 				}
 			}else{
 				JOptionPane.showMessageDialog(null, "Data latih kelas Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -346,8 +380,23 @@ public class Database {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		return sinyalDataLatih;
+	}
+	
+	public List getIdOfDataLatih(){
+		List hasil = new List();
+		
+		try {
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM data_latih");
+			while(rs.next()){
+				hasil.add(rs.getString("id"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return hasil;
 	}
 	
 	public double[][] getDataLatihRileks(){
@@ -511,29 +560,6 @@ public class Database {
 		Second current = new Second();
 		
 		return new TimeSeriesCollection();
-	}
-	
-	public void inputHasilBobot(double[][] bobot){
-		try{
-			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM lvq");
-			if(rs.next() && rs.getInt(1) != 0){
-//				rs.first();
-				String tempBobotRileks = Arrays.toString(bobot[0]).substring(1, Arrays.toString(bobot[0]).length()-1).replaceAll(",", "");
-				String tempBobotNonRileks = Arrays.toString(bobot[1]).substring(1, Arrays.toString(bobot[1]).length()-1).replaceAll(",", "");
-				stmt = koneksi.createStatement();
-				stmt.executeUpdate("UPDATE lvq SET w1='"+tempBobotRileks+"', w2='"+tempBobotNonRileks+"' WHERE id='"+rs.getInt("id")+"'");
-			}else{				
-				String tempBobotRileks = Arrays.toString(bobot[0]).substring(1, Arrays.toString(bobot[0]).length()-1).replaceAll(",", "");
-				String tempBobotNonRileks = Arrays.toString(bobot[1]).substring(1, Arrays.toString(bobot[1]).length()-1).replaceAll(",", "");
-				stmt = koneksi.createStatement();
-				stmt.executeUpdate("INSERT INTO lvq (w1, w2) VALUES ('"+tempBobotRileks+"', '"+tempBobotNonRileks+"')");
-			}
-			stmt.close();
-			rs.close();
-		}catch(SQLException e){
-			e.printStackTrace();
-		}
 	}
 	
 	public double[][] getBobotPelatihan(){
