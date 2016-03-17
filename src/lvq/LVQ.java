@@ -105,7 +105,6 @@ public class LVQ {
 			}else{
 				hasil[i] = "Non-Rileks";
 			}
-			System.out.println(hasil[i]);
 		}
 		return hasil;
 	}

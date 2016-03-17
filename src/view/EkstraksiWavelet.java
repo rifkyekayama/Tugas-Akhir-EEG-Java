@@ -150,6 +150,8 @@ public class EkstraksiWavelet extends JPanel {
 		progressEkstraksiWavelet.setBackground(new Color(251, 252, 252));
 		progressEkstraksiWavelet.setStringPainted(true);
 		progressEkstraksiWavelet.setVisible(true);
+		progressEkstraksiWavelet.setMinimum(0);
+		progressEkstraksiWavelet.setMaximum(1000);
 		panelFormWavelet.add(progressEkstraksiWavelet);
 		
 		JPanel panelStatusLoading = new JPanel();
@@ -376,7 +378,7 @@ public class EkstraksiWavelet extends JPanel {
 			idOfDataLatih = dbAction.getIdOfDataLatih();
 			lblStatusLoading.setVisible(true);
 			progressEkstraksiWavelet.setValue(0);
-			progressDistance = 100/(sinyalEEG.size()*3)+1;
+			progressDistance = 1000/(sinyalEEG.size()*3);
 		}
 
 		@Override
@@ -402,7 +404,7 @@ public class EkstraksiWavelet extends JPanel {
 			// TODO Auto-generated method stub
 			super.done();
 			Home.refreshAllElement();
-			progressEkstraksiWavelet.setValue(100);
+			progressEkstraksiWavelet.setValue(1000);
 			JOptionPane.showMessageDialog(null, "Proses Ekstraksi Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
 			lblStatusLoading.setVisible(false);
 			progressEkstraksiWavelet.setValue(0);

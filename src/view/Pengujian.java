@@ -516,9 +516,6 @@ public class Pengujian extends JPanel {
 			progressSubmitDataEEG.setValue(80);
 			bobotPelatihan = dbAction.getBobotPelatihan();
 			hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.getNeuronPengujian(lvq.string2DtoDouble(sinyalFull)));
-			
-			System.out.println(Arrays.deepToString(hasilPengujian));
-			
 			lblStatusLoading.setText("Update Tabel Bobot");
 			progressSubmitDataEEG.setValue(90);
 			updateTablePengujian(initTableModelPengujian(hasilPengujian));
@@ -529,10 +526,10 @@ public class Pengujian extends JPanel {
 		@Override
 		public void done(){
 			progressSubmitDataEEG.setValue(100);
-			JOptionPane.showMessageDialog(null, "Proses Pengujian Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
 			resetFormDataUji();
 			Home.refreshAllElement();
 			updateStatusKanal();
+			JOptionPane.showMessageDialog(null, "Proses Pengujian Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
 			lblStatusLoading.setVisible(false);
 			progressSubmitDataEEG.setValue(0);
 			panelHasilRileks.setVisible(true);
