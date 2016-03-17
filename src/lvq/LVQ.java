@@ -2,6 +2,8 @@ package lvq;
 
 import java.util.ArrayList;
 
+import view.Pelatihan;
+
 public class LVQ {
 	
 	public LVQ() {
@@ -47,7 +49,7 @@ public class LVQ {
 	}
 	
 	public double[][] pembelajaran(ArrayList<double[][]> neuronRileks, ArrayList<double[][]> neuronNonRileks, double learningRate, double pengurangLR, int maxEpoch, double error){
-		int epoch=0, i=0, jarak;
+		int epoch=0, i=0, jarak, epochTemp=0;
 		double[] bobot1 = new double[neuronRileks.get(0)[0].length];
 		double[] bobot2 = new double[neuronNonRileks.get(0)[0].length];
 		ArrayList<double[][]> data = new ArrayList<double[][]>();
@@ -81,8 +83,19 @@ public class LVQ {
 					}
 				}
 			}
+			
+			epochTemp = epoch;
+			Pelatihan.txtAreaProgressMonitor.append("Epoch ke-"+(epochTemp+1)+"\t"+"Learning Rate = "+learningRate+"\n");
+			
 			learningRate = learningRate - (pengurangLR * learningRate);
 			epoch++;
+		}
+		
+		Pelatihan.txtAreaProgressMonitor.append("Epoch ke-"+(epoch)+"\t"+"Learning Rate = "+learningRate+"\n");
+		if(learningRate > error){
+			Pelatihan.txtAreaProgressMonitor.append(learningRate+" > "+error+" = "+"true"+"\n");
+		}else{
+			Pelatihan.txtAreaProgressMonitor.append(learningRate+" > "+error+" = "+"false"+"\n");
 		}
 		
 		for(i=0;i<bobot1.length;i++){

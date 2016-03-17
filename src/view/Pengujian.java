@@ -190,7 +190,7 @@ public class Pengujian extends JPanel {
 		panelStatusLoading.setBounds(15, 400, 420, 30);
 		
 		lblStatusLoading = new JLabel("Loading...");
-		//lblStatusLoading.setVisible(false);
+		lblStatusLoading.setVisible(false);
 		panelStatusLoading.add(lblStatusLoading);
 		
 		JPanel panelLihatDataUji = new JPanel();

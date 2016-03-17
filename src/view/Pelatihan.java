@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
@@ -39,9 +40,10 @@ public class Pelatihan extends JPanel {
 	protected JButton btnPelatihan;
 	public JProgressBar progressBarPelatihan;
 	public JLabel lblStatusLoading;
+	public static JTextArea txtAreaProgressMonitor;
 	protected DefaultTableModel tableModel;
 	protected JTable tableBobot;
-	protected JScrollPane scrollTableBobot;
+	protected JScrollPane scrollTableBobot, scrollTextAreaProgressMonitor;
 	protected DefaultTableCellRenderer centerTable;
 	protected Database dbAction = new Database();
 	protected DataLatih dataLatih = new DataLatih();
@@ -122,14 +124,26 @@ public class Pelatihan extends JPanel {
 		progressBarPelatihan.setForeground(new Color(44, 195, 107));
 		progressBarPelatihan.setBackground(new Color(251, 252, 252));
 		progressBarPelatihan.setStringPainted(true);
-		progressBarPelatihan.setBounds(15, panelFormPelatihan.getHeight()+30, panelFormPelatihan.getWidth()-30, 30);
+		progressBarPelatihan.setBounds(15, panelFormPelatihan.getHeight()+15, panelFormPelatihan.getWidth()-30, 30);
 		
 		JPanel panelLblStatusLoading = new JPanel(new GridBagLayout());
-		panelLblStatusLoading.setBounds(15, panelFormPelatihan.getHeight()+60, panelFormPelatihan.getWidth()-30, 30);
+		panelLblStatusLoading.setBounds(15, panelFormPelatihan.getHeight()+45, panelFormPelatihan.getWidth()-30, 30);
 		
 		lblStatusLoading = new JLabel("Loading...");
-		lblStatusLoading.setVisible(false);
+		lblStatusLoading.setVisible(true);
 		panelLblStatusLoading.add(lblStatusLoading);
+		
+		JPanel panelTextAreaProgressMonitor = new JPanel();
+		panelTextAreaProgressMonitor.setLayout(new BorderLayout());
+		panelTextAreaProgressMonitor.setBounds(0, 330, 450, 200);
+		
+		txtAreaProgressMonitor = new JTextArea(10,5);
+		txtAreaProgressMonitor.setEditable(false);
+		txtAreaProgressMonitor.setBorder(null);
+		txtAreaProgressMonitor.setVisible(true);
+		
+		scrollTextAreaProgressMonitor = new JScrollPane(txtAreaProgressMonitor);
+		panelTextAreaProgressMonitor.add(scrollTextAreaProgressMonitor, "Center");
 		
 		JPanel panelTabelPelatihan = new JPanel();
 		panelTabelPelatihan.setLayout(null);
@@ -163,6 +177,7 @@ public class Pelatihan extends JPanel {
 		
 		panelContent.add(panelFormPelatihan);
 		panelContent.add(progressBarPelatihan);
+		panelContent.add(panelTextAreaProgressMonitor);
 		panelContent.add(panelLblStatusLoading);
 		panelContent.add(panelTabelPelatihan);
 		
@@ -252,6 +267,7 @@ public class Pelatihan extends JPanel {
 		public CorePelatihanSistem() {
 			// TODO Auto-generated constructor stub
 			lblStatusLoading.setVisible(true);
+			txtAreaProgressMonitor.setText("");
 		}
 		
 		@Override
