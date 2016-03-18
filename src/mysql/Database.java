@@ -11,14 +11,6 @@ import java.util.Arrays;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-import org.jfree.data.time.Second;
-import org.jfree.data.time.TimeSeries;
-import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeriesCollection;
-
-import com.mysql.fabric.xmlrpc.base.Array;
-
 import dataLatih.DataLatih;
 import view.Home;
 
@@ -342,7 +334,6 @@ public class Database {
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM lvq");
 			if(rs.next() && rs.getInt(1) != 0){
-//				rs.first();
 				String tempBobotRileks = Arrays.toString(bobot[0]).substring(1, Arrays.toString(bobot[0]).length()-1).replaceAll(",", "");
 				String tempBobotNonRileks = Arrays.toString(bobot[1]).substring(1, Arrays.toString(bobot[1]).length()-1).replaceAll(",", "");
 				stmt = koneksi.createStatement();
@@ -596,88 +587,6 @@ public class Database {
 		return samplingRate;
 	}
 	
-	public XYDataset createDataSetSinyalAsli(boolean isUseRileks, boolean isUseNonRileks, boolean isUseAlfa, boolean isUseBeta, boolean isUseTeta, int naracoba){
-		final TimeSeriesCollection collection = new TimeSeriesCollection();
-		int i=0, j=0;
-		
-		if(isUseRileks){
-			final TimeSeries seriesRileks = new TimeSeries("Sinyal Rileks");
-			Second current = new Second();
-			ArrayList<double[]> sinyalRileks = new ArrayList<double[]>();
-			sinyalRileks = getDataLatihRileks(naracoba);
-			
-			for(i=0;i<sinyalRileks.size();i++){
-				for(j=0;j<sinyalRileks.get(i).length;j++){
-					seriesRileks.add(current, sinyalRileks.get(i)[j]);
-					current = ( Second ) current.next( ); 
-				}
-			}
-			collection.addSeries(seriesRileks);
-		}
-		
-		if(isUseNonRileks){
-			final TimeSeries seriesNonRileks = new TimeSeries("Sinyal Non Rileks");
-			Second current = new Second();
-			ArrayList<double[]> sinyalNonRileks = new ArrayList<double[]>();
-			sinyalNonRileks = getDataLatihNonRileks(naracoba);
-			
-			for(i=0;i<sinyalNonRileks.size();i++){
-				for(j=0;j<sinyalNonRileks.get(i).length;j++){
-					seriesNonRileks.add(current, sinyalNonRileks.get(i)[j]);
-					current = ( Second ) current.next( ); 
-				}
-			}
-			collection.addSeries(seriesNonRileks);
-		}
-		
-		if(isUseAlfa){
-			final TimeSeries seriesAlfa = new TimeSeries("Sinyal Alfa");
-			Second current = new Second();
-			ArrayList<double[]> sinyalAlfa = new ArrayList<double[]>();
-			sinyalAlfa = getAlfaByNaracoba(naracoba);
-			
-			for(i=0;i<sinyalAlfa.size();i++){
-				for(j=0;j<sinyalAlfa.get(i).length;j++){
-					seriesAlfa.add(current, sinyalAlfa.get(i)[j]);
-					current = ( Second ) current.next( ); 
-				}
-			}
-			collection.addSeries(seriesAlfa);
-		}
-		
-		if(isUseBeta){
-			final TimeSeries seriesBeta = new TimeSeries("Sinyal Beta");
-			Second current = new Second();
-			ArrayList<double[]> sinyalBeta = new ArrayList<double[]>();
-			sinyalBeta = getBetaByNaracoba(naracoba);
-			
-			for(i=0;i<sinyalBeta.size();i++){
-				for(j=0;j<sinyalBeta.get(i).length;j++){
-					seriesBeta.add(current, sinyalBeta.get(i)[j]);
-					current = ( Second ) current.next( ); 
-				}
-			}
-			collection.addSeries(seriesBeta);
-		}
-		
-		if(isUseTeta){
-			final TimeSeries seriesTeta = new TimeSeries("Sinyal Teta");
-			Second current = new Second();
-			ArrayList<double[]> sinyalTeta = new ArrayList<double[]>();
-			sinyalTeta = getTetaByNaracoba(naracoba);
-			
-			for(i=0;i<sinyalTeta.size();i++){
-				for(j=0;j<sinyalTeta.get(i).length;j++){
-					seriesTeta.add(current, sinyalTeta.get(i)[j]);
-					current = ( Second ) current.next( ); 
-				}
-			}
-			
-			collection.addSeries(seriesTeta);
-		}
-		return collection;
-	}
-	
 	public double[][] getBobotPelatihan(){
 		double[][] bobotPelatihan = null;
 		String[] bobotw1, bobotw2;
@@ -712,7 +621,7 @@ public class Database {
 		int hasilNaracoba = 0;
 		try {
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE naracoba="+Integer.toString(naracoba));
+			rs = stmt.executeQuery("SELECT kelas FROM data_latih WHERE naracoba="+Integer.toString(naracoba));
 			hasilNaracoba = rs.getInt("kelas");
 			stmt.close();
 			rs.close();
@@ -725,6 +634,7 @@ public class Database {
 	
 	public boolean editDataLatih(int indexKelas, int naracoba){
 		try {
+			
 			stmt = koneksi.createStatement();
 			stmt.executeUpdate("UPDATE data_latih SET kelas="+Integer.toString(indexKelas)+" WHERE naracoba="+Integer.toString(naracoba));
 			stmt.close();
@@ -738,7 +648,7 @@ public class Database {
 	
 	public boolean hapusDataLatih(String naracoba){
 		String sql;
-		Boolean hasil;
+//		Boolean hasil;
 		
 		try {
 			koneksi.setAutoCommit(false);
