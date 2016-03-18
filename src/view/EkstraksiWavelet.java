@@ -28,8 +28,10 @@ import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.data.xy.XYDataset;
 
 import lvq.LVQ;
 import mysql.Database;
@@ -54,6 +56,10 @@ public class EkstraksiWavelet extends JPanel {
 	private JScrollPane scrollTableDataWavelet;
 	private JComboBox<?> cmbNaracoba;
 	private JProgressBar progressEkstraksiWavelet;
+	private XYDataset dataset;
+	private JFreeChart chart;
+	private ChartPanel chartPanel;
+	private boolean isUseRileks = false, isUseNonRileks = false, isUseAlfa = false, isUseBeta = false, isUseTeta = false;
 	private String[] naracoba = new String[dbAction.getJumNaracoba()+1];
 	private int i=0;
 	
@@ -67,7 +73,7 @@ public class EkstraksiWavelet extends JPanel {
 		
 		naracoba[0] = "Pilih salah satu...";
 		for(i=0;i<dbAction.getJumNaracoba();i++){
-			naracoba[i+1] = "Naracoba ke-"+(i+1);
+			naracoba[i+1] = String.valueOf(i+1);
 		}
 		
 		add(getContent());
@@ -259,12 +265,16 @@ public class EkstraksiWavelet extends JPanel {
 		btnLihatGrafik.addMouseListener(new MouseController());
 		panelChartWavelet.add(btnLihatGrafik);
 		
+		dataset = dbAction.createDataSetSinyalAsli(false, false, true, true, true, 0);
+		chart = createChart(dataset);
+		chartPanel = new ChartPanel(chart);
+//		chartPanel.setMouseZoomable(true, false);
+		
 		JPanel panelChart = new JPanel();
 		panelChart.setLayout(new BorderLayout());
 		panelChart.setBounds(200, 30, 710, 230);
-		panelChart.setBackground(Color.gray);
+		panelChart.add(chartPanel, BorderLayout.CENTER);
 		panelChartWavelet.add(panelChart);
-//		panelChart.add(getChart(), BorderLayout.CENTER);
 		
 		panelContent.add(panelFormWavelet);
 		panelContent.add(panelTabelWavelet);
@@ -272,9 +282,20 @@ public class EkstraksiWavelet extends JPanel {
 		return panelContent;
 	}
 	
-	public ChartPanel getChart(){
-		
-		return null;
+	public JFreeChart createChart(XYDataset dataset){
+		return ChartFactory.createTimeSeriesChart(
+				"Grafik Wavelet", 
+				"waktu (detik)", 
+				"Nilai titik sinyal", 
+				dataset);
+	}
+	
+	public void updateGrafikWavelet(XYDataset dataset){
+		chart = createChart(dataset);
+		chartPanel = new ChartPanel(chart);
+		chartPanel.setMouseZoomable(true, false);
+		chartPanel.repaint();
+		chartPanel.revalidate();
 	}
 	
 	public void updateTabelEkstraksiWavelet(){
@@ -289,27 +310,6 @@ public class EkstraksiWavelet extends JPanel {
 		tableDataWavelet.getColumnModel().getColumn(3).setCellRenderer(centerTable);
 		tableDataWavelet.getColumnModel().getColumn(0).setMinWidth(30);
 		tableDataWavelet.getColumnModel().getColumn(0).setMaxWidth(30);
-	}
-	
-	public void ekstraksiWavelet(boolean boolAlfa, boolean boolBeta, boolean boolTeta){
-		ArrayList<double[]> sinyalEEG = dbAction.getDataLatih();
-		List idOfDataLatih = dbAction.getIdOfDataLatih();
-		double[] alfa = null, beta = null, teta = null;
-		int i=0;
-		
-		dbAction.deleteEkstraksiWavelet();
-		for(i=0;i<sinyalEEG.size();i++){
-			if(boolAlfa == true){
-				alfa = wavelet.getAlfa(sinyalEEG.get(i));
-			}
-			if(boolBeta == true){
-				beta = wavelet.getBeta(sinyalEEG.get(i));
-			}
-			if(boolTeta == true){
-				teta = wavelet.getTeta(sinyalEEG.get(i));
-			}
-			dbAction.inputEkstraksiWavelet(alfa, beta, teta, Integer.parseInt(idOfDataLatih.getItem(i)));
-		}
 	}
 	
 	class MouseController implements MouseListener{
@@ -352,13 +352,31 @@ public class EkstraksiWavelet extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getActionCommand().equals("btnEkstraksiWavelet")){
-//				wavelet = new Wavelet();
-//				ekstraksiWavelet(true, true, true);
-//				Home.refreshAllElement();
 				CoreEkstraksiWavelet coreEkstraksiWavelet = new CoreEkstraksiWavelet();
 				coreEkstraksiWavelet.execute();
 			}else if(e.getActionCommand().equals("btnLihatGrafik")){
+				if((String)cmbNaracoba.getSelectedItem() == "Pilih salah satu..."){
+					JOptionPane.showMessageDialog(null, "Pilihan naracoba tidak boleh kosong!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				}
 				
+				if(cbSinyalRileks.isSelected()){
+					isUseRileks = true;
+				}
+				if(cbSinyalNonRileks.isSelected()){
+					isUseNonRileks = true;
+				}
+				if(cbGelAlfa.isSelected()){
+					isUseAlfa = true;
+				}
+				if(cbGelBeta.isSelected()){
+					isUseBeta = true;
+				}
+				if(cbGelTeta.isSelected()){
+					isUseTeta = true;
+				}
+				
+				dataset = dbAction.createDataSetSinyalAsli(isUseRileks, isUseNonRileks, isUseAlfa, isUseBeta, isUseTeta, Integer.parseInt((String)cmbNaracoba.getSelectedItem()));
+				updateGrafikWavelet(dataset);
 			}
 		}
 	}

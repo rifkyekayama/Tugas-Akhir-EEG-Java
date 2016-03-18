@@ -15,6 +15,9 @@ import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeriesCollection;
+
+import com.mysql.fabric.xmlrpc.base.Array;
 
 import dataLatih.DataLatih;
 import view.Home;
@@ -363,7 +366,7 @@ public class Database {
 		try {
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih");
-			if(rs.next() && rs.getInt(1) != 0){
+			if(rs.next()){
 				sinyalTemp = rs.getString("dataEeg").split(" ");
 				sinyalDataLatih.add(DataLatih.stringToDouble(sinyalTemp));
 				while(rs.next()){
@@ -383,6 +386,58 @@ public class Database {
 		return sinyalDataLatih;
 	}
 	
+	public ArrayList<double[]> getDataLatihRileks(int naracoba){
+		ArrayList<double[]> sinyalRileks = new ArrayList<double[]>();
+		String[] sinyalTemp;
+		try {
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE naracoba="+naracoba+" AND kelas=1");
+			if(rs.next()){
+				sinyalTemp = rs.getString("dataEeg").split(" ");
+				sinyalRileks.add(DataLatih.stringToDouble(sinyalTemp));
+				while(rs.next()){
+					sinyalTemp = rs.getString("dataEeg").split(" ");
+					sinyalRileks.add(DataLatih.stringToDouble(sinyalTemp));
+				}
+			}else{
+				JOptionPane.showMessageDialog(null, "Data latih kelas Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				Home.changeCard("panelKelolaDataLatih");
+			}
+			stmt.close();
+			rs.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return sinyalRileks;
+	}
+	
+	public ArrayList<double[]> getDataLatihNonRileks(int naracoba){
+		ArrayList<double[]> sinyalRileks = new ArrayList<double[]>();
+		String[] sinyalTemp;
+		try {
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE naracoba="+naracoba+" AND kelas=-1");
+			if(rs.next()){
+				sinyalTemp = rs.getString("dataEeg").split(" ");
+				sinyalRileks.add(DataLatih.stringToDouble(sinyalTemp));
+				while(rs.next()){
+					sinyalTemp = rs.getString("dataEeg").split(" ");
+					sinyalRileks.add(DataLatih.stringToDouble(sinyalTemp));
+				}
+			}else{
+				JOptionPane.showMessageDialog(null, "Data latih kelas Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				Home.changeCard("panelKelolaDataLatih");
+			}
+			stmt.close();
+			rs.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return sinyalRileks;
+	}
+	
 	public List getIdOfDataLatih(){
 		List hasil = new List();
 		
@@ -392,6 +447,8 @@ public class Database {
 			while(rs.next()){
 				hasil.add(rs.getString("id"));
 			}
+			stmt.close();
+			rs.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -399,135 +456,58 @@ public class Database {
 		return hasil;
 	}
 	
-//	public ArrayList<double[]> getDataLatihRileks(){
-//		ArrayList<double[]> sinyalDataLatih = new ArrayList<double[]>();
-//		String[] sinyalTemp;
-//		int i=0, j=0;
-//		try{
-//			stmt = koneksi.createStatement();
-//			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=1");
-//			if(rs.next()){
-//				sinyalTemp = rs.getString("dataEeg").split(" ");
-//				sinyalDataLatih.add(DataLatih.stringToDouble(sinyalTemp));
-//				while(rs.next()){
-//					sinyalTemp = rs.getString("dataEeg").split(" ");
-//					sinyalDataLatih.add(DataLatih.stringToDouble(sinyalTemp));
-//				}
-//			}else{
-//				JOptionPane.showMessageDialog(null, "Data latih kelas Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-//				Home.changeCard("panelKelolaDataLatih");
-//			}
-//			stmt.close();
-//			rs.close();
-//		}catch(SQLException e){
-//			e.printStackTrace();
-//			JOptionPane.showMessageDialog(null, "getDataLatihRileks error = "+e, "Error", JOptionPane.ERROR_MESSAGE);
-//		}
-//		return sinyalDataLatih;
-//	}
-	
-	public double[][] getDataLatihRileksByNaracoba(int naracoba){
-		double[][] sinyalDataLatih = null;
-		String[] sinyalTemp;
-		int i=0, j=0;
-		try{
+	public ArrayList<double[]> getAlfaByNaracoba(int naracoba){
+		ArrayList<double[]> sinyalAlfa = new ArrayList<double[]>();
+		try {
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=1 AND naracoba="+naracoba);
-			if(rs.next() && rs.getInt(1) != 0){
-				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("dataEeg").split(" ").length];
-				sinyalTemp = rs.getString("dataEeg").split(" ");
-				for(j=0;j<sinyalTemp.length;j++){
-					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
-				}
-				i++;
-				while(rs.next()){
-					sinyalTemp = rs.getString("dataEeg").split(" ");
-					for(j=0;j<sinyalTemp.length;j++){
-						sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
-					}
-					i++;
-				}
-			}else{
-				JOptionPane.showMessageDialog(null, "Data latih kelas Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				Home.changeCard("panelKelolaDataLatih");
+			rs = stmt.executeQuery("SELECT wavelet.alfa FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id WHERE data_latih.naracoba="+naracoba);
+			while(rs.next()){
+				String[] alfa = rs.getString("alfa").split(" ");
+				sinyalAlfa.add(DataLatih.stringToDouble(alfa));
 			}
 			stmt.close();
 			rs.close();
-		}catch(SQLException e){
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "getDataLatihRileks error = "+e, "Error", JOptionPane.ERROR_MESSAGE);
 		}
-		return sinyalDataLatih;
+		return sinyalAlfa;
 	}
 	
-//	public double[][] getDataLatihNonRileks(){
-//		double[][] sinyalDataLatih = null;
-//		String[] sinyalTemp;
-//		int i=0, j=0;
-//		try{
-//			stmt = koneksi.createStatement();
-//			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=-1");
-//			if(rs.next() && rs.getInt(1) != 0){
-//				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("dataEeg").split(" ").length];
-////				rs.first();
-//				sinyalTemp = rs.getString("dataEeg").split(" ");
-//				for(j=0;j<sinyalTemp.length;j++){
-//					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
-//				}
-//				i++;
-//				while(rs.next()){
-//					sinyalTemp = rs.getString("dataEeg").split(" ");
-//					for(j=0;j<sinyalTemp.length;j++){
-//						sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
-//					}
-//					i++;
-//				}
-//			}else{
-//				JOptionPane.showMessageDialog(null, "Data latih kelas Non-Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-//				Home.changeCard("panelKelolaDataLatih");
-//			}
-//			stmt.close();
-//			rs.close();
-//		}catch(SQLException e){
-//			e.printStackTrace();
-//			JOptionPane.showMessageDialog(null, "getDataLatihNonRileks error = "+e, "Error", JOptionPane.ERROR_MESSAGE);
-//		}
-//		return sinyalDataLatih;
-//	}
-	
-	public double[][] getDataLatihNonRileksByNaracoba(int naracoba){
-		double[][] sinyalDataLatih = null;
-		String[] sinyalTemp;
-		int i=0, j=0;
-		try{
+	public ArrayList<double[]> getBetaByNaracoba(int naracoba){
+		ArrayList<double[]> sinyalBeta = new ArrayList<double[]>();
+		try {
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE kelas=-1 AND naracoba="+naracoba);
-			if(rs.next() && rs.getInt(1) != 0){
-				sinyalDataLatih = new double[rs.getInt(1)-1][rs.getString("dataEeg").split(" ").length];
-//				rs.first();
-				sinyalTemp = rs.getString("dataEeg").split(" ");
-				for(j=0;j<sinyalTemp.length;j++){
-					sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
-				}
-				i++;
-				while(rs.next()){
-					sinyalTemp = rs.getString("dataEeg").split(" ");
-					for(j=0;j<sinyalTemp.length;j++){
-						sinyalDataLatih[i][j] = Double.parseDouble(sinyalTemp[j]);
-					}
-					i++;
-				}
-			}else{
-				JOptionPane.showMessageDialog(null, "Data latih kelas Non-Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				Home.changeCard("panelKelolaDataLatih");
+			rs = stmt.executeQuery("SELECT wavelet.beta FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id WHERE data_latih.naracoba="+naracoba);
+			while(rs.next()){
+				String[] beta = rs.getString("beta").split(" ");
+				sinyalBeta.add(DataLatih.stringToDouble(beta));
 			}
 			stmt.close();
 			rs.close();
-		}catch(SQLException e){
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "getDataLatihNonRileks error = "+e, "Error", JOptionPane.ERROR_MESSAGE);
 		}
-		return sinyalDataLatih;
+		return sinyalBeta;
+	}
+	
+	public ArrayList<double[]> getTetaByNaracoba(int naracoba){
+		ArrayList<double[]> sinyalTeta = new ArrayList<double[]>();
+		try {
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT wavelet.teta FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id WHERE data_latih.naracoba="+naracoba);
+			while(rs.next()){
+				String[] teta = rs.getString("teta").split(" ");
+				sinyalTeta.add(DataLatih.stringToDouble(teta));
+			}
+			stmt.close();
+			rs.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return sinyalTeta;
 	}
 	
 	public ArrayList<double[][]> getNeuronRileks(){
@@ -556,6 +536,8 @@ public class Database {
 				hasil[1][0] = rs.getDouble("kelas");
 				neuron.add(hasil);
 			}
+			stmt.close();
+			rs.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -589,6 +571,8 @@ public class Database {
 				hasil[1][0] = rs.getDouble("kelas");
 				neuron.add(hasil);
 			}
+			stmt.close();
+			rs.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -612,11 +596,86 @@ public class Database {
 		return samplingRate;
 	}
 	
-	public XYDataset createDataSetSinyalAsli(){
-		final TimeSeries seriesRileks = new TimeSeries("Sinyal Rileks");
-		Second current = new Second();
+	public XYDataset createDataSetSinyalAsli(boolean isUseRileks, boolean isUseNonRileks, boolean isUseAlfa, boolean isUseBeta, boolean isUseTeta, int naracoba){
+		final TimeSeriesCollection collection = new TimeSeriesCollection();
+		int i=0, j=0;
 		
-		return new TimeSeriesCollection();
+		if(isUseRileks){
+			final TimeSeries seriesRileks = new TimeSeries("Sinyal Rileks");
+			Second current = new Second();
+			ArrayList<double[]> sinyalRileks = new ArrayList<double[]>();
+			sinyalRileks = getDataLatihRileks(naracoba);
+			
+			for(i=0;i<sinyalRileks.size();i++){
+				for(j=0;j<sinyalRileks.get(i).length;j++){
+					seriesRileks.add(current, sinyalRileks.get(i)[j]);
+					current = ( Second ) current.next( ); 
+				}
+			}
+			collection.addSeries(seriesRileks);
+		}
+		
+		if(isUseNonRileks){
+			final TimeSeries seriesNonRileks = new TimeSeries("Sinyal Non Rileks");
+			Second current = new Second();
+			ArrayList<double[]> sinyalNonRileks = new ArrayList<double[]>();
+			sinyalNonRileks = getDataLatihNonRileks(naracoba);
+			
+			for(i=0;i<sinyalNonRileks.size();i++){
+				for(j=0;j<sinyalNonRileks.get(i).length;j++){
+					seriesNonRileks.add(current, sinyalNonRileks.get(i)[j]);
+					current = ( Second ) current.next( ); 
+				}
+			}
+			collection.addSeries(seriesNonRileks);
+		}
+		
+		if(isUseAlfa){
+			final TimeSeries seriesAlfa = new TimeSeries("Sinyal Alfa");
+			Second current = new Second();
+			ArrayList<double[]> sinyalAlfa = new ArrayList<double[]>();
+			sinyalAlfa = getAlfaByNaracoba(naracoba);
+			
+			for(i=0;i<sinyalAlfa.size();i++){
+				for(j=0;j<sinyalAlfa.get(i).length;j++){
+					seriesAlfa.add(current, sinyalAlfa.get(i)[j]);
+					current = ( Second ) current.next( ); 
+				}
+			}
+			collection.addSeries(seriesAlfa);
+		}
+		
+		if(isUseBeta){
+			final TimeSeries seriesBeta = new TimeSeries("Sinyal Beta");
+			Second current = new Second();
+			ArrayList<double[]> sinyalBeta = new ArrayList<double[]>();
+			sinyalBeta = getBetaByNaracoba(naracoba);
+			
+			for(i=0;i<sinyalBeta.size();i++){
+				for(j=0;j<sinyalBeta.get(i).length;j++){
+					seriesBeta.add(current, sinyalBeta.get(i)[j]);
+					current = ( Second ) current.next( ); 
+				}
+			}
+			collection.addSeries(seriesBeta);
+		}
+		
+		if(isUseTeta){
+			final TimeSeries seriesTeta = new TimeSeries("Sinyal Teta");
+			Second current = new Second();
+			ArrayList<double[]> sinyalTeta = new ArrayList<double[]>();
+			sinyalTeta = getTetaByNaracoba(naracoba);
+			
+			for(i=0;i<sinyalTeta.size();i++){
+				for(j=0;j<sinyalTeta.get(i).length;j++){
+					seriesTeta.add(current, sinyalTeta.get(i)[j]);
+					current = ( Second ) current.next( ); 
+				}
+			}
+			
+			collection.addSeries(seriesTeta);
+		}
+		return collection;
 	}
 	
 	public double[][] getBobotPelatihan(){
@@ -627,7 +686,6 @@ public class Database {
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM lvq");
 			if(rs.next() && rs.getInt(1) != 0){
-//				rs.first();
 				bobotw1 = new String[rs.getString("w1").split(" ").length];
 				bobotw2 = new String[rs.getString("w2").split(" ").length];
 				
@@ -656,6 +714,8 @@ public class Database {
 			stmt = koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE naracoba="+Integer.toString(naracoba));
 			hasilNaracoba = rs.getInt("kelas");
+			stmt.close();
+			rs.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -666,7 +726,9 @@ public class Database {
 	public boolean editDataLatih(int indexKelas, int naracoba){
 		try {
 			stmt = koneksi.createStatement();
-			rs = stmt.executeQuery("UPDATE data_latih SET kelas="+Integer.toString(indexKelas)+" WHERE naracoba="+Integer.toString(naracoba));
+			stmt.executeUpdate("UPDATE data_latih SET kelas="+Integer.toString(indexKelas)+" WHERE naracoba="+Integer.toString(naracoba));
+			stmt.close();
+			rs.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -686,7 +748,9 @@ public class Database {
 			}else{
 				sql = "DELETE FROM data_latih WHERE naracoba="+Integer.parseInt(naracoba)+";";
 			}
-			rs = stmt.executeQuery("SELECT * FROM data_latih");
+			rs = stmt.executeQuery(sql);
+			stmt.close();
+			rs.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
