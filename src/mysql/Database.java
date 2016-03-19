@@ -16,7 +16,7 @@ import view.Home;
 
 public class Database {
 	
-	Connection koneksi = null;
+	public Connection koneksi = null;
 	Statement stmt = null;
 	ResultSet rs = null;
 	SQLiteConnector konektor = new SQLiteConnector();
@@ -123,6 +123,23 @@ public class Database {
 			e.printStackTrace();
 		}
 		return kanal;
+	}
+	
+	public String getAlatPerekaman(){
+		String hasil = null;
+		try {
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT alatPerekaman FROM data_latih");
+			if(rs.next()){
+				hasil = rs.getString("alatPerekaman");
+			}
+			stmt.close();
+			rs.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return hasil;
 	}
 	
 	public DefaultTableModel getListDataLatih(){

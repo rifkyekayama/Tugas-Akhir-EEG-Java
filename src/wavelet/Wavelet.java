@@ -263,17 +263,10 @@ public class Wavelet {
 	public double[][] getNeuronPengujian(double[][] dataUji){
 		double[] hasilWavelet = new double[transformasiWavelet(dataUji[0], true, true, true).length];
 		double[][] neuron = new double[dataUji.length][hasilWavelet.length];
-		int i=0, j=0, k=0, iTemp=0;
+		int i=0;
 		
 		for(i=0;i<dataUji.length;i++){
 			hasilWavelet = transformasiWavelet(dataUji[i], true, true, true);
-//			for(k=0;k<hasilWavelet.length;k++){
-//				if(iTemp < neuron[i].length){
-//					neuron[i][iTemp] = hasilWavelet[k];
-//					iTemp++;
-//				}
-//			}
-//			iTemp=0;
 			dataUji[i] = hasilWavelet;
 		}
 		return neuron;

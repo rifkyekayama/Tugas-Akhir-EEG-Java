@@ -70,6 +70,7 @@ public class KelolaDataLatih extends JPanel {
 		centerTable.setHorizontalAlignment(SwingConstants.CENTER);
 		add(getContent());
 		add(new Layout("Kelola Data Latih"));
+		updateStatusAlatPerekaman();
 		updateStatusKanal();
 	}
 	
@@ -330,21 +331,26 @@ public class KelolaDataLatih extends JPanel {
 		int[] kanal;
 		if(dbAction.getKanal() != null){
 			kanal = dbAction.getKanal();
-			if(kanal.length == 2){
-				cmbKanal1.setSelectedIndex(kanal[0]-1);
-				cmbKanal1.setEnabled(false);
-				cmbKanal2.setSelectedIndex(kanal[1]-1);
-				cmbKanal2.setEnabled(false);
-				cbGunakanKanal2.setSelected(true);
-				cbGunakanKanal2.setVisible(false);
+			if(kanal[0] != 1){
+				if(kanal.length == 2){
+					cmbKanal1.setSelectedIndex(kanal[0]-1);
+					cmbKanal1.setEnabled(false);
+					cmbKanal2.setSelectedIndex(kanal[1]-1);
+					cmbKanal2.setEnabled(false);
+					cbGunakanKanal2.setSelected(true);
+					cbGunakanKanal2.setVisible(false);
+				}else{
+					cmbKanal1.setSelectedIndex(kanal[0]-1);
+					cmbKanal1.setEnabled(false);
+					cbGunakanKanal2.setSelected(false);
+					cbGunakanKanal2.setVisible(false);
+				}
+				isLockedKanal1.setVisible(true);
+				isLockedKanal2.setVisible(true);
 			}else{
-				cmbKanal1.setSelectedIndex(kanal[0]-1);
-				cmbKanal1.setEnabled(false);
-				cbGunakanKanal2.setSelected(false);
-				cbGunakanKanal2.setVisible(false);
+				isLockedKanal1.setVisible(false);
+				isLockedKanal2.setVisible(false);
 			}
-			isLockedKanal1.setVisible(true);
-			isLockedKanal2.setVisible(true);
 		}else{
 			resetFormDataLatih();
 			cbGunakanKanal2.setVisible(true);
@@ -355,6 +361,7 @@ public class KelolaDataLatih extends JPanel {
 	
 	public void changeSettingAlatPerekaman(String jenisAlat){
 		if(jenisAlat == "kosong"){
+			resetFormDataLatih();
 			btnPilihDataEEG.setEnabled(false);
 			btnSubmitDataEEG.setEnabled(false);
 			panelFormEmotiv.setVisible(false);
@@ -362,7 +369,8 @@ public class KelolaDataLatih extends JPanel {
 			txtSamplingrate.setText("");
 			cbGunakanKanal2.setSelected(false);
 			cmbKanal2.setEnabled(false);
-		}else if(jenisAlat == "emotiv"){
+		}else if(jenisAlat == "Emotiv"){
+			resetFormDataLatih();
 			btnPilihDataEEG.setEnabled(true);
 			btnSubmitDataEEG.setEnabled(true);
 			panelFormEmotiv.setVisible(true);
@@ -370,7 +378,8 @@ public class KelolaDataLatih extends JPanel {
 			txtSamplingrate.setText("128");
 			cbGunakanKanal2.setSelected(false);
 			cmbKanal2.setEnabled(false);
-		}else if(jenisAlat == "neurosky"){
+		}else if(jenisAlat == "Neurosky"){
+			resetFormDataLatih();
 			btnPilihDataEEG.setEnabled(true);
 			btnSubmitDataEEG.setEnabled(true);
 			panelFormEmotiv.setVisible(false);
@@ -378,6 +387,14 @@ public class KelolaDataLatih extends JPanel {
 			txtSamplingrate.setText("512");
 			cbGunakanKanal2.setSelected(false);
 			cmbKanal2.setEnabled(false);
+		}
+	}
+	
+	public void updateStatusAlatPerekaman(){
+		if(dbAction.getAlatPerekaman() != null){
+			changeSettingAlatPerekaman(dbAction.getAlatPerekaman());
+			cmbAlatPerekaman.setSelectedItem(dbAction.getAlatPerekaman());
+			cmbAlatPerekaman.setEnabled(false);
 		}
 	}
 	
@@ -435,9 +452,9 @@ public class KelolaDataLatih extends JPanel {
 				if((String)cmbAlatPerekaman.getSelectedItem() == "Pilih salah satu..."){
 					changeSettingAlatPerekaman("kosong");
 				}else if((String)cmbAlatPerekaman.getSelectedItem() == "Emotiv"){
-					changeSettingAlatPerekaman("emotiv");
+					changeSettingAlatPerekaman("Emotiv");
 				}else if((String)cmbAlatPerekaman.getSelectedItem() == "Neurosky"){
-					changeSettingAlatPerekaman("neurosky");
+					changeSettingAlatPerekaman("Neurosky");
 				}
 			}else if(e.getActionCommand().equals("pilihDataEEG")){
 				if((String)cmbAlatPerekaman.getSelectedItem() == "Emotiv"){
@@ -556,6 +573,7 @@ public class KelolaDataLatih extends JPanel {
 		@Override
 		public void done(){
 			resetFormDataLatih();
+			updateStatusAlatPerekaman();
 			updateStatusKanal();
 			Home.refreshAllElement();
 			progressSubmitDataEEG.setValue(100);
