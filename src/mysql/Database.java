@@ -677,9 +677,9 @@ public class Database {
 			Main.konek.setAutoCommit(false);
 			stmt = Main.konek.createStatement();
 			if(naracoba == "Semua"){
-				sql = "DELETE FROM data_latih;";
+				sql = "DELETE FROM data_latih";
 			}else{
-				sql = "DELETE FROM data_latih WHERE naracoba="+Integer.parseInt(naracoba)+";";
+				sql = "DELETE FROM data_latih WHERE naracoba="+Integer.parseInt(naracoba);
 			}
 			stmt.executeUpdate(sql);
 			stmt.close();
