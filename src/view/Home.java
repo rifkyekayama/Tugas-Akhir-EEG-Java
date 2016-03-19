@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -18,8 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import main.Main;
 import mysql.Database;
-import mysql.SQLiteConnector;
 
 public class Home extends JFrame {
 	
@@ -48,9 +47,7 @@ public class Home extends JFrame {
 		setVisible(true);
 		setDefaultLookAndFeelDecorated(false);
 		
-		SQLiteConnector koneksi = new SQLiteConnector();
-		Connection conn = koneksi.getKoneksi();
-		if(conn != null){
+		if(Main.konek != null){
 			mainPanel = new JPanel(new CardLayout());
 			mainPanel.add(getPanelHome(), "panelAwal");
 			mainPanel.add(dashboard, "panelDashboard");
@@ -61,7 +58,6 @@ public class Home extends JFrame {
 			mainPanel.add(pengujianSistem, "panelPengujianSistem");
 			add(mainPanel);
 		}
-		conn.close();
 	}
 	
 	public JPanel getPanelHome(){

@@ -288,6 +288,7 @@ public class EditDataLatih extends JPanel {
 					}
 					dbAction.editDataLatih(indexKelas, Integer.parseInt((String)cmbNaracobaEdit.getSelectedItem()));
 				}
+				Home.refreshAllElement();
 			}else if(e.getActionCommand().equals("btnHapusDataLatih")){
 				if((String)cmbNaracobaHapus.getSelectedItem() == "-"){
 					JOptionPane.showMessageDialog(null, "Pilihan naracoba tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);

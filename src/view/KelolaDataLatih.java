@@ -55,7 +55,7 @@ public class KelolaDataLatih extends JPanel {
 	protected String[] alatPerekaman = {"Pilih salah satu...", "Emotiv", "Neurosky"};
 	protected String[] kelas = {"Pilih salah satu...", "Rileks", "Non-Rileks"};
 	protected String[] kanal = {"Pilih salah satu...", "AF3", "F7", "F3", "FC5", "T7", "P7", "O1", "O2", "P8", "T8", "FC6", "F4", "F8", "AF4"};
-	protected Database dbAction;
+	protected Database dbAction = new Database();;
 	protected Wavelet wavelet;
 	protected DataLatih dataLatih;
 	protected String[] fullPathDataEEG;
@@ -64,7 +64,6 @@ public class KelolaDataLatih extends JPanel {
 	public KelolaDataLatih(){
 		setSize(1200, 650);
 		setLayout(null);
-		dbAction = new Database();
 		tableModel = dbAction.getListDataLatih();
 		centerTable = new DefaultTableCellRenderer();
 		centerTable.setHorizontalAlignment(SwingConstants.CENTER);
@@ -371,6 +370,7 @@ public class KelolaDataLatih extends JPanel {
 			cmbKanal2.setEnabled(false);
 		}else if(jenisAlat == "Emotiv"){
 			resetFormDataLatih();
+			updateStatusKanal();
 			btnPilihDataEEG.setEnabled(true);
 			btnSubmitDataEEG.setEnabled(true);
 			panelFormEmotiv.setVisible(true);

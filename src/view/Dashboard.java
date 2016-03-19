@@ -24,15 +24,13 @@ public class Dashboard extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	public JLabel lblJumNaracoba, lblJumSegmentasi, lblJumRileks, lblJumNonRileks;
-	protected Database dbAction;
+	protected Database dbAction = new Database();;
 	
 	public Dashboard(){
 		setSize(1200, 650);
 		setLayout(null);
 		add(getContent());
 		add(new Layout("Dashboard"));
-		
-		dbAction = new Database();
 		
 		lblJumNaracoba.setText(Integer.toString(dbAction.getJumNaracoba()));
 		lblJumSegmentasi.setText(Integer.toString(dbAction.getJumSegmentasi()));

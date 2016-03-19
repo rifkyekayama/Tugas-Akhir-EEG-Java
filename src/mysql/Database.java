@@ -1,7 +1,6 @@
 package mysql;
 
 import java.awt.List;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -12,29 +11,23 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 import dataLatih.DataLatih;
+import main.Main;
 import view.Home;
 
 public class Database {
 	
-	public Connection koneksi = null;
 	Statement stmt = null;
 	ResultSet rs = null;
-	SQLiteConnector konektor = new SQLiteConnector();
 	
 	public Database(){
-		try {
-			koneksi = konektor.getKoneksi();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(null, "SQL Error: "+e, "Peringatan", JOptionPane.WARNING_MESSAGE);
-		}
+		
 	}
 	
 	public int getJumNaracoba(){
 		int maxNaracoba = 0;
 		
 		try {
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT MAX(naracoba) FROM data_latih");
 			if(rs.next()){
 				maxNaracoba = rs.getInt(1);
@@ -54,7 +47,7 @@ public class Database {
 		int jumSegmentasi = 0;
 		
 		try{
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT COUNT(*) AS total FROM data_latih");
 			if(rs.next()){
 				jumSegmentasi = rs.getInt(1);
@@ -72,7 +65,7 @@ public class Database {
 		int jumRileks = 0;
 		
 		try{
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM data_latih WHERE kelas=1");
 			if(rs.next()){
 				jumRileks = rs.getInt(1);
@@ -89,7 +82,7 @@ public class Database {
 		int jumNonRileks = 0;
 		
 		try{
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM data_latih WHERE kelas=-1");
 			if(rs.next()){
 				jumNonRileks = rs.getInt(1);
@@ -108,7 +101,7 @@ public class Database {
 		int i;
 		String[] temp;
 		try{
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT DISTINCT kanal FROM data_latih");
 			if(rs.next() && rs.getInt(1) != 0){
 				kanal = new int[rs.getString("kanal").split(",").length];
@@ -128,7 +121,7 @@ public class Database {
 	public String getAlatPerekaman(){
 		String hasil = null;
 		try {
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT alatPerekaman FROM data_latih");
 			if(rs.next()){
 				hasil = rs.getString("alatPerekaman");
@@ -166,7 +159,7 @@ public class Database {
 		String[] kanalTemp;
 		
 		try{
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih");
 			while(rs.next()){
 				Object[] data = new Object[5];
@@ -218,10 +211,9 @@ public class Database {
 		String[] bobotW1, bobotW2;
 		
 		try{
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM lvq");
 			if(rs.next() && rs.getInt(1) != 0){
-//				rs.first();
 				bobotW1 = new String[rs.getString("w1").split(" ").length];
 				bobotW2 = new String[rs.getString("w2").split(" ").length];
 				bobotW1 = rs.getString("w1").split(" ");
@@ -266,7 +258,7 @@ public class Database {
 		int no=1;
 		
 		try{
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM wavelet");
 			while(rs.next()){
 				Object[] data = new Object[4];
@@ -289,7 +281,7 @@ public class Database {
 	public boolean isBobotNotNull(){
 		boolean isBobotNotNull = false;
 		try{
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM lvq");
 			if(rs.next() && rs.getInt(1) != 0){
 				isBobotNotNull = true;
@@ -308,7 +300,7 @@ public class Database {
 		try{
 			for(int i=0;i<sinyal.length;i++){
 				String tempSinyal = Arrays.toString(sinyal[i]).substring(1, Arrays.toString(sinyal[i]).length()-1).replaceAll(",", "");
-				stmt = koneksi.createStatement();
+				stmt = Main.konek.createStatement();
 				stmt.executeUpdate("INSERT INTO data_latih (dataEeg, kelas, naracoba, samplingRate, kanal, alatPerekaman) VALUES ('"+tempSinyal+"', '"+kelas+"', '"+naracoba+"', '"+samplingRate+"', '"+kanal+"', '"+alatPerekaman+"')");
 			}
 			stmt.close();
@@ -324,7 +316,7 @@ public class Database {
 			String tempSinyalAlfa = Arrays.toString(alfa).substring(1, Arrays.toString(alfa).length()-1).replaceAll(",", "");
 			String tempSinyalBeta = Arrays.toString(beta).substring(1, Arrays.toString(beta).length()-1).replaceAll(",", "");
 			String tempSinyalTeta = Arrays.toString(teta).substring(1, Arrays.toString(teta).length()-1).replaceAll(",", "");
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			stmt.executeUpdate("INSERT INTO wavelet (dataLatih_id, alfa, beta, teta) VALUES ('"+dataLatih_id+"', '"+tempSinyalAlfa+"', '"+tempSinyalBeta+"', '"+tempSinyalTeta+"')");
 			stmt.close();
 			rs.close();
@@ -336,7 +328,7 @@ public class Database {
 	
 	public void deleteEkstraksiWavelet(){
 		try {
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			stmt.executeUpdate("DELETE FROM wavelet");
 			stmt.close();
 			rs.close();
@@ -348,17 +340,17 @@ public class Database {
 	
 	public void inputHasilBobot(double[][] bobot){
 		try{
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM lvq");
 			if(rs.next() && rs.getInt(1) != 0){
 				String tempBobotRileks = Arrays.toString(bobot[0]).substring(1, Arrays.toString(bobot[0]).length()-1).replaceAll(",", "");
 				String tempBobotNonRileks = Arrays.toString(bobot[1]).substring(1, Arrays.toString(bobot[1]).length()-1).replaceAll(",", "");
-				stmt = koneksi.createStatement();
+				stmt = Main.konek.createStatement();
 				stmt.executeUpdate("UPDATE lvq SET w1='"+tempBobotRileks+"', w2='"+tempBobotNonRileks+"' WHERE id='"+rs.getInt("id")+"'");
 			}else{				
 				String tempBobotRileks = Arrays.toString(bobot[0]).substring(1, Arrays.toString(bobot[0]).length()-1).replaceAll(",", "");
 				String tempBobotNonRileks = Arrays.toString(bobot[1]).substring(1, Arrays.toString(bobot[1]).length()-1).replaceAll(",", "");
-				stmt = koneksi.createStatement();
+				stmt = Main.konek.createStatement();
 				stmt.executeUpdate("INSERT INTO lvq (w1, w2) VALUES ('"+tempBobotRileks+"', '"+tempBobotNonRileks+"')");
 			}
 			stmt.close();
@@ -372,7 +364,7 @@ public class Database {
 		ArrayList<double[]> sinyalDataLatih = new ArrayList<double[]>();
 		String[] sinyalTemp;
 		try {
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih");
 			if(rs.next()){
 				sinyalTemp = rs.getString("dataEeg").split(" ");
@@ -397,7 +389,7 @@ public class Database {
 	public int getJumDataWavelet(){
 		int hasil = 0;
 		try {
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT COUNT(*) AS total FROM wavelet");
 			hasil = rs.getInt("total");
 			stmt.close();
@@ -413,7 +405,7 @@ public class Database {
 		ArrayList<double[]> sinyalRileks = new ArrayList<double[]>();
 		String[] sinyalTemp;
 		try {
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE naracoba="+naracoba+" AND kelas=1");
 			if(rs.next()){
 				sinyalTemp = rs.getString("dataEeg").split(" ");
@@ -439,7 +431,7 @@ public class Database {
 		ArrayList<double[]> sinyalRileks = new ArrayList<double[]>();
 		String[] sinyalTemp;
 		try {
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE naracoba="+naracoba+" AND kelas=-1");
 			if(rs.next()){
 				sinyalTemp = rs.getString("dataEeg").split(" ");
@@ -465,7 +457,7 @@ public class Database {
 		List hasil = new List();
 		
 		try {
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih");
 			while(rs.next()){
 				hasil.add(rs.getString("id"));
@@ -482,7 +474,7 @@ public class Database {
 	public ArrayList<double[]> getAlfaByNaracoba(int naracoba){
 		ArrayList<double[]> sinyalAlfa = new ArrayList<double[]>();
 		try {
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT wavelet.alfa FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id WHERE data_latih.naracoba="+naracoba);
 			while(rs.next()){
 				String[] alfa = rs.getString("alfa").split(" ");
@@ -500,7 +492,7 @@ public class Database {
 	public ArrayList<double[]> getBetaByNaracoba(int naracoba){
 		ArrayList<double[]> sinyalBeta = new ArrayList<double[]>();
 		try {
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT wavelet.beta FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id WHERE data_latih.naracoba="+naracoba);
 			while(rs.next()){
 				String[] beta = rs.getString("beta").split(" ");
@@ -518,7 +510,7 @@ public class Database {
 	public ArrayList<double[]> getTetaByNaracoba(int naracoba){
 		ArrayList<double[]> sinyalTeta = new ArrayList<double[]>();
 		try {
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT wavelet.teta FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id WHERE data_latih.naracoba="+naracoba);
 			while(rs.next()){
 				String[] teta = rs.getString("teta").split(" ");
@@ -536,7 +528,7 @@ public class Database {
 	public ArrayList<double[][]> getNeuronRileks(){
 		ArrayList<double[][]> neuron = new ArrayList<double[][]>();
 		try {
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id WHERE data_latih.kelas = 1");
 			while(rs.next()){
 				String[] alfa = rs.getString("alfa").split(" ");
@@ -571,7 +563,7 @@ public class Database {
 	public ArrayList<double[][]> getNeuronNonRileks(){
 		ArrayList<double[][]> neuron = new ArrayList<double[][]>();
 		try {
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id WHERE data_latih.kelas = -1");
 			while(rs.next()){
 				String[] alfa = rs.getString("alfa").split(" ");
@@ -606,7 +598,7 @@ public class Database {
 	public int getSamplingRate(){
 		int samplingRate = 0;
 		try{
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT DISTINCT samplingRate FROM data_latih");
 			if(rs.next()){
 				samplingRate = rs.getInt(1);
@@ -624,7 +616,7 @@ public class Database {
 		String[] bobotw1, bobotw2;
 		int i=0;
 		try{
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM lvq");
 			if(rs.next() && rs.getInt(1) != 0){
 				bobotw1 = new String[rs.getString("w1").split(" ").length];
@@ -652,7 +644,7 @@ public class Database {
 	public int getKelasFromDataLatih(int naracoba){
 		int hasilNaracoba = 0;
 		try {
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT kelas FROM data_latih WHERE naracoba="+Integer.toString(naracoba));
 			hasilNaracoba = rs.getInt("kelas");
 			stmt.close();
@@ -666,8 +658,7 @@ public class Database {
 	
 	public boolean editDataLatih(int indexKelas, int naracoba){
 		try {
-			
-			stmt = koneksi.createStatement();
+			stmt = Main.konek.createStatement();
 			stmt.executeUpdate("UPDATE data_latih SET kelas="+Integer.toString(indexKelas)+" WHERE naracoba="+Integer.toString(naracoba));
 			stmt.close();
 			rs.close();
@@ -683,21 +674,19 @@ public class Database {
 //		Boolean hasil;
 		
 		try {
-			koneksi.setAutoCommit(false);
-			stmt = koneksi.createStatement();
+			Main.konek.setAutoCommit(false);
+			stmt = Main.konek.createStatement();
 			if(naracoba == "Semua"){
 				sql = "DELETE FROM data_latih;";
 			}else{
 				sql = "DELETE FROM data_latih WHERE naracoba="+Integer.parseInt(naracoba)+";";
 			}
-			rs = stmt.executeQuery(sql);
+			stmt.executeUpdate(sql);
 			stmt.close();
-			rs.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		return true;
 	}
 }
