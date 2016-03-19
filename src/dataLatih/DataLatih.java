@@ -11,23 +11,24 @@ public class DataLatih {
 	public int naracoba;
 	public int samplingRate;
 	public int segmentasi;
-	public String kelas, kanal1, kanal2;
+	public String kelas, kanal1, kanal2, alatPerekaman;
 	public String[] pathFile;
 	
 	public DataLatih() {
 		
 	}
 	
-	public DataLatih(String[] pathFile, String kelas, int segmentasi, int samplingRate, String kanal1, String kanal2){
+	public DataLatih(String[] pathFile, String kelas, int segmentasi, int samplingRate, String kanal1, String kanal2, String alatPerekaman){
 		this.pathFile = pathFile;
 		this.kelas = kelas;
 		this.segmentasi = segmentasi;
 		this.samplingRate = samplingRate;
 		this.kanal1 = kanal1;
 		this.kanal2 = kanal2;
+		this.alatPerekaman = alatPerekaman;
 	}
 	
-	public List readCsv(String pathFile) throws IOException{
+	public List readFile(String pathFile) throws IOException{
 		BufferedReader reader = new BufferedReader(new FileReader(pathFile));
 		List lines = new List();
 		String line = null;
@@ -74,6 +75,7 @@ public class DataLatih {
 	public static String intToKanal(int kanal){
 		String kanalTemp = null;
 		switch(kanal){
+			case 1: kanalTemp = "FP1"; break;
 			case 2: kanalTemp = "AF3"; break;
 			case 3: kanalTemp = "F7"; break;
 			case 4: kanalTemp = "F3"; break;
@@ -95,6 +97,7 @@ public class DataLatih {
 	public int kanalToInt(String kanal){
 		int indexKanal = 0;
 		switch (kanal) {
+			case "FP1":indexKanal = 1;break;
 			case "AF3":indexKanal = 2;break;
 			case "F7":indexKanal = 3;break;
 			case "F3":indexKanal = 4;break;
@@ -125,13 +128,23 @@ public class DataLatih {
 		return hasil;
 	}
 	
-	public String[][] segmentasiEEG(List lineOfSinyal, int kanal, int segmentasi, int sampling){
-		int fs=0, waktu=0, i=1, j=0, k=0, l=0;
+	public String[][] segmentasiEEG(List lineOfSinyal, int kanal, int segmentasi, int sampling, String alatPerekaman){
+		int fs=0, waktu=0, i=1, j=0, k=0, l=0, mulaiIterasi = 0;
 		int jumSegmen = (int) Math.floor(lineOfSinyal.getItemCount()/(sampling*segmentasi));
 		String[] temp = new String[sampling*segmentasi];
 		String[][] segmen = new String[jumSegmen][sampling*segmentasi];
-		for(i=1; i<lineOfSinyal.getItemCount()-1; i++){
-			temp[j] = lineOfSinyal.getItem(i).split(", ")[kanal];
+		String delimiter = null;
+		
+		if(alatPerekaman == "Emotiv"){
+			delimiter = ", ";
+			mulaiIterasi = 1;
+		}else if(alatPerekaman == "Neurosky"){
+			delimiter = ",";
+			mulaiIterasi = 0;
+		}
+		
+		for(i=mulaiIterasi; i<lineOfSinyal.getItemCount()-mulaiIterasi; i++){
+			temp[j] = lineOfSinyal.getItem(i).split(delimiter)[kanal];
 			j++;
 			fs++;
 			if(fs == sampling){

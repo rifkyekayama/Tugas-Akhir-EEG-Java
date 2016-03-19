@@ -13,6 +13,8 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -312,6 +314,20 @@ public class EkstraksiWavelet extends JPanel {
 		panelChart.revalidate();
 	}
 	
+//	public void updateComboboxNaracoba(){
+//		String[] naracoba = new String[dbAction.getJumNaracoba()+1];
+//		
+//		naracoba[0] = "Pilih salah satu...";
+//		for(i=0;i<dbAction.getJumNaracoba();i++){
+//			naracoba[i+1] = String.valueOf(i+1);
+//		}
+//		
+//		cmbNaracoba.removeAllItems();
+//		cmbNaracoba.setModel(new DefaultComboBoxModel(naracoba));
+//		cmbNaracoba.repaint();
+//		cmbNaracoba.revalidate();
+//	}
+	
 	public void updateTabelEkstraksiWavelet(){
 		tableDataWavelet.setModel(dbAction.getListDataWavelet());
 		tableDataWavelet.repaint();
@@ -485,6 +501,10 @@ public class EkstraksiWavelet extends JPanel {
 			}else if(e.getActionCommand().equals("btnLihatGrafik")){
 				if((String)cmbNaracoba.getSelectedItem() == "Pilih salah satu..."){
 					JOptionPane.showMessageDialog(null, "Pilihan naracoba tidak boleh kosong!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				}else if(dbAction.getNeuronRileks().size() == 0 || dbAction.getNeuronNonRileks().size() == 0){
+					JOptionPane.showMessageDialog(null, "Data latih belum diekstraksi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				}else if(dbAction.getDataLatih().size() != dbAction.getJumDataWavelet()){
+					JOptionPane.showMessageDialog(null, "Data ekstraksi belum di update!", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}
 				
 				if(cbSinyalRileks.isSelected()){

@@ -287,12 +287,12 @@ public class Database {
 		return isBobotNotNull;
 	}
 	
-	public void inputSegmentasiSinyal(String[][] sinyal, int kelas, int naracoba, int samplingRate, String kanal){
+	public void inputSegmentasiSinyal(String[][] sinyal, int kelas, int naracoba, int samplingRate, String kanal, String alatPerekaman){
 		try{
 			for(int i=0;i<sinyal.length;i++){
 				String tempSinyal = Arrays.toString(sinyal[i]).substring(1, Arrays.toString(sinyal[i]).length()-1).replaceAll(",", "");
 				stmt = koneksi.createStatement();
-				stmt.executeUpdate("INSERT INTO data_latih (dataEeg, kelas, naracoba, samplingRate, kanal) VALUES ('"+tempSinyal+"', '"+kelas+"', '"+naracoba+"', '"+samplingRate+"', '"+kanal+"')");
+				stmt.executeUpdate("INSERT INTO data_latih (dataEeg, kelas, naracoba, samplingRate, kanal, alatPerekaman) VALUES ('"+tempSinyal+"', '"+kelas+"', '"+naracoba+"', '"+samplingRate+"', '"+kanal+"', '"+alatPerekaman+"')");
 			}
 			stmt.close();
 			rs.close();
@@ -375,6 +375,21 @@ public class Database {
 			e.printStackTrace();
 		}
 		return sinyalDataLatih;
+	}
+	
+	public int getJumDataWavelet(){
+		int hasil = 0;
+		try {
+			stmt = koneksi.createStatement();
+			rs = stmt.executeQuery("SELECT COUNT(*) AS total FROM wavelet");
+			hasil = rs.getInt("total");
+			stmt.close();
+			rs.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return hasil;
 	}
 	
 	public ArrayList<double[]> getDataLatihRileks(int naracoba){

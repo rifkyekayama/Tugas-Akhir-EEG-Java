@@ -39,10 +39,11 @@ public class KelolaDataLatih extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	protected JPanel panelFormEmotiv, panelFormNeurosky;
 	protected JButton btnPilihDataEEG, btnSubmitDataEEG;
 	protected JLabel lblFileDataEEG, isLockedKanal1, isLockedKanal2;
-	protected JComboBox<?> cmbKelas, cmbKanal1, cmbKanal2;
-	protected JTextField txtSegmentasi, txtSamplingrate;
+	protected JComboBox<?> cmbAlatPerekaman, cmbKelas, cmbKanal1, cmbKanal2;
+	protected JTextField txtSegmentasi, txtSamplingrate, txtKanalNeurosky;
 	protected JCheckBox cbGunakanKanal2;
 	protected DefaultTableModel tableModel;
 	protected JTable tableDataLatih;
@@ -51,6 +52,7 @@ public class KelolaDataLatih extends JPanel {
 	protected JFileChooser inputDataEEG = new JFileChooser();
 	public JProgressBar progressSubmitDataEEG;
 	public JLabel lblStatusLoading;
+	protected String[] alatPerekaman = {"Pilih salah satu...", "Emotiv", "Neurosky"};
 	protected String[] kelas = {"Pilih salah satu...", "Rileks", "Non-Rileks"};
 	protected String[] kanal = {"Pilih salah satu...", "AF3", "F7", "F3", "FC5", "T7", "P7", "O1", "O2", "P8", "T8", "FC6", "F4", "F8", "AF4"};
 	protected Database dbAction;
@@ -86,9 +88,21 @@ public class KelolaDataLatih extends JPanel {
 		lblTitleInputDataLatih.setBounds(15, 0, 150, 30);
 		panelFormDataLatih.add(lblTitleInputDataLatih);
 		
-		JLabel lblPilihDataEEG = new JLabel("Pilih Data EEG");
+		JLabel lblPilihAlatPerekaman = new JLabel("Pilih Alat Perekaman :");
+		lblPilihAlatPerekaman.setFont(lblPilihAlatPerekaman.getFont().deriveFont(Font.BOLD, 15f));
+		lblPilihAlatPerekaman.setBounds(15, 30, 200, 30);
+		panelFormDataLatih.add(lblPilihAlatPerekaman);
+		
+		cmbAlatPerekaman = new JComboBox<>(alatPerekaman);
+		cmbAlatPerekaman.setBackground(Color.white);
+		cmbAlatPerekaman.setBounds(15, 60, 420, 30);
+		cmbAlatPerekaman.setActionCommand("cmbAlatPerekaman");
+		cmbAlatPerekaman.addActionListener(new ButtonController());
+		panelFormDataLatih.add(cmbAlatPerekaman);
+		
+		JLabel lblPilihDataEEG = new JLabel("Pilih Data EEG :");
 		lblPilihDataEEG.setFont(lblPilihDataEEG.getFont().deriveFont(Font.BOLD, 15f));
-		lblPilihDataEEG.setBounds(15, 30, 150, 30);
+		lblPilihDataEEG.setBounds(15, 100, 150, 30);
 		panelFormDataLatih.add(lblPilihDataEEG);
 		
 		btnPilihDataEEG = new JButton("Pilih File");
@@ -97,94 +111,52 @@ public class KelolaDataLatih extends JPanel {
 		btnPilihDataEEG.setBorderPainted(false);
 		btnPilihDataEEG.addMouseListener(new MouseController());
 		btnPilihDataEEG.addActionListener(new ButtonController());
-		btnPilihDataEEG.setBounds(15, 60, 120, 25);
+		btnPilihDataEEG.setBounds(15, 130, 120, 25);
+		btnPilihDataEEG.setEnabled(false);
 		panelFormDataLatih.add(btnPilihDataEEG);
 		
 		lblFileDataEEG = new JLabel("Tidak ada file dipilih.");
-		lblFileDataEEG.setBounds(140, 60, 300, 30);
+		lblFileDataEEG.setBounds(140, 130, 300, 30);
 		panelFormDataLatih.add(lblFileDataEEG);
-		
-		JLabel lblKetDataEEG = new JLabel("<html>Data yang dimasukan harus bertipe .CSV dan terdiri dari<br>14 kanal.</html>");
-		lblKetDataEEG.setForeground(new Color(115, 115, 115));
-		lblKetDataEEG.setBounds(15, 90, 500, 30);
-		panelFormDataLatih.add(lblKetDataEEG);
 			
 		JLabel lblKelas = new JLabel("Kelas :");
 		lblKelas.setFont(lblKelas.getFont().deriveFont(Font.BOLD, 15f));
-		lblKelas.setBounds(15, 140, 100, 30);
+		lblKelas.setBounds(15, 160, 110, 30);
 		panelFormDataLatih.add(lblKelas);
 		
 		cmbKelas = new JComboBox<>(kelas);
 		cmbKelas.setBackground(Color.white);
-		cmbKelas.setBounds(15, 170, 420, 30);
+		cmbKelas.setBounds(15, 190, 420, 30);
 		panelFormDataLatih.add(cmbKelas);
 		
 		JLabel lblSegmentasi = new JLabel("Segmentasi (per detik) :");
 		lblSegmentasi.setFont(lblSegmentasi.getFont().deriveFont(Font.BOLD, 15f));
-		lblSegmentasi.setBounds(15, 210, 205, 30);
+		lblSegmentasi.setBounds(15, 230, 205, 30);
 		panelFormDataLatih.add(lblSegmentasi);
 		
 		txtSegmentasi = new JTextField("60");
-		txtSegmentasi.setBounds(15, 240, 205, 30);
+		txtSegmentasi.setBounds(15, 260, 205, 30);
 		panelFormDataLatih.add(txtSegmentasi);
 		
 		JLabel lblSamplingRate = new JLabel("Sampling rate (Hertz) :");
 		lblSamplingRate.setFont(lblSamplingRate.getFont().deriveFont(Font.BOLD, 15f));
-		lblSamplingRate.setBounds(panelFormDataLatih.getWidth()-220, 210, 205, 30);
+		lblSamplingRate.setBounds(panelFormDataLatih.getWidth()-220, 230, 205, 30);
 		panelFormDataLatih.add(lblSamplingRate);
 		
-		txtSamplingrate = new JTextField("128");
-		txtSamplingrate.setBounds(panelFormDataLatih.getWidth()-220, 240, 205, 30);
+		txtSamplingrate = new JTextField();
+		txtSamplingrate.setBounds(panelFormDataLatih.getWidth()-220, 260, 205, 30);
+		txtSamplingrate.setEnabled(false);
 		panelFormDataLatih.add(txtSamplingrate);
-		
-		cbGunakanKanal2 = new JCheckBox("Gunakan Kanal 2", false);
-		cbGunakanKanal2.setBackground(Color.white);
-		cbGunakanKanal2.setBounds(panelFormDataLatih.getWidth()-220, 280, 205, 30);
-		cbGunakanKanal2.setActionCommand("cekKanal2");
-		cbGunakanKanal2.addActionListener(new ButtonController());
-		panelFormDataLatih.add(cbGunakanKanal2);
-		
-		isLockedKanal1 = new JLabel("Dikunci!");
-		isLockedKanal1.setFont(isLockedKanal1.getFont().deriveFont(Font.BOLD, 15f));
-		isLockedKanal1.setForeground(Color.red);
-		isLockedKanal1.setBounds(90, 310, 150, 30);
-		panelFormDataLatih.add(isLockedKanal1);
-		
-		JLabel lblKanal1 = new JLabel("Kanal 1 :");
-		lblKanal1.setFont(lblKanal1.getFont().deriveFont(Font.BOLD, 15f));
-		lblKanal1.setBounds(15, 310, 205, 30);
-		panelFormDataLatih.add(lblKanal1);
-		
-		cmbKanal1 = new JComboBox<>(kanal);
-		cmbKanal1.setBackground(Color.white);
-		cmbKanal1.setBounds(15, 340, 205, 30);
-		panelFormDataLatih.add(cmbKanal1);
-		
-		isLockedKanal2 = new JLabel("Dikunci!");
-		isLockedKanal2.setFont(isLockedKanal2.getFont().deriveFont(Font.BOLD, 15f));
-		isLockedKanal2.setForeground(Color.red);
-		isLockedKanal2.setBounds(305, 310, 150, 30);
-		panelFormDataLatih.add(isLockedKanal2);
-		
-		JLabel lblKanal2 = new JLabel("Kanal 2 :");
-		lblKanal2.setFont(lblKanal2.getFont().deriveFont(Font.BOLD, 15f));
-		lblKanal2.setBounds(panelFormDataLatih.getWidth()-220, 310, 205, 30);
-		panelFormDataLatih.add(lblKanal2);
-		
-		cmbKanal2 = new JComboBox<>(kanal);
-		cmbKanal2.setBackground(Color.white);
-		cmbKanal2.setBounds(panelFormDataLatih.getWidth()-220, 340, 205, 30);
-		cmbKanal2.setEnabled(false);
-		panelFormDataLatih.add(cmbKanal2);
 		
 		btnSubmitDataEEG = new JButton("Mulai");
 		btnSubmitDataEEG.setForeground(Color.white);
 		btnSubmitDataEEG.setBackground(new Color(60, 137, 185));
 		btnSubmitDataEEG.setActionCommand("submitDataEEG");
-		btnSubmitDataEEG.setBounds(15, 390, 420, 50);
+		btnSubmitDataEEG.setBounds(15, 405, 420, 40);
 		btnSubmitDataEEG.addMouseListener(new MouseController());
 		btnSubmitDataEEG.addActionListener(new ButtonController());
 		btnSubmitDataEEG.setVisible(true);
+		btnSubmitDataEEG.setEnabled(false);
 		panelFormDataLatih.add(btnSubmitDataEEG);
 		
 		progressSubmitDataEEG = new JProgressBar();
@@ -193,6 +165,9 @@ public class KelolaDataLatih extends JPanel {
 		progressSubmitDataEEG.setBackground(new Color(251, 252, 252));
 		progressSubmitDataEEG.setStringPainted(true);
 		progressSubmitDataEEG.setVisible(true);
+		
+		panelFormDataLatih.add(panelFormEmotiv());
+		panelFormDataLatih.add(panelFormNeurosky());
 		
 		JPanel panelStatusLoading = new JPanel(new GridBagLayout());
 		panelStatusLoading.setBounds(15, 500, 420, 30);
@@ -261,6 +236,76 @@ public class KelolaDataLatih extends JPanel {
 		return panelContent;
 	}
 	
+	public JPanel panelFormEmotiv(){
+		panelFormEmotiv = new JPanel();
+		panelFormEmotiv.setLayout(null);
+		panelFormEmotiv.setBounds(0, 0, 450, 460);
+		panelFormEmotiv.setBackground(Color.white);
+		panelFormEmotiv.setVisible(false);
+		
+		cbGunakanKanal2 = new JCheckBox("Gunakan Kanal 2", false);
+		cbGunakanKanal2.setBackground(Color.white);
+		cbGunakanKanal2.setBounds(panelFormEmotiv.getWidth()-220, 300, 205, 30);
+		cbGunakanKanal2.setActionCommand("cekKanal2");
+		cbGunakanKanal2.addActionListener(new ButtonController());
+		panelFormEmotiv.add(cbGunakanKanal2);
+		
+		isLockedKanal1 = new JLabel("Dikunci!");
+		isLockedKanal1.setFont(isLockedKanal1.getFont().deriveFont(Font.BOLD, 15f));
+		isLockedKanal1.setForeground(Color.red);
+		isLockedKanal1.setBounds(90, 330, 150, 30);
+		panelFormEmotiv.add(isLockedKanal1);
+		
+		JLabel lblKanal1 = new JLabel("Kanal 1 :");
+		lblKanal1.setFont(lblKanal1.getFont().deriveFont(Font.BOLD, 15f));
+		lblKanal1.setBounds(15, 330, 205, 30);
+		panelFormEmotiv.add(lblKanal1);
+		
+		cmbKanal1 = new JComboBox<>(kanal);
+		cmbKanal1.setBackground(Color.white);
+		cmbKanal1.setBounds(15, 360, 205, 30);
+		panelFormEmotiv.add(cmbKanal1);
+		
+		isLockedKanal2 = new JLabel("Dikunci!");
+		isLockedKanal2.setFont(isLockedKanal2.getFont().deriveFont(Font.BOLD, 15f));
+		isLockedKanal2.setForeground(Color.red);
+		isLockedKanal2.setBounds(305, 330, 150, 30);
+		panelFormEmotiv.add(isLockedKanal2);
+		
+		JLabel lblKanal2 = new JLabel("Kanal 2 :");
+		lblKanal2.setFont(lblKanal2.getFont().deriveFont(Font.BOLD, 15f));
+		lblKanal2.setBounds(panelFormEmotiv.getWidth()-220, 330, 205, 30);
+		panelFormEmotiv.add(lblKanal2);
+		
+		cmbKanal2 = new JComboBox<>(kanal);
+		cmbKanal2.setBackground(Color.white);
+		cmbKanal2.setBounds(panelFormEmotiv.getWidth()-220, 360, 205, 30);
+		cmbKanal2.setEnabled(false);
+		panelFormEmotiv.add(cmbKanal2);
+		
+		return panelFormEmotiv;
+	}
+	
+	public JPanel panelFormNeurosky(){
+		panelFormNeurosky = new JPanel();
+		panelFormNeurosky.setLayout(null);
+		panelFormNeurosky.setBounds(0, 0, 450, 460);
+		panelFormNeurosky.setBackground(Color.white);
+		panelFormNeurosky.setVisible(false);
+		
+		JLabel lblKanal1 = new JLabel("Kanal :");
+		lblKanal1.setFont(lblKanal1.getFont().deriveFont(Font.BOLD, 15f));
+		lblKanal1.setBounds(15, 310, 205, 30);
+		panelFormNeurosky.add(lblKanal1);
+		
+		txtKanalNeurosky = new JTextField("FP1");
+		txtKanalNeurosky.setBounds(15, 340, 420, 30);
+		txtKanalNeurosky.setEnabled(false);
+		panelFormNeurosky.add(txtKanalNeurosky);
+		
+		return panelFormNeurosky;
+	}
+	
 	public void updateTableDataLatih(){
 		tableDataLatih.setModel(dbAction.getListDataLatih());
 		tableDataLatih.repaint();
@@ -305,6 +350,34 @@ public class KelolaDataLatih extends JPanel {
 			cbGunakanKanal2.setVisible(true);
 			isLockedKanal1.setVisible(false);
 			isLockedKanal2.setVisible(false);
+		}
+	}
+	
+	public void changeSettingAlatPerekaman(String jenisAlat){
+		if(jenisAlat == "kosong"){
+			btnPilihDataEEG.setEnabled(false);
+			btnSubmitDataEEG.setEnabled(false);
+			panelFormEmotiv.setVisible(false);
+			panelFormNeurosky.setVisible(false);
+			txtSamplingrate.setText("");
+			cbGunakanKanal2.setSelected(false);
+			cmbKanal2.setEnabled(false);
+		}else if(jenisAlat == "emotiv"){
+			btnPilihDataEEG.setEnabled(true);
+			btnSubmitDataEEG.setEnabled(true);
+			panelFormEmotiv.setVisible(true);
+			panelFormNeurosky.setVisible(false);
+			txtSamplingrate.setText("128");
+			cbGunakanKanal2.setSelected(false);
+			cmbKanal2.setEnabled(false);
+		}else if(jenisAlat == "neurosky"){
+			btnPilihDataEEG.setEnabled(true);
+			btnSubmitDataEEG.setEnabled(true);
+			panelFormEmotiv.setVisible(false);
+			panelFormNeurosky.setVisible(true);
+			txtSamplingrate.setText("512");
+			cbGunakanKanal2.setSelected(false);
+			cmbKanal2.setEnabled(false);
 		}
 	}
 	
@@ -358,16 +431,23 @@ public class KelolaDataLatih extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			if(e.getActionCommand().equals("cekKanal2")){
-				if(cmbKanal2.isEnabled() == true){
-					cmbKanal2.setEnabled(false);
-				}else{
-					cmbKanal2.setEnabled(true);
+			if(e.getActionCommand().equals("cmbAlatPerekaman")){
+				if((String)cmbAlatPerekaman.getSelectedItem() == "Pilih salah satu..."){
+					changeSettingAlatPerekaman("kosong");
+				}else if((String)cmbAlatPerekaman.getSelectedItem() == "Emotiv"){
+					changeSettingAlatPerekaman("emotiv");
+				}else if((String)cmbAlatPerekaman.getSelectedItem() == "Neurosky"){
+					changeSettingAlatPerekaman("neurosky");
 				}
 			}else if(e.getActionCommand().equals("pilihDataEEG")){
-				FileNameExtensionFilter filterFile = new FileNameExtensionFilter("CSV FILE", "csv");
+				if((String)cmbAlatPerekaman.getSelectedItem() == "Emotiv"){
+					FileNameExtensionFilter filterFile = new FileNameExtensionFilter("CSV FILE", "csv");
+					inputDataEEG.setFileFilter(filterFile);
+				}else if((String)cmbAlatPerekaman.getSelectedItem() == "Neurosky"){
+					FileNameExtensionFilter filterFile = new FileNameExtensionFilter("TXT FILE", "txt");
+					inputDataEEG.setFileFilter(filterFile);
+				}
 				inputDataEEG.setCurrentDirectory(inputDataEEG.getCurrentDirectory());
-				inputDataEEG.setFileFilter(filterFile);
 				inputDataEEG.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				inputDataEEG.setMultiSelectionEnabled(true);
 				if(inputDataEEG.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
@@ -384,6 +464,12 @@ public class KelolaDataLatih extends JPanel {
 						fullPathDataEEG[0] = (String)file1[0].getAbsolutePath();
 					}
 				}
+			}else if(e.getActionCommand().equals("cekKanal2")){
+				if(cmbKanal2.isEnabled() == true){
+					cmbKanal2.setEnabled(false);
+				}else{
+					cmbKanal2.setEnabled(true);
+				}
 			}else if(e.getActionCommand().equals("submitDataEEG")){
 				if(fullPathDataEEG == null){
 					JOptionPane.showMessageDialog(null, "Sinyal EEG belum dipilih", "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -393,17 +479,27 @@ public class KelolaDataLatih extends JPanel {
 					JOptionPane.showMessageDialog(null, "Segmentasi tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else if(txtSamplingrate == null){
 					JOptionPane.showMessageDialog(null, "Sampling Rate tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				}else if((String)cmbKanal1.getSelectedItem() == "Pilih salah satu..."){
-					JOptionPane.showMessageDialog(null, "Pilihan Kanal 1 tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				}else if(cmbKanal2.isEnabled() == true && (String)cmbKanal2.getSelectedItem() == "Pilih salah satu..."){
-					JOptionPane.showMessageDialog(null, "Pilihan Kanal 2 tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else{
+					if((String)cmbAlatPerekaman.getSelectedItem() == "Emotiv"){
+						if((String)cmbKanal1.getSelectedItem() == "Pilih salah satu..."){
+							JOptionPane.showMessageDialog(null, "Pilihan Kanal 1 tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+						}else if(cmbKanal2.isEnabled() == true && (String)cmbKanal2.getSelectedItem() == "Pilih salah satu..."){
+							JOptionPane.showMessageDialog(null, "Pilihan Kanal 2 tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+						}
+					}
+					
 					if(cbGunakanKanal2.isSelected() == false){
-						dataLatih = new DataLatih(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), null);
+						String kanal = null;
+						if((String)cmbAlatPerekaman.getSelectedItem() == "Emotiv"){
+							kanal = (String)cmbKanal1.getSelectedItem();
+						}else if((String)cmbAlatPerekaman.getSelectedItem() == "Neurosky"){
+							kanal = (String)txtKanalNeurosky.getText();
+						}
+						dataLatih = new DataLatih(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), kanal, null, (String)cmbAlatPerekaman.getSelectedItem());
 						CoreKelolaDataLatih coreKelolaDataLatih = new CoreKelolaDataLatih(dataLatih);
 						coreKelolaDataLatih.execute();
 					}else{
-						dataLatih = new DataLatih(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), (String)cmbKanal2.getSelectedItem());
+						dataLatih = new DataLatih(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), (String)cmbKanal2.getSelectedItem(), (String)cmbAlatPerekaman.getSelectedItem());
 						CoreKelolaDataLatih coreKelolaDataLatih = new CoreKelolaDataLatih(dataLatih);
 						coreKelolaDataLatih.execute();
 					}
@@ -435,22 +531,22 @@ public class KelolaDataLatih extends JPanel {
 				lblStatusLoading.setText("membaca EEG signal ke "+(i+1));
 				progressSubmitDataEEG.setValue(progress+=progressDistance);
 				
-				dataLatih.dataEeg = dataLatih.readCsv(dataLatih.pathFile[i]);
+				dataLatih.dataEeg = dataLatih.readFile(dataLatih.pathFile[i]);
 				if(dataLatih.kanal2 == null){
 					sinyalKanal1 = new String[(int) Math.floor(dataLatih.dataEeg.getItemCount()/(dataLatih.samplingRate*dataLatih.segmentasi))][dataLatih.dataEeg.getItemCount()-1];
-					sinyalKanal1 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal1), dataLatih.segmentasi, dataLatih.samplingRate);
+					sinyalKanal1 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal1), dataLatih.segmentasi, dataLatih.samplingRate, dataLatih.alatPerekaman);
 					kanal = Integer.toString(dataLatih.kanalToInt(dataLatih.kanal1));
-					dbAction.inputSegmentasiSinyal(sinyalKanal1, dataLatih.kelasToInt(dataLatih.kelas), naracoba, dataLatih.samplingRate, kanal);
+					dbAction.inputSegmentasiSinyal(sinyalKanal1, dataLatih.kelasToInt(dataLatih.kelas), naracoba, dataLatih.samplingRate, kanal, dataLatih.alatPerekaman);
 					updateTableDataLatih();
 				}else{
 					sinyalKanal1 = new String[(int) Math.floor(dataLatih.dataEeg.getItemCount()/(dataLatih.samplingRate*dataLatih.segmentasi))][dataLatih.dataEeg.getItemCount()-1];
-					sinyalKanal1 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal1), dataLatih.segmentasi, dataLatih.samplingRate);
+					sinyalKanal1 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal1), dataLatih.segmentasi, dataLatih.samplingRate, dataLatih.alatPerekaman);
 					sinyalKanal2 = new String[(int) Math.floor(dataLatih.dataEeg.getItemCount()/(dataLatih.samplingRate*dataLatih.segmentasi))][dataLatih.dataEeg.getItemCount()-1];
-					sinyalKanal2 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal2), dataLatih.segmentasi, dataLatih.samplingRate);
+					sinyalKanal2 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal2), dataLatih.segmentasi, dataLatih.samplingRate, dataLatih.alatPerekaman);
 					kanalMerge = new String[sinyalKanal1.length][sinyalKanal1[0].length+sinyalKanal2[0].length];
 					kanalMerge = dataLatih.gabungkanArray(sinyalKanal1, sinyalKanal2);
 					kanal = Integer.toString(dataLatih.kanalToInt(dataLatih.kanal1))+","+Integer.toString(dataLatih.kanalToInt(dataLatih.kanal2));
-					dbAction.inputSegmentasiSinyal(kanalMerge, dataLatih.kelasToInt(dataLatih.kelas), naracoba, dataLatih.samplingRate, kanal);
+					dbAction.inputSegmentasiSinyal(kanalMerge, dataLatih.kelasToInt(dataLatih.kelas), naracoba, dataLatih.samplingRate, kanal, dataLatih.alatPerekaman);
 					updateTableDataLatih();
 				}
 			}

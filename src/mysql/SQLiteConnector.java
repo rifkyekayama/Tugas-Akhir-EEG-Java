@@ -55,7 +55,8 @@ public class SQLiteConnector {
 					  "kelas			INTEGER," +
 					  "naracoba			INTEGER," +
 					  "samplingRate		INTEGER," +
-					  "kanal			TEXT)";
+					  "kanal			TEXT," +
+					  "alatPerekaman	TEXT)";
 				stmt.executeUpdate(sql);
 			}
 		} catch (SQLException e) {

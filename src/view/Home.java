@@ -112,6 +112,7 @@ public class Home extends JFrame {
 		kelolaDataLatih.updateTableDataLatih();
 		editDataLatih.updateTableEditDataLatih();
 		ekstraksiWavelet.updateTabelEkstraksiWavelet();
+//		ekstraksiWavelet.updateComboboxNaracoba();
 	}
 	
 	public static void changeCard(String cardName){
