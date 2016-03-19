@@ -41,12 +41,13 @@ public class Pengujian extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	protected JPanel panelHasilRileks, panelHasilNonRileks, panelHasilPengujian;
+	protected JPanel panelFormEmotiv, panelFormNeurosky, panelHasilRileks, 
+					 panelHasilNonRileks, panelHasilPengujian;
 	protected JButton btnPilihDataEEG, btnSubmitDataEEG;
-	protected JLabel lblFileDataEEG, lblHasilPengujian, lblJumPresentaseRileks, lblJumPresentaseNonRileks,
-					 isLockedKanal1, isLockedKanal2;
-	protected JComboBox<?> cmbKanal1, cmbKanal2;
-	protected JTextField txtSegmentasi, txtSamplingrate;
+	protected JLabel lblFileDataEEG, lblHasilPengujian, lblJumPresentaseRileks, 
+					 lblJumPresentaseNonRileks,isLockedKanal1, isLockedKanal2;
+	protected JComboBox<?> cmbAlatPerekaman, cmbKanal1, cmbKanal2;
+	protected JTextField txtSegmentasi, txtSamplingrate, txtKanalNeurosky;
 	protected JCheckBox cbGunakanKanal2;
 	protected DefaultTableModel tableModel;
 	protected JTable tableDataUji;
@@ -55,6 +56,7 @@ public class Pengujian extends JPanel {
 	protected JFileChooser inputDataEEG = new JFileChooser();
 	public JProgressBar progressSubmitDataEEG;
 	public JLabel lblStatusLoading;
+	protected String[] alatPerekaman = {"Pilih salah satu...", "Emotiv", "Neurosky"};
 	protected String[] kanal = {"Pilih salah satu...", "AF3", "F7", "F3", "FC5", "T7", "P7", "O1", "O2", "P8", "T8", "FC6", "F4", "F8", "AF4"};
 	protected Database dbAction;
 	protected Wavelet wavelet;
@@ -70,6 +72,7 @@ public class Pengujian extends JPanel {
 		centerTable.setHorizontalAlignment(SwingConstants.CENTER);
 		add(getContent());
 		add(new Layout("Pengujian Sistem"));
+		updateStatusAlatPerekaman();
 		updateStatusKanal();
 	}
 	
@@ -88,95 +91,65 @@ public class Pengujian extends JPanel {
 		lblTitleInputDataLatih.setBounds(15, 0, 150, 30);
 		panelFormDataUji.add(lblTitleInputDataLatih);
 		
+		JLabel lblPilihAlatPerekaman = new JLabel("Pilih Alat Perekaman :");
+		lblPilihAlatPerekaman.setFont(lblPilihAlatPerekaman.getFont().deriveFont(Font.BOLD, 15f));
+		lblPilihAlatPerekaman.setBounds(15, 30, 200, 30);
+		panelFormDataUji.add(lblPilihAlatPerekaman);
+		
+		cmbAlatPerekaman = new JComboBox<>(alatPerekaman);
+		cmbAlatPerekaman.setBackground(Color.white);
+		cmbAlatPerekaman.setBounds(15, 60, 420, 30);
+		cmbAlatPerekaman.setActionCommand("cmbAlatPerekaman");
+		cmbAlatPerekaman.addActionListener(new ButtonController());
+		panelFormDataUji.add(cmbAlatPerekaman);
+		
 		JLabel lblPilihDataEEG = new JLabel("Pilih Data EEG");
 		lblPilihDataEEG.setFont(lblPilihDataEEG.getFont().deriveFont(Font.BOLD, 15f));
-		lblPilihDataEEG.setBounds(15, 30, 150, 30);
+		lblPilihDataEEG.setBounds(15, 100, 150, 30);
 		panelFormDataUji.add(lblPilihDataEEG);
 		
-		btnPilihDataEEG = new JButton("Choose File");
+		btnPilihDataEEG = new JButton("Pilih File");
 		btnPilihDataEEG.setBackground(Color.lightGray);
 		btnPilihDataEEG.setActionCommand("pilihDataEEG");
 		btnPilihDataEEG.setBorderPainted(false);
 		btnPilihDataEEG.addMouseListener(new MouseController());
 		btnPilihDataEEG.addActionListener(new ButtonController());
-		btnPilihDataEEG.setBounds(15, 60, 120, 25);
+		btnPilihDataEEG.setBounds(15, 130, 120, 25);
 		panelFormDataUji.add(btnPilihDataEEG);
 		
-		lblFileDataEEG = new JLabel("No file chosen");
-		lblFileDataEEG.setBounds(140, 60, 300, 30);
+		lblFileDataEEG = new JLabel("Tidak ada file dipilih.");
+		lblFileDataEEG.setBounds(140, 130, 300, 30);
 		panelFormDataUji.add(lblFileDataEEG);
-		
-		JLabel lblKetDataEEG = new JLabel("<html>Data yang dimasukan harus bertipe .CSV dan terdiri dari<br>14 kanal.</html>");
-		lblKetDataEEG.setForeground(new Color(115, 115, 115));
-		lblKetDataEEG.setBounds(15, 90, 500, 30);
-		panelFormDataUji.add(lblKetDataEEG);
 		
 		JLabel lblSegmentasi = new JLabel("Segmentasi (per detik) :");
 		lblSegmentasi.setFont(lblSegmentasi.getFont().deriveFont(Font.BOLD, 15f));
-		lblSegmentasi.setBounds(15, 120, 205, 30);
+		lblSegmentasi.setBounds(15, 160, 205, 30);
 		panelFormDataUji.add(lblSegmentasi);
 		
 		txtSegmentasi = new JTextField("60");
-		txtSegmentasi.setBounds(15, 150, 205, 30);
+		txtSegmentasi.setBounds(15, 190, 205, 30);
 		panelFormDataUji.add(txtSegmentasi);
 		
 		JLabel lblSamplingRate = new JLabel("Sampling rate (Hertz) :");
 		lblSamplingRate.setFont(lblSamplingRate.getFont().deriveFont(Font.BOLD, 15f));
-		lblSamplingRate.setBounds(panelFormDataUji.getWidth()-220, 120, 205, 30);
+		lblSamplingRate.setBounds(panelFormDataUji.getWidth()-220, 160, 205, 30);
 		panelFormDataUji.add(lblSamplingRate);
 		
 		txtSamplingrate = new JTextField("128");
-		txtSamplingrate.setBounds(panelFormDataUji.getWidth()-220, 150, 205, 30);
+		txtSamplingrate.setBounds(panelFormDataUji.getWidth()-220, 190, 205, 30);
 		panelFormDataUji.add(txtSamplingrate);
-		
-		cbGunakanKanal2 = new JCheckBox("Gunakan Kanal 2", false);
-		cbGunakanKanal2.setBackground(Color.white);
-		cbGunakanKanal2.setBounds(panelFormDataUji.getWidth()-220, 190, 205, 30);
-		cbGunakanKanal2.setActionCommand("cekKanal2");
-		cbGunakanKanal2.addActionListener(new ButtonController());
-		panelFormDataUji.add(cbGunakanKanal2);
-		
-		isLockedKanal1 = new JLabel("Locked!");
-		isLockedKanal1.setFont(isLockedKanal1.getFont().deriveFont(Font.BOLD, 15f));
-		isLockedKanal1.setForeground(Color.red);
-		isLockedKanal1.setBounds(90, 220, 150, 30);
-		panelFormDataUji.add(isLockedKanal1);
-		
-		JLabel lblKanal1 = new JLabel("Kanal 1 :");
-		lblKanal1.setFont(lblKanal1.getFont().deriveFont(Font.BOLD, 15f));
-		lblKanal1.setBounds(15, 220, 205, 30);
-		panelFormDataUji.add(lblKanal1);
-		
-		cmbKanal1 = new JComboBox<>(kanal);
-		cmbKanal1.setBackground(Color.white);
-		cmbKanal1.setBounds(15, 250, 205, 30);
-		panelFormDataUji.add(cmbKanal1);
-		
-		isLockedKanal2 = new JLabel("Locked!");
-		isLockedKanal2.setFont(isLockedKanal2.getFont().deriveFont(Font.BOLD, 15f));
-		isLockedKanal2.setForeground(Color.red);
-		isLockedKanal2.setBounds(305, 220, 150, 30);
-		panelFormDataUji.add(isLockedKanal2);
-		
-		JLabel lblKanal2 = new JLabel("Kanal 2 :");
-		lblKanal2.setFont(lblKanal2.getFont().deriveFont(Font.BOLD, 15f));
-		lblKanal2.setBounds(panelFormDataUji.getWidth()-220, 220, 205, 30);
-		panelFormDataUji.add(lblKanal2);
-		
-		cmbKanal2 = new JComboBox<>(kanal);
-		cmbKanal2.setBackground(Color.white);
-		cmbKanal2.setBounds(panelFormDataUji.getWidth()-220, 250, 205, 30);
-		cmbKanal2.setEnabled(false);
-		panelFormDataUji.add(cmbKanal2);
 		
 		btnSubmitDataEEG = new JButton("Mulai Pengujian");
 		btnSubmitDataEEG.setForeground(Color.white);
 		btnSubmitDataEEG.setBackground(new Color(60, 137, 185));
 		btnSubmitDataEEG.setActionCommand("submitDataEEG");
-		btnSubmitDataEEG.setBounds(15, 290, 420, 50);
+		btnSubmitDataEEG.setBounds(15, 305, 420, 40);
 		btnSubmitDataEEG.addMouseListener(new MouseController());
 		btnSubmitDataEEG.addActionListener(new ButtonController());
 		panelFormDataUji.add(btnSubmitDataEEG);
+		
+		panelFormDataUji.add(panelFormEmotiv());
+		panelFormDataUji.add(panelFormNeurosky());
 		
 		progressSubmitDataEEG = new JProgressBar();
 		progressSubmitDataEEG.setBounds(15, 370, 420, 30);
@@ -273,6 +246,123 @@ public class Pengujian extends JPanel {
 		return panelContent;
 	}
 	
+	public JPanel panelFormEmotiv(){
+		panelFormEmotiv = new JPanel();
+		panelFormEmotiv.setLayout(null);
+		panelFormEmotiv.setBounds(0, 0, 450, 460);
+		panelFormEmotiv.setBackground(Color.white);
+		panelFormEmotiv.setVisible(false);
+		
+		cbGunakanKanal2 = new JCheckBox("Gunakan Kanal 2", false);
+		cbGunakanKanal2.setBackground(Color.white);
+		cbGunakanKanal2.setBounds(panelFormEmotiv.getWidth()-220, 300, 205, 30);
+		cbGunakanKanal2.setActionCommand("cekKanal2");
+		cbGunakanKanal2.addActionListener(new ButtonController());
+		cbGunakanKanal2.setVisible(false);
+		panelFormEmotiv.add(cbGunakanKanal2);
+		
+		isLockedKanal1 = new JLabel("Dikunci!");
+		isLockedKanal1.setFont(isLockedKanal1.getFont().deriveFont(Font.BOLD, 15f));
+		isLockedKanal1.setForeground(Color.red);
+		isLockedKanal1.setBounds(90, 230, 150, 30);
+		panelFormEmotiv.add(isLockedKanal1);
+		
+		JLabel lblKanal1 = new JLabel("Kanal 1 :");
+		lblKanal1.setFont(lblKanal1.getFont().deriveFont(Font.BOLD, 15f));
+		lblKanal1.setBounds(15, 230, 205, 30);
+		panelFormEmotiv.add(lblKanal1);
+		
+		cmbKanal1 = new JComboBox<>(kanal);
+		cmbKanal1.setBackground(Color.white);
+		cmbKanal1.setBounds(15, 260, 205, 30);
+		panelFormEmotiv.add(cmbKanal1);
+		
+		isLockedKanal2 = new JLabel("Dikunci!");
+		isLockedKanal2.setFont(isLockedKanal2.getFont().deriveFont(Font.BOLD, 15f));
+		isLockedKanal2.setForeground(Color.red);
+		isLockedKanal2.setBounds(305, 230, 150, 30);
+		panelFormEmotiv.add(isLockedKanal2);
+		
+		JLabel lblKanal2 = new JLabel("Kanal 2 :");
+		lblKanal2.setFont(lblKanal2.getFont().deriveFont(Font.BOLD, 15f));
+		lblKanal2.setBounds(panelFormEmotiv.getWidth()-220, 230, 205, 30);
+		panelFormEmotiv.add(lblKanal2);
+		
+		cmbKanal2 = new JComboBox<>(kanal);
+		cmbKanal2.setBackground(Color.white);
+		cmbKanal2.setBounds(panelFormEmotiv.getWidth()-220, 260, 205, 30);
+		cmbKanal2.setEnabled(false);
+		panelFormEmotiv.add(cmbKanal2);
+		
+		return panelFormEmotiv;
+	}
+	
+	public JPanel panelFormNeurosky(){
+		panelFormNeurosky = new JPanel();
+		panelFormNeurosky.setLayout(null);
+		panelFormNeurosky.setBounds(0, 0, 450, 460);
+		panelFormNeurosky.setBackground(Color.white);
+		panelFormNeurosky.setVisible(false);
+		
+		JLabel lblKanal1 = new JLabel("Kanal :");
+		lblKanal1.setFont(lblKanal1.getFont().deriveFont(Font.BOLD, 15f));
+		lblKanal1.setBounds(15, 230, 205, 30);
+		panelFormNeurosky.add(lblKanal1);
+		
+		txtKanalNeurosky = new JTextField("FP1");
+		txtKanalNeurosky.setBounds(15, 260, 420, 30);
+		txtKanalNeurosky.setEnabled(false);
+		panelFormNeurosky.add(txtKanalNeurosky);
+		
+		return panelFormNeurosky;
+	}
+	
+	public void changeSettingAlatPerekaman(int jenisAlat){
+		if(jenisAlat == 0){
+			resetFormDataUji();
+			btnPilihDataEEG.setEnabled(false);
+			btnSubmitDataEEG.setEnabled(false);
+			panelFormEmotiv.setVisible(false);
+			panelFormNeurosky.setVisible(false);
+			txtSamplingrate.setText("");
+			cbGunakanKanal2.setSelected(false);
+			cmbKanal2.setEnabled(false);
+		}else if(jenisAlat == 1){
+			resetFormDataUji();
+			updateStatusKanal();
+			btnPilihDataEEG.setEnabled(true);
+			btnSubmitDataEEG.setEnabled(true);
+			panelFormEmotiv.setVisible(true);
+			panelFormNeurosky.setVisible(false);
+			txtSamplingrate.setText("128");
+			cbGunakanKanal2.setSelected(false);
+			cmbKanal2.setEnabled(false);
+		}else if(jenisAlat == 2){
+			resetFormDataUji();
+			btnPilihDataEEG.setEnabled(true);
+			btnSubmitDataEEG.setEnabled(true);
+			panelFormEmotiv.setVisible(false);
+			panelFormNeurosky.setVisible(true);
+			txtSamplingrate.setText("512");
+			cbGunakanKanal2.setSelected(false);
+			cmbKanal2.setEnabled(false);
+		}
+	}
+	
+	public void updateStatusAlatPerekaman(){
+		if(dbAction.getAlatPerekaman() != null){
+			int indexAlat = 0;
+			switch (dbAction.getAlatPerekaman()) {
+				case "Emotiv": indexAlat = 1;break;
+				case "Neurosky": indexAlat = 2;break;
+				default: indexAlat = 0;break;
+			};
+			changeSettingAlatPerekaman(indexAlat);
+			cmbAlatPerekaman.setSelectedItem(dbAction.getAlatPerekaman());
+			cmbAlatPerekaman.setEnabled(false);
+		}
+	}
+	
 	public DefaultTableModel initTableModelPengujian(String[] kondisi){
 		DefaultTableModel tableModel = new DefaultTableModel(){
 			private static final long serialVersionUID = 1L;
@@ -313,8 +403,8 @@ public class Pengujian extends JPanel {
 	public void resetFormDataUji(){
 		fullPathDataEEG = null;
 		lblFileDataEEG.setText("No file chosen");
-		txtSegmentasi.setText("60");;
-		txtSamplingrate.setText("128");;
+		txtSegmentasi.setText("60");
+		txtSamplingrate.setText("");
 		cmbKanal1.setSelectedIndex(0);
 		cbGunakanKanal2.setSelected(false);
 		cmbKanal2.setSelectedIndex(0);
@@ -406,10 +496,23 @@ public class Pengujian extends JPanel {
 				}else{
 					cmbKanal2.setEnabled(true);
 				}
+			}else if(e.getActionCommand().equals("cmbAlatPerekaman")){
+				if((String)cmbAlatPerekaman.getSelectedItem() == "Pilih salah satu..."){
+					changeSettingAlatPerekaman(0);
+				}else if((String)cmbAlatPerekaman.getSelectedItem() == "Emotiv"){
+					changeSettingAlatPerekaman(1);
+				}else if((String)cmbAlatPerekaman.getSelectedItem() == "Neurosky"){
+					changeSettingAlatPerekaman(2);
+				}
 			}else if(e.getActionCommand().equals("pilihDataEEG")){
-				FileNameExtensionFilter filterFile = new FileNameExtensionFilter("CSV FILE", "csv");
+				if((String)cmbAlatPerekaman.getSelectedItem() == "Emotiv"){
+					FileNameExtensionFilter filterFile = new FileNameExtensionFilter("CSV FILE", "csv");
+					inputDataEEG.setFileFilter(filterFile);
+				}else if((String)cmbAlatPerekaman.getSelectedItem() == "Neurosky"){
+					FileNameExtensionFilter filterFile = new FileNameExtensionFilter("TXT FILE", "txt");
+					inputDataEEG.setFileFilter(filterFile);
+				}
 				inputDataEEG.setCurrentDirectory(inputDataEEG.getCurrentDirectory());
-				inputDataEEG.setFileFilter(filterFile);
 				inputDataEEG.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				inputDataEEG.setMultiSelectionEnabled(true);
 				if(inputDataEEG.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
@@ -433,18 +536,30 @@ public class Pengujian extends JPanel {
 					JOptionPane.showMessageDialog(null, "Segmentasi tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else if(txtSamplingrate == null){
 					JOptionPane.showMessageDialog(null, "Sampling Rate tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				}else if((String)cmbKanal1.getSelectedItem() == "Pilih salah satu..."){
-					JOptionPane.showMessageDialog(null, "Pilihan Kanal 1 tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				}else if(cmbKanal2.isEnabled() == true && (String)cmbKanal2.getSelectedItem() == "Pilih salah satu..."){
-					JOptionPane.showMessageDialog(null, "Pilihan Kanal 2 tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else if(!dbAction.isBobotNotNull()){
 					JOptionPane.showMessageDialog(null, "Belum Melakukan Pelatihan!", "Peringatan", JOptionPane.WARNING_MESSAGE);
 					Home.changeCard("panelPelatihanSistem");
 				}else{
+					if((String)cmbAlatPerekaman.getSelectedItem() == "Emotiv"){
+						if((String)cmbKanal1.getSelectedItem() == "Pilih salah satu..."){
+							JOptionPane.showMessageDialog(null, "Pilihan Kanal 1 tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+						}else if(cmbKanal2.isEnabled() == true && (String)cmbKanal2.getSelectedItem() == "Pilih salah satu..."){
+							JOptionPane.showMessageDialog(null, "Pilihan Kanal 2 tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+						}
+					}
+					
 					if(cbGunakanKanal2.isSelected() == false){
-						dataLatih = new DataLatih(fullPathDataEEG, null, Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), null, null);
+						String kanal = null;
+						if((String)cmbAlatPerekaman.getSelectedItem() == "Emotiv"){
+							kanal = (String)cmbKanal1.getSelectedItem();
+						}else if((String)cmbAlatPerekaman.getSelectedItem() == "Neurosky"){
+							kanal = (String)txtKanalNeurosky.getText();
+						}
+						dataLatih = new DataLatih(fullPathDataEEG, null, Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), kanal, null, (String)cmbAlatPerekaman.getSelectedItem());
+//						CorePengujianSistem corePengujianSistem = new CorePengujianSistem(dataLatih);
+//						corePengujianSistem.execute();
 					}else{
-						dataLatih = new DataLatih(fullPathDataEEG, null, Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), (String)cmbKanal2.getSelectedItem(), null);
+						dataLatih = new DataLatih(fullPathDataEEG, null, Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), (String)cmbKanal2.getSelectedItem(), (String)cmbAlatPerekaman.getSelectedItem());
 					}
 					CorePengujianSistem corePengujianSistem = new CorePengujianSistem(dataLatih);
 					corePengujianSistem.execute();
@@ -526,6 +641,7 @@ public class Pengujian extends JPanel {
 		public void done(){
 			progressSubmitDataEEG.setValue(100);
 			resetFormDataUji();
+			updateStatusAlatPerekaman();
 			Home.refreshAllElement();
 			updateStatusKanal();
 			JOptionPane.showMessageDialog(null, "Proses Pengujian Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
