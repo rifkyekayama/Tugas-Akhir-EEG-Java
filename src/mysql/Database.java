@@ -67,8 +67,8 @@ public class Database {
 		try{
 			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM data_latih WHERE kelas=1");
-			if(rs.next()){
-				jumRileks = rs.getInt(1);
+			while(rs.next()){
+				jumRileks++;
 			}
 			stmt.close();
 			rs.close();
@@ -84,8 +84,8 @@ public class Database {
 		try{
 			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM data_latih WHERE kelas=-1");
-			if(rs.next()){
-				jumNonRileks = rs.getInt(1);
+			while(rs.next()){
+				jumNonRileks++;
 			}
 			stmt.close();
 			rs.close();

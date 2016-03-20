@@ -106,9 +106,14 @@ public class Home extends JFrame {
 		dashboard.lblJumRileks.setText(Integer.toString(dbAction.getJumRileks()));
 		dashboard.lblJumNonRileks.setText(Integer.toString(dbAction.getJumNonRileks()));
 		kelolaDataLatih.updateTableDataLatih();
+		kelolaDataLatih.updateStatusAlatPerekaman();
+		kelolaDataLatih.updateStatusKanal();
 		editDataLatih.updateTableEditDataLatih();
+		editDataLatih.updateComboboxEditNaracoba();
 		ekstraksiWavelet.updateTabelEkstraksiWavelet();
-//		ekstraksiWavelet.updateComboboxNaracoba();
+		ekstraksiWavelet.updateComboboxNaracoba();
+		pengujianSistem.updateStatusAlatPerekaman();
+		pengujianSistem.updateStatusKanal();
 	}
 	
 	public static void changeCard(String cardName){

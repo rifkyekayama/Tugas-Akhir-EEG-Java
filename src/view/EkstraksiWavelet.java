@@ -13,6 +13,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -50,7 +51,7 @@ public class EkstraksiWavelet extends JPanel {
 	Wavelet wavelet;
 	private JRadioButton rdWaveletFilter, rdWaveletGelombang, RdDb4, RdDb8;
 	private JCheckBox cbSinyalRileks, cbSinyalNonRileks, cbGelAlfa, cbGelBeta, cbGelTeta;
-	private JButton btnEkstraksiWavelet, btnLihatGrafik;
+	private JButton btnEkstraksiWavelet, btnLihatGrafik, btnCariDataNaracoba;
 	private JLabel lblStatusLoading;
 	private DefaultTableModel tableWavelet;
 	private DefaultTableCellRenderer centerTable;
@@ -74,7 +75,7 @@ public class EkstraksiWavelet extends JPanel {
 		centerTable = new DefaultTableCellRenderer();
 		centerTable.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		naracoba[0] = "Pilih salah satu...";
+		naracoba[0] = "-";
 		for(i=0;i<dbAction.getJumNaracoba();i++){
 			naracoba[i+1] = String.valueOf(i+1);
 		}
@@ -221,10 +222,19 @@ public class EkstraksiWavelet extends JPanel {
 		
 		cmbNaracoba = new JComboBox<>(naracoba);
 		cmbNaracoba.setBackground(Color.white);
-		cmbNaracoba.setBounds(15, 60, 150, 30);
+		cmbNaracoba.setBounds(15, 60, 100, 30);
 		cmbNaracoba.setActionCommand("cmbNaracoba");
 		cmbNaracoba.addActionListener(new ButtonController());
 		panelChartWavelet.add(cmbNaracoba);
+		
+		btnCariDataNaracoba = new JButton("cari");
+		btnCariDataNaracoba.setForeground(Color.white);
+		btnCariDataNaracoba.setBackground(new Color(60, 137, 185));
+		btnCariDataNaracoba.setBounds(125, 60, 60, 30);
+		btnCariDataNaracoba.setActionCommand("btnCariDataNaracoba");
+		btnCariDataNaracoba.addMouseListener(new MouseController());
+		btnCariDataNaracoba.addActionListener(new ButtonController());
+		panelChartWavelet.add(btnCariDataNaracoba);
 		
 		JLabel lblPilihSinyal = new JLabel("Pilih Sinyal :");
 		lblPilihSinyal.setFont(lblPilihSinyal.getFont().deriveFont(Font.BOLD, 15f));
@@ -251,6 +261,7 @@ public class EkstraksiWavelet extends JPanel {
 		cbGelAlfa = new JCheckBox("Alfa");
 		cbGelAlfa.setBackground(Color.white);
 		cbGelAlfa.setBounds(15, 180, 55, 30);
+		cbGelAlfa.setBackground(Color.white);
 		cbGelAlfa.setEnabled(false);
 		panelChartWavelet.add(cbGelAlfa);
 		
@@ -270,6 +281,7 @@ public class EkstraksiWavelet extends JPanel {
 		btnLihatGrafik.setForeground(Color.white);
 		btnLihatGrafik.setBackground(new Color(60, 137, 185));
 		btnLihatGrafik.setBounds(15, 220, 170, 30);
+		btnLihatGrafik.setEnabled(false);
 		btnLihatGrafik.setActionCommand("btnLihatGrafik");
 		btnLihatGrafik.addActionListener(new ButtonController());
 		btnLihatGrafik.addMouseListener(new MouseController());
@@ -312,19 +324,21 @@ public class EkstraksiWavelet extends JPanel {
 		panelChart.revalidate();
 	}
 	
-//	public void updateComboboxNaracoba(){
-//		String[] naracoba = new String[dbAction.getJumNaracoba()+1];
-//		
-//		naracoba[0] = "Pilih salah satu...";
-//		for(i=0;i<dbAction.getJumNaracoba();i++){
-//			naracoba[i+1] = String.valueOf(i+1);
-//		}
-//		
-//		cmbNaracoba.removeAllItems();
-//		cmbNaracoba.setModel(new DefaultComboBoxModel(naracoba));
-//		cmbNaracoba.repaint();
-//		cmbNaracoba.revalidate();
-//	}
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void updateComboboxNaracoba(){
+		String[] naracoba = new String[dbAction.getJumNaracoba()+1];
+		DefaultComboBoxModel model;
+		
+		naracoba[0] = "-";
+		for(i=0;i<dbAction.getJumNaracoba();i++){
+			naracoba[i+1] = String.valueOf(i+1);
+		}
+		model = new DefaultComboBoxModel(naracoba);
+		
+		cmbNaracoba.removeAllItems();
+		cmbNaracoba.setModel(model);
+		cmbNaracoba.repaint();
+	}
 	
 	public void updateTabelEkstraksiWavelet(){
 		tableDataWavelet.setModel(dbAction.getListDataWavelet());
@@ -465,7 +479,19 @@ public class EkstraksiWavelet extends JPanel {
 				CoreEkstraksiWavelet coreEkstraksiWavelet = new CoreEkstraksiWavelet();
 				coreEkstraksiWavelet.execute();
 			}else if(e.getActionCommand().equals("cmbNaracoba")){
-				if((String)cmbNaracoba.getSelectedItem() == "Pilih salah satu..."){
+				cbSinyalRileks.setEnabled(false);
+				cbSinyalRileks.setSelected(false);
+				cbSinyalNonRileks.setEnabled(false);
+				cbSinyalNonRileks.setSelected(false);
+				cbGelAlfa.setEnabled(false);
+				cbGelAlfa.setSelected(false);
+				cbGelBeta.setEnabled(false);
+				cbGelBeta.setSelected(false);
+				cbGelTeta.setEnabled(false);
+				cbGelTeta.setSelected(false);
+				btnLihatGrafik.setEnabled(false);
+			}else if(e.getActionCommand().equals("btnCariDataNaracoba")){
+				if((String)cmbNaracoba.getSelectedItem() == "-"){
 					cbSinyalRileks.setEnabled(false);
 					cbSinyalRileks.setSelected(false);
 					cbSinyalNonRileks.setEnabled(false);
@@ -476,6 +502,7 @@ public class EkstraksiWavelet extends JPanel {
 					cbGelBeta.setSelected(false);
 					cbGelTeta.setEnabled(false);
 					cbGelTeta.setSelected(false);
+					btnLihatGrafik.setEnabled(false);
 				}else{
 					int kelas = dbAction.getKelasFromDataLatih(Integer.parseInt((String)cmbNaracoba.getSelectedItem()));
 					cbGelAlfa.setEnabled(true);
@@ -484,6 +511,7 @@ public class EkstraksiWavelet extends JPanel {
 					cbGelBeta.setSelected(false);
 					cbGelTeta.setEnabled(true);
 					cbGelTeta.setSelected(false);
+					btnLihatGrafik.setEnabled(true);
 					if(kelas == 1){
 						cbSinyalRileks.setEnabled(true);
 						cbSinyalRileks.setSelected(false);

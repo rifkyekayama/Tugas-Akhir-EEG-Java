@@ -556,8 +556,6 @@ public class Pengujian extends JPanel {
 							kanal = (String)txtKanalNeurosky.getText();
 						}
 						dataLatih = new DataLatih(fullPathDataEEG, null, Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), kanal, null, (String)cmbAlatPerekaman.getSelectedItem());
-//						CorePengujianSistem corePengujianSistem = new CorePengujianSistem(dataLatih);
-//						corePengujianSistem.execute();
 					}else{
 						dataLatih = new DataLatih(fullPathDataEEG, null, Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), (String)cmbKanal2.getSelectedItem(), (String)cmbAlatPerekaman.getSelectedItem());
 					}
