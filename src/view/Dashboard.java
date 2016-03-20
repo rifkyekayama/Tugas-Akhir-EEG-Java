@@ -2,7 +2,6 @@ package view;
 
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -172,47 +171,11 @@ public class Dashboard extends JPanel {
 		btnNonRileks.setBounds(0, panelWidgetNonRileks.getHeight()-25, panelWidgetNonRileks.getWidth(), 25);
 		panelWidgetNonRileks.add(btnNonRileks);
 		
-//		JLabel lblUnjani = new JLabel(new ImageIcon(getClass().getResource("/resource/iconUnjani.png")));
-//		lblUnjani.setBounds(0, 430, 100, 100);
-		
-		JPanel panelPowered = new JPanel();
-		panelPowered.setLayout(new FlowLayout());
-		panelPowered.setBackground(new Color(238, 238, 238));
-		panelPowered.setBounds(470, 490, 450, 50);
-		
-		JLabel lblPowered = new JLabel("Powered by:");
-		lblPowered.setFont(lblPowered.getFont().deriveFont(Font.BOLD, 15f));
-		lblPowered.setBounds(370, 490, 110, 15);
-		
-		JLabel lblIconJava = new JLabel(new ImageIcon(getClass().getResource("/resource/iconJava.png")));
-		panelPowered.add(lblIconJava);
-		
-		JLabel lblSeparator = new JLabel("  ");
-		panelPowered.add(lblSeparator);
-		
-		JLabel lblIconEclipse = new JLabel(new ImageIcon(getClass().getResource("/resource/iconEclipse.png")));
-		panelPowered.add(lblIconEclipse);
-		
-		lblSeparator = new JLabel("  ");
-		panelPowered.add(lblSeparator);
-		
-		JLabel lblIconBitbucket = new JLabel(new ImageIcon(getClass().getResource("/resource/iconBitbucket.png")));
-		panelPowered.add(lblIconBitbucket);
-		
-		lblSeparator = new JLabel("  ");
-		panelPowered.add(lblSeparator);
-		
-		JLabel lblIconUbuntu = new JLabel(new ImageIcon(getClass().getResource("/resource/iconUbuntu.png")));
-		panelPowered.add(lblIconUbuntu);
-		
 		panelContent.add(panelJudul);
 		panelContent.add(panelWidgetNaracoba);
 		panelContent.add(panelWidgetSegmentasi);
 		panelContent.add(panelWidgetRileks);
 		panelContent.add(panelWidgetNonRileks);
-		//panelContent.add(lblUnjani);
-		panelContent.add(lblPowered);
-		panelContent.add(panelPowered);
 		
 		return panelContent;
 	}
