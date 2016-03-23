@@ -1,10 +1,6 @@
 package wavelet;
 
-import dataLatih.DataLatih;
-
 public class Wavelet {
-	
-	public DataLatih dataLatih = new DataLatih();
 	
 	public Wavelet(){
 		//constructor kosong
