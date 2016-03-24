@@ -95,35 +95,39 @@ public class Wavelet {
 		return hasilSinyal;
 	}
 	
-	public double[] getAlfa(double[] sinyalEEG){
-		double[] A1_1, AA2, AA2_2, AAA3, AAA3_3, DAAA4, DAAA4_4, ADAAA5, ADAAA5_5, DDAAA5, DDAAA5_5, ADDAAA6, ADDAAA6_6;
+	public double[] getAlfa(double[] sinyalEEG, int samplingRate){
+		double[] BA, BA1, BA1_1, BA2, A1_1 = null, AA2, AA2_2, AAA3, AAA3_3, DAAA4, DAAA4_4, ADAAA5, ADAAA5_5, DDAAA5, DDAAA5_5, ADDAAA6, ADDAAA6_6;
 		double[] hasilSinyal;
 		int i, i_temp;
 		
-		A1_1 = downSampling(sinyalEEG, 2);
+		if(samplingRate == 128){
+			A1_1 = downSamplingGanjil(sinyalEEG);
+		}else if(samplingRate == 512){
+			BA = downSamplingGanjil(sinyalEEG);
+			
+			BA1 = konvolusiLow(BA);
+			BA1_1 = downSamplingGanjil(BA1);
+			
+			BA2 = konvolusiLow(BA1_1);
+			A1_1 = downSamplingGanjil(BA2);
+		}
 		
 		AA2 = konvolusiLow(A1_1);
-//		AA2_2 = downSampling(AA2, 2);
 		AA2_2 = downSamplingGanjil(AA2);
 		
 		AAA3 = konvolusiLow(AA2_2);
-//		AAA3_3 = downSampling(AAA3, 2);
 		AAA3_3 = downSamplingGanjil(AAA3);
 		
 		DAAA4 = konvolusiHigh(AAA3_3);
-//		DAAA4_4 = downSampling(DAAA4, 2);
 		DAAA4_4 = downSamplingGenap(DAAA4);
 		
 		ADAAA5 = konvolusiHigh(DAAA4_4);
-//		ADAAA5_5 = downSampling(ADAAA5, 2);
 		ADAAA5_5 = downSamplingGenap(ADAAA5);
 		
 		DDAAA5 = konvolusiHigh(DAAA4_4);
-//		DDAAA5_5 = downSampling(DDAAA5, 2);
 		DDAAA5_5 = downSamplingGenap(DDAAA5);
 		
 		ADDAAA6 = konvolusiLow(DDAAA5_5);
-//		ADDAAA6_6 = downSampling(ADDAAA6, 2);
 		ADDAAA6_6 = downSamplingGanjil(ADDAAA6);
 		
 		hasilSinyal = new double[ADAAA5_5.length + ADDAAA6_6.length];
@@ -139,35 +143,39 @@ public class Wavelet {
 		return hasilSinyal;
 	}
 	
-	public double[] getBeta(double[] sinyalEEG){
-		double[] A1_1, AA2, AA2_2, AAA3, AAA3_3, DAA3, DAA3_3, DAAA4, DAAA4_4, DDAAA5, DDAAA5_5, DDDAAA6, DDDAAA6_6;
+	public double[] getBeta(double[] sinyalEEG, int samplingRate){
+		double[] BA, BA1, BA1_1, BA2, A1_1 = null, AA2, AA2_2, AAA3, AAA3_3, DAA3, DAA3_3, DAAA4, DAAA4_4, DDAAA5, DDAAA5_5, DDDAAA6, DDDAAA6_6;
 		double[] hasilSinyal;
 		int i, i_temp;
 		
-		A1_1 = downSampling(sinyalEEG, 2);
+		if(samplingRate == 128){
+			A1_1 = downSamplingGanjil(sinyalEEG);
+		}else if(samplingRate == 512){
+			BA = downSamplingGanjil(sinyalEEG);
+			
+			BA1 = konvolusiLow(BA);
+			BA1_1 = downSamplingGanjil(BA1);
+			
+			BA2 = konvolusiLow(BA1_1);
+			A1_1 = downSamplingGanjil(BA2);
+		}
 		
 		AA2 = konvolusiLow(A1_1);
-//		AA2_2 = downSampling(AA2, 2);
 		AA2_2 = downSamplingGanjil(AA2);
 		
 		AAA3 = konvolusiLow(AA2_2);
-//		AAA3_3 = downSampling(AAA3, 2);
 		AAA3_3 = downSamplingGanjil(AAA3);
 		
 		DAA3 = konvolusiHigh(AA2_2);
-//		DAA3_3 = downSampling(DAA3, 2);
 		DAA3_3 = downSamplingGenap(DAA3);
 		
 		DAAA4 = konvolusiHigh(AAA3_3);
-//		DAAA4_4 = downSampling(DAAA4, 2);
 		DAAA4_4 = downSamplingGenap(DAAA4);
 		
 		DDAAA5 = konvolusiHigh(DAAA4_4);
-//		DDAAA5_5 = downSampling(DDAAA5, 2);
 		DDAAA5_5 = downSamplingGenap(DDAAA5);
 		
 		DDDAAA6 = konvolusiHigh(DDAAA5_5);
-//		DDDAAA6_6 = downSampling(DDDAAA6, 2);
 		DDDAAA6_6 = downSamplingGenap(DDDAAA6);
 		
 		hasilSinyal = new double[DAA3_3.length + DDDAAA6_6.length];
@@ -183,36 +191,42 @@ public class Wavelet {
 		return hasilSinyal;
 	}
 	
-	public double[] getTeta(double[] sinyalEEG){
-		double[] A1_1, AA2, AA2_2, AAA3, AAA3_3, AAAA4, AAAA4_4, DAAAA5, DAAAA5_5;
+	public double[] getTeta(double[] sinyalEEG, int samplingRate){
+		double[] BA, BA1, BA1_1, BA2, A1_1 = null, AA2, AA2_2, AAA3, AAA3_3, AAAA4, AAAA4_4, DAAAA5, DAAAA5_5;
 		
-		A1_1 = downSampling(sinyalEEG, 2);
+		if(samplingRate == 128){
+			A1_1 = downSamplingGanjil(sinyalEEG);
+		}else if(samplingRate == 512){
+			BA = downSamplingGanjil(sinyalEEG);
+			
+			BA1 = konvolusiLow(BA);
+			BA1_1 = downSamplingGanjil(BA1);
+			
+			BA2 = konvolusiLow(BA1_1);
+			A1_1 = downSamplingGanjil(BA2);
+		}
 		
 		AA2 = konvolusiLow(A1_1);
-//		AA2_2 = downSampling(AA2, 2);
 		AA2_2 = downSamplingGanjil(AA2);
 		
 		AAA3 = konvolusiLow(AA2_2);
-//		AAA3_3 = downSampling(AAA3, 2);
 		AAA3_3 = downSamplingGanjil(AAA3);
 		
 		AAAA4 = konvolusiLow(AAA3_3);
-//		AAAA4_4 = downSampling(AAAA4, 2);
 		AAAA4_4 = downSamplingGanjil(AAAA4);
 		
 		DAAAA5 = konvolusiHigh(AAAA4_4);
-//		DAAAA5_5 = downSampling(DAAAA5, 2);
 		DAAAA5_5 = downSamplingGenap(DAAAA5);
 		
 		return DAAAA5_5;
 	}
 	
-	public double[] transformasiWavelet(double[] sinyalEEG, boolean isAlfaUse, boolean isBetaUse, boolean isTetaUse){
+	public double[] transformasiWavelet(double[] sinyalEEG, boolean isAlfaUse, boolean isBetaUse, boolean isTetaUse, int samplingRate){
 		double[] alfa, beta, teta, hasilSinyal;
 		int i, i_temp=0, idx=0;
-		alfa = getAlfa(sinyalEEG);
-		beta = getBeta(sinyalEEG);
-		teta = getTeta(sinyalEEG);
+		alfa = getAlfa(sinyalEEG, samplingRate);
+		beta = getBeta(sinyalEEG, samplingRate);
+		teta = getTeta(sinyalEEG, samplingRate);
 		
 		if(isAlfaUse == true){
 			idx = idx + alfa.length;
@@ -256,13 +270,13 @@ public class Wavelet {
 		return hasilSinyal;
 	}
 	
-	public double[][] getNeuronPengujian(double[][] dataUji){
-		double[] hasilWavelet = new double[transformasiWavelet(dataUji[0], true, true, true).length];
+	public double[][] getNeuronPengujian(double[][] dataUji, int samplingRate){
+		double[] hasilWavelet = new double[transformasiWavelet(dataUji[0], true, true, true, samplingRate).length];
 		double[][] neuron = new double[dataUji.length][hasilWavelet.length];
 		int i=0;
 		
 		for(i=0;i<dataUji.length;i++){
-			hasilWavelet = transformasiWavelet(dataUji[i], true, true, true);
+			hasilWavelet = transformasiWavelet(dataUji[i], true, true, true, samplingRate);
 			dataUji[i] = hasilWavelet;
 		}
 		return neuron;

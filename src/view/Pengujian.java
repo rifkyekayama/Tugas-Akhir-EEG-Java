@@ -627,7 +627,7 @@ public class Pengujian extends JPanel {
 			lblStatusLoading.setText("Proses Pengujian dengan LVQ");
 			progressSubmitDataEEG.setValue(80);
 			bobotPelatihan = dbAction.getBobotPelatihan();
-			hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.getNeuronPengujian(lvq.string2DtoDouble(sinyalFull)));
+			hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.getNeuronPengujian(lvq.string2DtoDouble(sinyalFull), dbAction.getSamplingRate()));
 			lblStatusLoading.setText("Update Tabel Bobot");
 			progressSubmitDataEEG.setValue(90);
 			updateTablePengujian(initTableModelPengujian(hasilPengujian));

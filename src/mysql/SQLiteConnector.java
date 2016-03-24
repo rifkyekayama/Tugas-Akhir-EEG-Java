@@ -78,7 +78,8 @@ public class SQLiteConnector {
 					  "dataLatih_id INTEGER REFERENCES data_latih(id)," +
 					  "alfa 		TEXT," +
 					  "beta			TEXT," +
-					  "teta			TEXT)";
+					  "teta			TEXT," +
+					  "filter		TEXT)";
 				stmt.executeUpdate(sql);
 			}
 		} catch (SQLException e) {

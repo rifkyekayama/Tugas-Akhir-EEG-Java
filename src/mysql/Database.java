@@ -255,17 +255,19 @@ public class Database {
 		listDataWavelet.addColumn("Alfa");
 		listDataWavelet.addColumn("Beta");
 		listDataWavelet.addColumn("Teta");
+		listDataWavelet.addColumn("Filter");
 		int no=1;
 		
 		try{
 			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM wavelet");
 			while(rs.next()){
-				Object[] data = new Object[4];
+				Object[] data = new Object[5];
 				data[0] = no++;
 				data[1] = rs.getString("alfa");
 				data[2] = rs.getString("beta");
 				data[3] = rs.getString("teta");
+				data[4] = rs.getString("filter");
 				listDataWavelet.addRow(data);
 			}
 			stmt.close();
@@ -311,13 +313,19 @@ public class Database {
 		}
 	}
 	
-	public void inputEkstraksiWavelet(double[] alfa, double[] beta, double[] teta, int dataLatih_id){
+	public void inputEkstraksiWavelet(double[] alfa, double[] beta, double[] teta, double[] filter, int dataLatih_id){
 		try {
-			String tempSinyalAlfa = Arrays.toString(alfa).substring(1, Arrays.toString(alfa).length()-1).replaceAll(",", "");
-			String tempSinyalBeta = Arrays.toString(beta).substring(1, Arrays.toString(beta).length()-1).replaceAll(",", "");
-			String tempSinyalTeta = Arrays.toString(teta).substring(1, Arrays.toString(teta).length()-1).replaceAll(",", "");
-			stmt = Main.konek.createStatement();
-			stmt.executeUpdate("INSERT INTO wavelet (dataLatih_id, alfa, beta, teta) VALUES ('"+dataLatih_id+"', '"+tempSinyalAlfa+"', '"+tempSinyalBeta+"', '"+tempSinyalTeta+"')");
+			if(filter == null && alfa != null && beta != null && teta != null){
+				String tempSinyalAlfa = Arrays.toString(alfa).substring(1, Arrays.toString(alfa).length()-1).replaceAll(",", "");
+				String tempSinyalBeta = Arrays.toString(beta).substring(1, Arrays.toString(beta).length()-1).replaceAll(",", "");
+				String tempSinyalTeta = Arrays.toString(teta).substring(1, Arrays.toString(teta).length()-1).replaceAll(",", "");
+				stmt = Main.konek.createStatement();
+				stmt.executeUpdate("INSERT INTO wavelet (dataLatih_id, alfa, beta, teta, filter) VALUES ('"+dataLatih_id+"', '"+tempSinyalAlfa+"', '"+tempSinyalBeta+"', '"+tempSinyalTeta+"', '-')");
+			}else if(filter != null && alfa == null && beta == null && teta == null){
+				String tempSinyalFilter = Arrays.toString(filter).substring(1, Arrays.toString(filter).length()-1).replaceAll(",", "");
+				stmt = Main.konek.createStatement();
+				stmt.executeUpdate("INSERT INTO wavelet (dataLatih_id, alfa, beta, teta, filter) VALUES ('"+dataLatih_id+"', '-', '-', '-', '"+tempSinyalFilter+"')");
+			}
 			stmt.close();
 			rs.close();
 		} catch (SQLException e) {
@@ -531,25 +539,37 @@ public class Database {
 			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id WHERE data_latih.kelas = 1");
 			while(rs.next()){
-				String[] alfa = rs.getString("alfa").split(" ");
-				String[] beta = rs.getString("beta").split(" ");
-				String[] teta = rs.getString("teta").split(" ");
-				double[][] hasil = new double[2][alfa.length+beta.length+teta.length];
-				int i=0, idx=0;
-				for(i=0;i<alfa.length;i++){
-					hasil[0][idx] = Double.parseDouble(alfa[i]);
-					idx++;
+				if(rs.getString("filter").equals("-")){
+					String[] alfa = rs.getString("alfa").split(" ");
+					String[] beta = rs.getString("beta").split(" ");
+					String[] teta = rs.getString("teta").split(" ");
+					double[][] hasil = new double[2][alfa.length+beta.length+teta.length];
+					int i=0, idx=0;
+					for(i=0;i<alfa.length;i++){
+						hasil[0][idx] = Double.parseDouble(alfa[i]);
+						idx++;
+					}
+					for(i=0;i<beta.length;i++){
+						hasil[0][idx] = Double.parseDouble(beta[i]);
+						idx++;
+					}
+					for(i=0;i<teta.length;i++){
+						hasil[0][idx] = Double.parseDouble(teta[i]);
+						idx++;
+					}
+					hasil[1][0] = rs.getDouble("kelas");
+					neuron.add(hasil);
+				}else{
+					String[] filter = rs.getString("filter").split(" ");
+					double[][] hasil = new double[2][filter.length];
+					int i=0;
+					
+					for(i=0;i<filter.length;i++){
+						hasil[0][i] = Double.parseDouble(filter[i]);
+					}
+					hasil[1][0] = rs.getDouble("kelas");
+					neuron.add(hasil);
 				}
-				for(i=0;i<beta.length;i++){
-					hasil[0][idx] = Double.parseDouble(beta[i]);
-					idx++;
-				}
-				for(i=0;i<teta.length;i++){
-					hasil[0][idx] = Double.parseDouble(teta[i]);
-					idx++;
-				}
-				hasil[1][0] = rs.getDouble("kelas");
-				neuron.add(hasil);
 			}
 			stmt.close();
 			rs.close();
@@ -566,25 +586,37 @@ public class Database {
 			stmt = Main.konek.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id WHERE data_latih.kelas = -1");
 			while(rs.next()){
-				String[] alfa = rs.getString("alfa").split(" ");
-				String[] beta = rs.getString("beta").split(" ");
-				String[] teta = rs.getString("teta").split(" ");
-				double[][] hasil = new double[2][alfa.length+beta.length+teta.length];
-				int i=0, idx=0;
-				for(i=0;i<alfa.length;i++){
-					hasil[0][idx] = Double.parseDouble(alfa[i]);
-					idx++;
+				if(rs.getString("filter").equals("-")){
+					String[] alfa = rs.getString("alfa").split(" ");
+					String[] beta = rs.getString("beta").split(" ");
+					String[] teta = rs.getString("teta").split(" ");
+					double[][] hasil = new double[2][alfa.length+beta.length+teta.length];
+					int i=0, idx=0;
+					for(i=0;i<alfa.length;i++){
+						hasil[0][idx] = Double.parseDouble(alfa[i]);
+						idx++;
+					}
+					for(i=0;i<beta.length;i++){
+						hasil[0][idx] = Double.parseDouble(beta[i]);
+						idx++;
+					}
+					for(i=0;i<teta.length;i++){
+						hasil[0][idx] = Double.parseDouble(teta[i]);
+						idx++;
+					}
+					hasil[1][0] = rs.getDouble("kelas");
+					neuron.add(hasil);
+				}else{
+					String[] filter = rs.getString("filter").split(" ");
+					double[][] hasil = new double[2][filter.length];
+					int i=0;
+					
+					for(i=0;i<filter.length;i++){
+						hasil[0][i] = Double.parseDouble(filter[i]);
+					}
+					hasil[1][0] = rs.getDouble("kelas");
+					neuron.add(hasil);
 				}
-				for(i=0;i<beta.length;i++){
-					hasil[0][idx] = Double.parseDouble(beta[i]);
-					idx++;
-				}
-				for(i=0;i<teta.length;i++){
-					hasil[0][idx] = Double.parseDouble(teta[i]);
-					idx++;
-				}
-				hasil[1][0] = rs.getDouble("kelas");
-				neuron.add(hasil);
 			}
 			stmt.close();
 			rs.close();

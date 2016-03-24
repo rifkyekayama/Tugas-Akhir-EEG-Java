@@ -145,9 +145,6 @@ public class DataLatih {
 		
 		for(i=mulaiIterasi; i<lineOfSinyal.getItemCount()-mulaiIterasi; i++){
 			temp[j] = lineOfSinyal.getItem(i).split(delimiter)[kanal];
-//			if(alatPerekaman == "Neurosky"){
-//				temp[j] = temp[j]+".00000000000000000000";
-//			}
 			j++;
 			fs++;
 			if(fs == sampling){
