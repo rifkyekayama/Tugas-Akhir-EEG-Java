@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -33,6 +34,7 @@ import dataLatih.DataLatih;
 import lvq.LVQ;
 import mysql.Database;
 import wavelet.Wavelet;
+import wavelet.WaveletFiltering;
 
 public class Pengujian extends JPanel {
 
@@ -59,7 +61,6 @@ public class Pengujian extends JPanel {
 	protected String[] alatPerekaman = {"Pilih salah satu...", "Emotiv", "Neurosky"};
 	protected String[] kanal = {"Pilih salah satu...", "AF3", "F7", "F3", "FC5", "T7", "P7", "O1", "O2", "P8", "T8", "FC6", "F4", "F8", "AF4"};
 	protected Database dbAction;
-	protected Wavelet wavelet;
 	protected DataLatih dataLatih;
 	protected String[] fullPathDataEEG;
 	protected int i=0;
@@ -568,8 +569,10 @@ public class Pengujian extends JPanel {
 	
 	class CorePengujianSistem extends SwingWorker<Void, Void>{
 		
-		Wavelet wavelet = new Wavelet();
+		Wavelet wavelet;
+		WaveletFiltering waveletFiltering;
 		DataLatih dataLatih;
+		LVQ lvq = new LVQ();
 		
 		public CorePengujianSistem(DataLatih dataLatih) {
 			// TODO Auto-generated constructor stub
@@ -580,12 +583,12 @@ public class Pengujian extends JPanel {
 		@Override
 		protected Void doInBackground() throws Exception {
 			// TODO Auto-generated method stub
-			String[] hasilPengujian;
+			String[] hasilPengujian = null;
 			String[][] sinyalKanal1, sinyalKanal2, sinyalFull, sinyalTemp;
 			double[][] bobotPelatihan;
-			LVQ lvq = new LVQ();
-			wavelet = new Wavelet();
-			int i, itemp=0, j, progress=0, progressDistance = 70/dataLatih.pathFile.length;
+			ArrayList<double[]> sinyalEEGFiltering = new ArrayList<double[]>();
+			int i, j, progress=0, progressDistance = 70/dataLatih.pathFile.length;
+			
 			if(dataLatih.kanal2 == null){
 				sinyalFull = new String[dataLatih.pathFile.length][dataLatih.samplingRate*dataLatih.segmentasi];
 			}else{
@@ -604,30 +607,33 @@ public class Pengujian extends JPanel {
 				if(dataLatih.kanal2 == null){
 					sinyalKanal1 = new String[(int) Math.floor(dataLatih.dataEeg.getItemCount()/(dataLatih.samplingRate*dataLatih.segmentasi))][dataLatih.dataEeg.getItemCount()-1];
 					sinyalKanal1 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal1), dataLatih.segmentasi, dataLatih.samplingRate, dataLatih.alatPerekaman);
-					for(j=0;j<sinyalKanal1.length;j++){
-						if(itemp < dataLatih.pathFile.length){
-							sinyalFull[itemp] = sinyalKanal1[j];
-							itemp++;
-						}
-					}
+					sinyalFull = sinyalKanal1;
 				}else{
 					sinyalKanal1 = new String[(int) Math.floor(dataLatih.dataEeg.getItemCount()/(dataLatih.samplingRate*dataLatih.segmentasi))][dataLatih.dataEeg.getItemCount()-1];
 					sinyalKanal1 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal1), dataLatih.segmentasi, dataLatih.samplingRate, dataLatih.alatPerekaman);
 					sinyalKanal2 = new String[(int) Math.floor(dataLatih.dataEeg.getItemCount()/(dataLatih.samplingRate*dataLatih.segmentasi))][dataLatih.dataEeg.getItemCount()-1];
 					sinyalKanal2 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal2), dataLatih.segmentasi, dataLatih.samplingRate, dataLatih.alatPerekaman);
 					sinyalTemp = dataLatih.gabungkanArray(sinyalKanal1, sinyalKanal2);
-					for(j=0;j<sinyalTemp.length;j++){
-						if(itemp < dataLatih.pathFile.length){
-							sinyalFull[itemp] = sinyalTemp[j];
-							itemp++;
-						}
-					}
+					sinyalFull = sinyalTemp;
 				}
 			}
 			lblStatusLoading.setText("Proses Pengujian dengan LVQ");
 			progressSubmitDataEEG.setValue(80);
 			bobotPelatihan = dbAction.getBobotPelatihan();
-			hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.getNeuronPengujian(lvq.string2DtoDouble(sinyalFull), dbAction.getSamplingRate()));
+			if(dbAction.getStatusWavelet().equals("ekstraksi")){
+				wavelet = new Wavelet();
+				hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.getNeuronPengujian(lvq.string2DtoDouble(sinyalFull), dbAction.getSamplingRate()));
+			}else{
+				for(i=0;i<sinyalFull.length;i++){
+					double[] sinyalFilterTemp = new double[sinyalFull[i].length];
+					for(j=0;j<sinyalFull[i].length;j++){
+						sinyalFilterTemp[j] = Double.parseDouble(sinyalFull[i][j]);
+					}
+					sinyalEEGFiltering.add(sinyalFilterTemp);
+				}
+				waveletFiltering = new WaveletFiltering(sinyalEEGFiltering);
+				hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], waveletFiltering.getNeuronPengujian(waveletFiltering.sinyalEEG, dbAction.getSamplingRate()));
+			}
 			lblStatusLoading.setText("Update Tabel Bobot");
 			progressSubmitDataEEG.setValue(90);
 			updateTablePengujian(initTableModelPengujian(hasilPengujian));

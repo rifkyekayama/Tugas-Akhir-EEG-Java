@@ -1,10 +1,13 @@
 package wavelet;
 
 import java.util.ArrayList;
-
 public class WaveletFiltering {
 	
 	public ArrayList<double[][]> sinyalEEG = new ArrayList<double[][]>();
+	
+	public WaveletFiltering() {
+		// TODO Auto-generated constructor stub
+	}
 	
 	public WaveletFiltering(ArrayList<double[]> sinyalEEG) {
 		// TODO Auto-generated constructor stub
@@ -298,6 +301,90 @@ public class WaveletFiltering {
 		return hasilSinyal;
 	}
 	
+	public double[][] transformasiWavelet(double[][] sinyalEEG, boolean isUseFreq5to8, boolean isUseFreq9to16, boolean isUseFreq17to24, boolean isUseFreq25to28, boolean isUseFreq29to30, int samplingRate){
+		double[][] freq5to8, freq9to16, freq17to24, freq25to28, freq29to30, hasilSinyal;
+		int i, i_temp=0, idx=0;
+		
+		freq5to8 = getFrekuensi5to8(sinyalEEG, samplingRate);
+		freq9to16 = getFrekuensi9to16(sinyalEEG, samplingRate);
+		freq17to24 = getFrekuensi17to24(sinyalEEG, samplingRate);
+		freq25to28 = getFrekuensi25to28(sinyalEEG, samplingRate);
+		freq29to30 = getFrekuensi29to30(sinyalEEG, samplingRate);
+		
+		if(isUseFreq5to8){
+			idx = idx + freq5to8.length;
+		}
+		
+		if(isUseFreq9to16){
+			idx = idx + freq9to16.length;
+		}
+		
+		if(isUseFreq17to24){
+			idx = idx + freq17to24.length;
+		}
+		
+		if(isUseFreq25to28){
+			idx = idx + freq25to28.length;
+		}
+		
+		if(isUseFreq29to30){
+			idx = idx + freq29to30.length;
+		}
+		
+		hasilSinyal = new double[idx][2];
+		
+		if(isUseFreq5to8 == true){
+			for(i=0;i<freq5to8.length;i++){
+				hasilSinyal[i_temp][0] = freq5to8[i][0];
+				hasilSinyal[i_temp][1] = freq5to8[i][1];
+				if(i_temp < idx){
+					i_temp++;
+				}
+			}
+		}
+		
+		if(isUseFreq9to16 == true){
+			for(i=0;i<freq9to16.length;i++){
+				hasilSinyal[i_temp][0] = freq9to16[i][0];
+				hasilSinyal[i_temp][1] = freq9to16[i][1];
+				if(i_temp < idx){
+					i_temp++;
+				}
+			}
+		}
+		
+		if(isUseFreq17to24 == true){
+			for(i=0;i<freq17to24.length;i++){
+				hasilSinyal[i_temp][0] = freq17to24[i][0];
+				hasilSinyal[i_temp][1] = freq17to24[i][1];
+				if(i_temp < idx){
+					i_temp++;
+				}
+			}
+		}
+		
+		if(isUseFreq25to28 == true){
+			for(i=0;i<freq25to28.length;i++){
+				hasilSinyal[i_temp][0] = freq25to28[i][0];
+				hasilSinyal[i_temp][1] = freq25to28[i][1];
+				if(i_temp < idx){
+					i_temp++;
+				}
+			}
+		}
+		
+		if(isUseFreq29to30 == true){
+			for(i=0;i<freq29to30.length;i++){
+				hasilSinyal[i_temp][0] = freq29to30[i][0];
+				hasilSinyal[i_temp][1] = freq29to30[i][1];
+				if(i_temp < idx){
+					i_temp++;
+				}
+			}
+		}
+		return hasilSinyal;
+	}
+	
 	public double[][] pengurutanSinyal(double[][] sinyalEEG){
 		int i=0,j=0, minIndex;
 		double tmpData, tmpIndex;
@@ -332,56 +419,15 @@ public class WaveletFiltering {
 		return hasilSinyal;
 	}
 	
-//	public double[][] transformasiWavelet(double[][] sinyalEEG){
-//		double[][] alfa, beta, teta, hasilSinyal;
-//		int i, i_temp=0, idx=0;
-//		alfa = getAlfa(sinyalEEG);
-//		beta = getBeta(sinyalEEG);
-//		teta = getTeta(sinyalEEG);
-//		
-//		if(isAlfaUse){
-//			idx = idx + alfa.length;
-//		}
-//		
-//		if(isBetaUse){
-//			idx = idx + beta.length;
-//		}
-//		
-//		if(isTetaUse){
-//			idx = idx + teta.length;
-//		}
-//		
-//		hasilSinyal = new double[idx][2];
-//		
-//		if(isAlfaUse == true){
-//			for(i=0;i<alfa.length;i++){
-//				hasilSinyal[i_temp][0] = alfa[i][0];
-//				hasilSinyal[i_temp][1] = alfa[i][1];
-//				if(i_temp < idx){
-//					i_temp++;
-//				}
-//			}
-//		}
-//		
-//		if(isBetaUse == true){
-//			for(i=0;i<beta.length;i++){
-//				hasilSinyal[i_temp][0] = beta[i][0];
-//				hasilSinyal[i_temp][1] = beta[i][1];
-//				if(i_temp < idx){
-//					i_temp++;
-//				}
-//			}
-//		}
-//		
-//		if(isTetaUse == true){
-//			for(i=0;i<teta.length;i++){
-//				hasilSinyal[i_temp][0] = teta[i][0];
-//				hasilSinyal[i_temp][1] = teta[i][1];
-//				if(i_temp < idx){
-//					i_temp++;
-//				}
-//			}
-//		}
-//		return hasilSinyal;
-//	}
+	public double[][] getNeuronPengujian(ArrayList<double[][]> sinyalEEG, int samplingRate){
+		double[][] hasilFiltering = new double[transformasiWavelet(sinyalEEG.get(0), true, true, true, true, true, samplingRate).length][2];
+		double[][] neuron = new double[sinyalEEG.size()][hasilFiltering.length];
+		int i=0;
+		
+		for(i=0;i<sinyalEEG.size();i++){
+			hasilFiltering = transformasiWavelet(sinyalEEG.get(i), true, true, true, true, true, samplingRate);
+			neuron[i] = getSinyalHasilFiltering(pengurutanSinyal(hasilFiltering));
+		}
+		return neuron;
+	}
 }

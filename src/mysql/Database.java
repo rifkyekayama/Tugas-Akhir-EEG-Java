@@ -533,6 +533,24 @@ public class Database {
 		return sinyalTeta;
 	}
 	
+	public ArrayList<double[]> getFilterByNaracoba(int naracoba){
+		ArrayList<double[]> sinyalFilter = new ArrayList<double[]>();
+		try {
+			stmt = Main.konek.createStatement();
+			rs = stmt.executeQuery("SELECT wavelet.filter FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id WHERE data_latih.naracoba="+naracoba);
+			while(rs.next()){
+				String[] filter = rs.getString("filter").split(" ");
+				sinyalFilter.add(DataLatih.stringToDouble(filter));
+			}
+			stmt.close();
+			rs.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return sinyalFilter;
+	}
+	
 	public ArrayList<double[][]> getNeuronRileks(){
 		ArrayList<double[][]> neuron = new ArrayList<double[][]>();
 		try {
@@ -625,6 +643,26 @@ public class Database {
 			e.printStackTrace();
 		}
 		return neuron;
+	}
+	
+	public String getStatusWavelet(){
+		String hasil = null;
+		try {
+			stmt = Main.konek.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id");
+			if(rs.next()){
+				if(rs.getString("filter").equals("-")){
+					hasil = "ekstraksi";
+				}else if(!rs.getString("filter").equals("-")){
+					hasil = "filter";
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return hasil;
 	}
 	
 	public int getSamplingRate(){

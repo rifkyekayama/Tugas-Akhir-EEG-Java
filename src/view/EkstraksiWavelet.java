@@ -51,7 +51,7 @@ public class EkstraksiWavelet extends JPanel {
 	private Database dbAction = new Database();
 	Wavelet wavelet;
 	private JRadioButton rdWaveletFilter, rdWaveletGelombang, RdDb4, RdDb8;
-	private JCheckBox cbSinyalRileks, cbSinyalNonRileks, cbGelAlfa, cbGelBeta, cbGelTeta;
+	private JCheckBox cbSinyalRileks, cbSinyalNonRileks, cbGelAlfa, cbGelBeta, cbGelTeta, cbGelFilter;
 	private JButton btnEkstraksiWavelet, btnLihatGrafik, btnCariDataNaracoba;
 	private JLabel lblStatusLoading;
 	private DefaultTableModel tableWavelet;
@@ -63,7 +63,7 @@ public class EkstraksiWavelet extends JPanel {
 	private XYDataset dataset;
 	private JFreeChart chart;
 	private ChartPanel chartPanel;
-	private boolean isUseRileks = false, isUseNonRileks = false, isUseAlfa = false, isUseBeta = false, isUseTeta = false;
+	private boolean isUseRileks = false, isUseNonRileks = false, isUseAlfa = false, isUseBeta = false, isUseTeta = false, isUseFilter = false;
 	private String[] naracoba = new String[dbAction.getJumNaracoba()+1];
 	private JPanel panelChart;
 	private int i=0;
@@ -217,12 +217,12 @@ public class EkstraksiWavelet extends JPanel {
 		
 		JLabel lblPilihNaracoba = new JLabel("Pilih Naracoba :");
 		lblPilihNaracoba.setFont(lblPilihNaracoba.getFont().deriveFont(Font.BOLD, 15f));
-		lblPilihNaracoba.setBounds(15, 30, 150, 30);
+		lblPilihNaracoba.setBounds(15, 20, 150, 30);
 		panelChartWavelet.add(lblPilihNaracoba);
 		
 		cmbNaracoba = new JComboBox<>(naracoba);
 		cmbNaracoba.setBackground(Color.white);
-		cmbNaracoba.setBounds(15, 60, 100, 30);
+		cmbNaracoba.setBounds(15, 50, 100, 30);
 		cmbNaracoba.setActionCommand("cmbNaracoba");
 		cmbNaracoba.addActionListener(new ButtonController());
 		panelChartWavelet.add(cmbNaracoba);
@@ -230,7 +230,7 @@ public class EkstraksiWavelet extends JPanel {
 		btnCariDataNaracoba = new JButton("cari");
 		btnCariDataNaracoba.setForeground(Color.white);
 		btnCariDataNaracoba.setBackground(new Color(60, 137, 185));
-		btnCariDataNaracoba.setBounds(125, 60, 60, 30);
+		btnCariDataNaracoba.setBounds(125, 50, 60, 30);
 		btnCariDataNaracoba.setActionCommand("btnCariDataNaracoba");
 		btnCariDataNaracoba.addMouseListener(new MouseController());
 		btnCariDataNaracoba.addActionListener(new ButtonController());
@@ -238,44 +238,50 @@ public class EkstraksiWavelet extends JPanel {
 		
 		JLabel lblPilihSinyal = new JLabel("Pilih Sinyal :");
 		lblPilihSinyal.setFont(lblPilihSinyal.getFont().deriveFont(Font.BOLD, 15f));
-		lblPilihSinyal.setBounds(15, 100, 150, 30);
+		lblPilihSinyal.setBounds(15, 80, 150, 30);
 		panelChartWavelet.add(lblPilihSinyal);
 		
 		cbSinyalRileks = new JCheckBox("Rileks");
 		cbSinyalRileks.setBackground(Color.white);
-		cbSinyalRileks.setBounds(15, 125, 70, 30);
+		cbSinyalRileks.setBounds(15, 105, 70, 30);
 		cbSinyalRileks.setEnabled(false);
 		panelChartWavelet.add(cbSinyalRileks);
 		
 		cbSinyalNonRileks = new JCheckBox("Non-Rileks");
 		cbSinyalNonRileks.setBackground(Color.white);
-		cbSinyalNonRileks.setBounds(90, 125, 100, 30);
+		cbSinyalNonRileks.setBounds(90, 105, 100, 30);
 		cbSinyalNonRileks.setEnabled(false);
 		panelChartWavelet.add(cbSinyalNonRileks);
 		
 		JLabel lblPilihGelombang = new JLabel("Pilih Gelombang :");
 		lblPilihGelombang.setFont(lblPilihGelombang.getFont().deriveFont(Font.BOLD, 15f));
-		lblPilihGelombang.setBounds(15, 160, 150, 30);
+		lblPilihGelombang.setBounds(15, 130, 150, 30);
 		panelChartWavelet.add(lblPilihGelombang);
 		
 		cbGelAlfa = new JCheckBox("Alfa");
 		cbGelAlfa.setBackground(Color.white);
-		cbGelAlfa.setBounds(15, 180, 55, 30);
+		cbGelAlfa.setBounds(15, 160, 55, 30);
 		cbGelAlfa.setBackground(Color.white);
 		cbGelAlfa.setEnabled(false);
 		panelChartWavelet.add(cbGelAlfa);
 		
 		cbGelBeta = new JCheckBox("Beta");
 		cbGelBeta.setBackground(Color.white);
-		cbGelBeta.setBounds(70, 180, 60, 30);
+		cbGelBeta.setBounds(70, 160, 60, 30);
 		cbGelBeta.setEnabled(false);
 		panelChartWavelet.add(cbGelBeta);
 		
 		cbGelTeta = new JCheckBox("Teta");
 		cbGelTeta.setBackground(Color.white);
-		cbGelTeta.setBounds(130, 180, 60, 30);
+		cbGelTeta.setBounds(130, 160, 60, 30);
 		cbGelTeta.setEnabled(false);
 		panelChartWavelet.add(cbGelTeta);
+		
+		cbGelFilter = new JCheckBox("Filter");
+		cbGelFilter.setBackground(Color.white);
+		cbGelFilter.setBounds(15, 185, 60, 30);
+		cbGelFilter.setEnabled(false);
+		panelChartWavelet.add(cbGelFilter);
 		
 		btnLihatGrafik = new JButton("Lihat Grafik");
 		btnLihatGrafik.setForeground(Color.white);
@@ -287,7 +293,7 @@ public class EkstraksiWavelet extends JPanel {
 		btnLihatGrafik.addMouseListener(new MouseController());
 		panelChartWavelet.add(btnLihatGrafik);
 		
-		dataset = createDataSetSinyalAsli(false, false, false, false, false, 0);
+		dataset = createDataSetSinyalAsli(false, false, false, false, false, false, 0);
 		chart = createChart(dataset);
 		chartPanel = new ChartPanel(chart);
 		chartPanel.setMouseWheelEnabled(true);
@@ -355,7 +361,7 @@ public class EkstraksiWavelet extends JPanel {
 		tableDataWavelet.getColumnModel().getColumn(0).setMaxWidth(30);
 	}
 	
-	public XYDataset createDataSetSinyalAsli(boolean isUseRileks, boolean isUseNonRileks, boolean isUseAlfa, boolean isUseBeta, boolean isUseTeta, int naracoba){
+	public XYDataset createDataSetSinyalAsli(boolean isUseRileks, boolean isUseNonRileks, boolean isUseAlfa, boolean isUseBeta, boolean isUseTeta, boolean isUseFilter, int naracoba){
 		final TimeSeriesCollection collection = new TimeSeriesCollection();
 		int i=0, j=0;
 		
@@ -434,6 +440,21 @@ public class EkstraksiWavelet extends JPanel {
 			
 			collection.addSeries(seriesTeta);
 		}
+		
+		if(isUseFilter == true){
+			final TimeSeries seriesFilter = new TimeSeries("Sinyal Filter");
+			Second current = new Second();
+			ArrayList<double[]> sinyalFilter = new ArrayList<double[]>();
+			sinyalFilter = dbAction.getFilterByNaracoba(naracoba);
+			
+			for(i=0;i<sinyalFilter.size();i++){
+				for(j=0;j<sinyalFilter.get(i).length;j++){
+					seriesFilter.add(current, sinyalFilter.get(i)[j]);
+					current = (Second) current.next();
+				}
+			}
+			collection.addSeries(seriesFilter);
+		}
 		return collection;
 	}
 	
@@ -497,6 +518,8 @@ public class EkstraksiWavelet extends JPanel {
 				cbGelBeta.setSelected(false);
 				cbGelTeta.setEnabled(false);
 				cbGelTeta.setSelected(false);
+				cbGelFilter.setEnabled(false);
+				cbGelFilter.setSelected(false);
 				btnLihatGrafik.setEnabled(false);
 			}else if(e.getActionCommand().equals("btnCariDataNaracoba")){
 				if((String)cmbNaracoba.getSelectedItem() == "-"){
@@ -510,15 +533,32 @@ public class EkstraksiWavelet extends JPanel {
 					cbGelBeta.setSelected(false);
 					cbGelTeta.setEnabled(false);
 					cbGelTeta.setSelected(false);
+					cbGelFilter.setEnabled(false);
+					cbGelFilter.setSelected(false);
 					btnLihatGrafik.setEnabled(false);
 				}else{
 					int kelas = dbAction.getKelasFromDataLatih(Integer.parseInt((String)cmbNaracoba.getSelectedItem()));
-					cbGelAlfa.setEnabled(true);
-					cbGelAlfa.setSelected(false);
-					cbGelBeta.setEnabled(true);
-					cbGelBeta.setSelected(false);
-					cbGelTeta.setEnabled(true);
-					cbGelTeta.setSelected(false);
+					
+					if(dbAction.getStatusWavelet() == "ekstraksi"){
+						cbGelAlfa.setEnabled(true);
+						cbGelAlfa.setSelected(false);
+						cbGelBeta.setEnabled(true);
+						cbGelBeta.setSelected(false);
+						cbGelTeta.setEnabled(true);
+						cbGelTeta.setSelected(false);
+						cbGelFilter.setEnabled(false);
+						cbGelFilter.setSelected(false);
+					}else if(dbAction.getStatusWavelet() == "filter"){
+						cbGelAlfa.setEnabled(false);
+						cbGelAlfa.setSelected(false);
+						cbGelBeta.setEnabled(false);
+						cbGelBeta.setSelected(false);
+						cbGelTeta.setEnabled(false);
+						cbGelTeta.setSelected(false);
+						cbGelFilter.setEnabled(true);
+						cbGelFilter.setSelected(false);
+					}
+					
 					btnLihatGrafik.setEnabled(true);
 					if(kelas == 1){
 						cbSinyalRileks.setEnabled(true);
@@ -558,14 +598,18 @@ public class EkstraksiWavelet extends JPanel {
 				if(cbGelTeta.isSelected()){
 					isUseTeta = true;
 				}
+				if(cbGelFilter.isSelected()){
+					isUseFilter = true;
+				}
 				
-				dataset = createDataSetSinyalAsli(isUseRileks, isUseNonRileks, isUseAlfa, isUseBeta, isUseTeta, Integer.parseInt((String)cmbNaracoba.getSelectedItem()));
+				dataset = createDataSetSinyalAsli(isUseRileks, isUseNonRileks, isUseAlfa, isUseBeta, isUseTeta, isUseFilter, Integer.parseInt((String)cmbNaracoba.getSelectedItem()));
 				updateGrafikWavelet(dataset);
 				isUseRileks = false;
 				isUseNonRileks = false;
 				isUseAlfa = false;
 				isUseBeta = false;
 				isUseTeta = false;
+				isUseFilter = false;
 			}
 		}
 	}

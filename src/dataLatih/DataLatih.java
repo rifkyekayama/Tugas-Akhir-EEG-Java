@@ -162,24 +162,4 @@ public class DataLatih {
 		}
 		return segmen;
 	}
-	
-	public double[][][] unSegmenEEG(double[][] sinyalEEG, int samplingRate){
-		double[][][] hasilSinyal = new double[sinyalEEG.length][sinyalEEG[0].length/samplingRate][samplingRate];
-		int i=0, j=0, idx=0, idx2=0;
-		
-		for(i=0;i<sinyalEEG.length;i++){
-			for(j=0;j<sinyalEEG[i].length;j++){
-				if(idx2 < samplingRate-1){
-					hasilSinyal[i][idx][idx2] = sinyalEEG[i][j];
-					idx2++;
-				}else{
-					idx2=0;
-					idx++;
-				}
-			}
-			idx=0;
-			idx2=0;
-		}
-		return hasilSinyal;
-	}
 }

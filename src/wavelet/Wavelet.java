@@ -277,7 +277,7 @@ public class Wavelet {
 		
 		for(i=0;i<dataUji.length;i++){
 			hasilWavelet = transformasiWavelet(dataUji[i], true, true, true, samplingRate);
-			dataUji[i] = hasilWavelet;
+			neuron[i] = hasilWavelet;
 		}
 		return neuron;
 	}
