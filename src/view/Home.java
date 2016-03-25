@@ -30,7 +30,7 @@ public class Home extends JFrame {
 						 panelPelatihanSistem, panelPengujianSistem;
 	public JButton buttonAwal;
 	public JLabel labelJudul;
-	private static Dashboard dashboard = new Dashboard();
+	private static Dashboard dashboard = new Dashboard(new Layout("Dashboard"));
 	private static KelolaDataLatih kelolaDataLatih = new KelolaDataLatih();
 	private static EditDataLatih editDataLatih = new EditDataLatih();
 	private static EkstraksiWavelet ekstraksiWavelet = new EkstraksiWavelet();
@@ -47,7 +47,7 @@ public class Home extends JFrame {
 		setVisible(true);
 		setDefaultLookAndFeelDecorated(false);
 		
-		if(Main.konek != null){
+		if(Main.koneksi != null){
 			mainPanel = new JPanel(new CardLayout());
 			mainPanel.add(getPanelHome(), "panelAwal");
 			mainPanel.add(dashboard, "panelDashboard");
@@ -106,13 +106,13 @@ public class Home extends JFrame {
 		dashboard.lblJumRileks.setText(Integer.toString(dbAction.getJumRileks()));
 		dashboard.lblJumNonRileks.setText(Integer.toString(dbAction.getJumNonRileks()));
 		kelolaDataLatih.updateTableDataLatih();
-		kelolaDataLatih.updateStatusAlatPerekaman();
+		kelolaDataLatih.updateStatusAlat();
 		kelolaDataLatih.updateStatusKanal();
 		editDataLatih.updateTableEditDataLatih();
-		editDataLatih.updateComboboxEditNaracoba();
+		editDataLatih.updateCmbEditNaracoba();
 		ekstraksiWavelet.updateTabelEkstraksiWavelet();
-		ekstraksiWavelet.updateComboboxNaracoba();
-		pengujianSistem.updateStatusAlatPerekaman();
+		ekstraksiWavelet.updateCmbNaracoba();
+		pengujianSistem.updateStatusAlat();
 		pengujianSistem.updateStatusKanal();
 	}
 	

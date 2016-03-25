@@ -25,11 +25,11 @@ public class Dashboard extends JPanel {
 	public JLabel lblJumNaracoba, lblJumSegmentasi, lblJumRileks, lblJumNonRileks;
 	protected Database dbAction = new Database();;
 	
-	public Dashboard(){
+	public Dashboard(Layout layout){
 		setSize(1200, 650);
 		setLayout(null);
 		add(getContent());
-		add(new Layout("Dashboard"));
+		add(layout);
 		
 		lblJumNaracoba.setText(Integer.toString(dbAction.getJumNaracoba()));
 		lblJumSegmentasi.setText(Integer.toString(dbAction.getJumSegmentasi()));

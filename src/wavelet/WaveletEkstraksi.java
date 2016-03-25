@@ -1,8 +1,8 @@
 package wavelet;
 
-public class Wavelet {
+public class WaveletEkstraksi {
 	
-	public Wavelet(){
+	public WaveletEkstraksi(){
 		//constructor kosong
 	}
 	

@@ -38,7 +38,7 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 
 import mysql.Database;
-import wavelet.Wavelet;
+import wavelet.WaveletEkstraksi;
 import wavelet.WaveletFiltering;
 
 public class EkstraksiWavelet extends JPanel {
@@ -49,7 +49,6 @@ public class EkstraksiWavelet extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private Database dbAction = new Database();
-	Wavelet wavelet;
 	private JRadioButton rdWaveletFilter, rdWaveletGelombang, RdDb4, RdDb8;
 	private JCheckBox cbSinyalRileks, cbSinyalNonRileks, cbGelAlfa, cbGelBeta, cbGelTeta, cbGelFilter;
 	private JButton btnEkstraksiWavelet, btnLihatGrafik, btnCariDataNaracoba;
@@ -331,7 +330,7 @@ public class EkstraksiWavelet extends JPanel {
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void updateComboboxNaracoba(){
+	public void updateCmbNaracoba(){
 		String[] naracoba = new String[dbAction.getJumNaracoba()+1];
 		DefaultComboBoxModel model;
 		
@@ -616,7 +615,7 @@ public class EkstraksiWavelet extends JPanel {
 	
 	class CoreEkstraksiWavelet extends SwingWorker<Void, Void>{
 		
-		Wavelet wavelet;
+		WaveletEkstraksi waveletEkstraksi;
 		ArrayList<double[]> sinyalEEG = dbAction.getDataLatih();
 		List idOfDataLatih = dbAction.getIdOfDataLatih();
 		double[] alfa = null, beta = null, teta = null;
@@ -624,7 +623,7 @@ public class EkstraksiWavelet extends JPanel {
 		
 		public CoreEkstraksiWavelet() {
 			// TODO Auto-generated constructor stub
-			wavelet = new Wavelet();
+			waveletEkstraksi = new WaveletEkstraksi();
 			sinyalEEG = dbAction.getDataLatih();
 			idOfDataLatih = dbAction.getIdOfDataLatih();
 			lblStatusLoading.setVisible(true);
@@ -638,11 +637,11 @@ public class EkstraksiWavelet extends JPanel {
 			dbAction.deleteEkstraksiWavelet();
 			updateTabelEkstraksiWavelet();
 			for(i=0;i<sinyalEEG.size();i++){
-				alfa = wavelet.getAlfa(sinyalEEG.get(i), dbAction.getSamplingRate());
+				alfa = waveletEkstraksi.getAlfa(sinyalEEG.get(i), dbAction.getSamplingRate());
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				beta = wavelet.getBeta(sinyalEEG.get(i), dbAction.getSamplingRate());
+				beta = waveletEkstraksi.getBeta(sinyalEEG.get(i), dbAction.getSamplingRate());
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				teta = wavelet.getTeta(sinyalEEG.get(i), dbAction.getSamplingRate());
+				teta = waveletEkstraksi.getTeta(sinyalEEG.get(i), dbAction.getSamplingRate());
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
 				dbAction.inputEkstraksiWavelet(alfa, beta, teta, null, Integer.parseInt(idOfDataLatih.getItem(i)));
 				updateTabelEkstraksiWavelet();

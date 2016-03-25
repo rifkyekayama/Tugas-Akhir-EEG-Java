@@ -30,7 +30,6 @@ import javax.swing.table.DefaultTableModel;
 
 import dataLatih.DataLatih;
 import mysql.Database;
-import wavelet.Wavelet;
 
 public class KelolaDataLatih extends JPanel {
 	
@@ -55,11 +54,9 @@ public class KelolaDataLatih extends JPanel {
 	protected String[] alatPerekaman = {"Pilih salah satu...", "Emotiv", "Neurosky"};
 	protected String[] kelas = {"Pilih salah satu...", "Rileks", "Non-Rileks"};
 	protected String[] kanal = {"Pilih salah satu...", "AF3", "F7", "F3", "FC5", "T7", "P7", "O1", "O2", "P8", "T8", "FC6", "F4", "F8", "AF4"};
-	protected Database dbAction = new Database();;
-	protected Wavelet wavelet;
+	protected Database dbAction = new Database();
 	protected DataLatih dataLatih;
 	protected String[] fullPathDataEEG;
-	protected EditDataLatih editDataLatih = new EditDataLatih();
 	
 	public KelolaDataLatih(){
 		setSize(1200, 650);
@@ -69,7 +66,7 @@ public class KelolaDataLatih extends JPanel {
 		centerTable.setHorizontalAlignment(SwingConstants.CENTER);
 		add(getContent());
 		add(new Layout("Kelola Data Latih"));
-		updateStatusAlatPerekaman();
+		updateStatusAlat();
 		updateStatusKanal();
 	}
 	
@@ -358,7 +355,7 @@ public class KelolaDataLatih extends JPanel {
 		}
 	}
 	
-	public void changeSettingAlatPerekaman(String jenisAlat){
+	public void changeSettingAlat(String jenisAlat){
 		if(jenisAlat == "kosong"){
 			resetFormDataLatih();
 			btnPilihDataEEG.setEnabled(false);
@@ -390,9 +387,9 @@ public class KelolaDataLatih extends JPanel {
 		}
 	}
 	
-	public void updateStatusAlatPerekaman(){
+	public void updateStatusAlat(){
 		if(dbAction.getAlatPerekaman() != null){
-			changeSettingAlatPerekaman(dbAction.getAlatPerekaman());
+			changeSettingAlat(dbAction.getAlatPerekaman());
 			cmbAlatPerekaman.setSelectedItem(dbAction.getAlatPerekaman());
 			cmbAlatPerekaman.setEnabled(false);
 		}
@@ -450,11 +447,11 @@ public class KelolaDataLatih extends JPanel {
 			// TODO Auto-generated method stub
 			if(e.getActionCommand().equals("cmbAlatPerekaman")){
 				if((String)cmbAlatPerekaman.getSelectedItem() == "Pilih salah satu..."){
-					changeSettingAlatPerekaman("kosong");
+					changeSettingAlat("kosong");
 				}else if((String)cmbAlatPerekaman.getSelectedItem() == "Emotiv"){
-					changeSettingAlatPerekaman("Emotiv");
+					changeSettingAlat("Emotiv");
 				}else if((String)cmbAlatPerekaman.getSelectedItem() == "Neurosky"){
-					changeSettingAlatPerekaman("Neurosky");
+					changeSettingAlat("Neurosky");
 				}
 			}else if(e.getActionCommand().equals("pilihDataEEG")){
 				if((String)cmbAlatPerekaman.getSelectedItem() == "Emotiv"){
@@ -573,7 +570,7 @@ public class KelolaDataLatih extends JPanel {
 		@Override
 		public void done(){
 			resetFormDataLatih();
-			updateStatusAlatPerekaman();
+			updateStatusAlat();
 			updateStatusKanal();
 			Home.refreshAllElement();
 			progressSubmitDataEEG.setValue(100);

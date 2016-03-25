@@ -238,7 +238,7 @@ public class EditDataLatih extends JPanel {
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void updateComboboxEditNaracoba(){
+	public void updateCmbEditNaracoba(){
 		String[] naracobaEdit = new String[dbAction.getJumNaracoba()+1];
 		String[] naracobaHapus = new String[dbAction.getJumNaracoba()+2];
 		DefaultComboBoxModel modelNaracobaEdit, modelNaracobaHapus;

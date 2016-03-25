@@ -27,7 +27,6 @@ import javax.swing.table.DefaultTableModel;
 
 import lvq.LVQ;
 import mysql.Database;
-import wavelet.Wavelet;
 
 public class Pelatihan extends JPanel {
 	
@@ -247,22 +246,21 @@ public class Pelatihan extends JPanel {
 				}else if(dbAction.getNeuronNonRileks().size() == 0){
 					JOptionPane.showMessageDialog(null, "Data kelas Non-RILEKS belum diekstraksi", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else{
-					CorePelatihanSistem corePelatihanSistem = new CorePelatihanSistem();
-					corePelatihanSistem.execute();
+					CorePelatihan corePelatihan = new CorePelatihan();
+					corePelatihan.execute();
 				}
 			}
 		}
 	}
 	
-	class CorePelatihanSistem extends SwingWorker<Void, Void>{
+	class CorePelatihan extends SwingWorker<Void, Void>{
 		
 		ArrayList<double[][]> neuronRileks = new ArrayList<double[][]>();
 		ArrayList<double[][]> neuronNonRileks = new ArrayList<double[][]>();
 		double[][] belajar;
-		Wavelet wavelet = new Wavelet();
 		LVQ lvq = new LVQ();
 		
-		public CorePelatihanSistem() {
+		public CorePelatihan() {
 			// TODO Auto-generated constructor stub
 			lblStatusLoading.setVisible(true);
 			txtAreaProgressMonitor.setText("");

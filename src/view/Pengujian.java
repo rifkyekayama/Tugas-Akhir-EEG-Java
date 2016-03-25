@@ -33,7 +33,7 @@ import javax.swing.table.DefaultTableModel;
 import dataLatih.DataLatih;
 import lvq.LVQ;
 import mysql.Database;
-import wavelet.Wavelet;
+import wavelet.WaveletEkstraksi;
 import wavelet.WaveletFiltering;
 
 public class Pengujian extends JPanel {
@@ -73,7 +73,7 @@ public class Pengujian extends JPanel {
 		centerTable.setHorizontalAlignment(SwingConstants.CENTER);
 		add(getContent());
 		add(new Layout("Pengujian Sistem"));
-		updateStatusAlatPerekaman();
+		updateStatusAlat();
 		updateStatusKanal();
 	}
 	
@@ -318,7 +318,7 @@ public class Pengujian extends JPanel {
 		return panelFormNeurosky;
 	}
 	
-	public void changeSettingAlatPerekaman(int jenisAlat){
+	public void changeSettingAlat(int jenisAlat){
 		if(jenisAlat == 0){
 			resetFormDataUji();
 			btnPilihDataEEG.setEnabled(false);
@@ -350,7 +350,7 @@ public class Pengujian extends JPanel {
 		}
 	}
 	
-	public void updateStatusAlatPerekaman(){
+	public void updateStatusAlat(){
 		if(dbAction.getAlatPerekaman() != null){
 			int indexAlat = 0;
 			switch (dbAction.getAlatPerekaman()) {
@@ -358,7 +358,7 @@ public class Pengujian extends JPanel {
 				case "Neurosky": indexAlat = 2;break;
 				default: indexAlat = 0;break;
 			};
-			changeSettingAlatPerekaman(indexAlat);
+			changeSettingAlat(indexAlat);
 			cmbAlatPerekaman.setSelectedItem(dbAction.getAlatPerekaman());
 			cmbAlatPerekaman.setEnabled(false);
 		}
@@ -499,11 +499,11 @@ public class Pengujian extends JPanel {
 				}
 			}else if(e.getActionCommand().equals("cmbAlatPerekaman")){
 				if((String)cmbAlatPerekaman.getSelectedItem() == "Pilih salah satu..."){
-					changeSettingAlatPerekaman(0);
+					changeSettingAlat(0);
 				}else if((String)cmbAlatPerekaman.getSelectedItem() == "Emotiv"){
-					changeSettingAlatPerekaman(1);
+					changeSettingAlat(1);
 				}else if((String)cmbAlatPerekaman.getSelectedItem() == "Neurosky"){
-					changeSettingAlatPerekaman(2);
+					changeSettingAlat(2);
 				}
 			}else if(e.getActionCommand().equals("pilihDataEEG")){
 				if((String)cmbAlatPerekaman.getSelectedItem() == "Emotiv"){
@@ -560,21 +560,21 @@ public class Pengujian extends JPanel {
 					}else{
 						dataLatih = new DataLatih(fullPathDataEEG, null, Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), (String)cmbKanal2.getSelectedItem(), (String)cmbAlatPerekaman.getSelectedItem());
 					}
-					CorePengujianSistem corePengujianSistem = new CorePengujianSistem(dataLatih);
-					corePengujianSistem.execute();
+					CorePengujian corePengujian = new CorePengujian(dataLatih);
+					corePengujian.execute();
 				}
 			}
 		}
 	}
 	
-	class CorePengujianSistem extends SwingWorker<Void, Void>{
+	class CorePengujian extends SwingWorker<Void, Void>{
 		
-		Wavelet wavelet;
+		WaveletEkstraksi waveletEkstraksi;
 		WaveletFiltering waveletFiltering;
 		DataLatih dataLatih;
 		LVQ lvq = new LVQ();
 		
-		public CorePengujianSistem(DataLatih dataLatih) {
+		public CorePengujian(DataLatih dataLatih) {
 			// TODO Auto-generated constructor stub
 			this.dataLatih = dataLatih;
 			lblStatusLoading.setVisible(true);
@@ -621,8 +621,8 @@ public class Pengujian extends JPanel {
 			progressSubmitDataEEG.setValue(80);
 			bobotPelatihan = dbAction.getBobotPelatihan();
 			if(dbAction.getStatusWavelet().equals("ekstraksi")){
-				wavelet = new Wavelet();
-				hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.getNeuronPengujian(lvq.string2DtoDouble(sinyalFull), dbAction.getSamplingRate()));
+				waveletEkstraksi = new WaveletEkstraksi();
+				hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], waveletEkstraksi.getNeuronPengujian(lvq.string2DtoDouble(sinyalFull), dbAction.getSamplingRate()));
 			}else{
 				for(i=0;i<sinyalFull.length;i++){
 					double[] sinyalFilterTemp = new double[sinyalFull[i].length];
@@ -645,7 +645,7 @@ public class Pengujian extends JPanel {
 		public void done(){
 			progressSubmitDataEEG.setValue(100);
 			resetFormDataUji();
-			updateStatusAlatPerekaman();
+			updateStatusAlat();
 			Home.refreshAllElement();
 			updateStatusKanal();
 			JOptionPane.showMessageDialog(null, "Proses Pengujian Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);

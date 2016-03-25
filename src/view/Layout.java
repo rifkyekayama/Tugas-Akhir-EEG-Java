@@ -130,7 +130,7 @@ public class Layout extends JPanel {
 		panelLVQ.setBackground(new Color(30, 40, 44));
 		panelLVQ.setBounds(0, 320, 270, 50);
 		
-		lblLVQ = new JLabel("Sistem Identifikasi");
+		lblLVQ = new JLabel("Identifikasi Rileks");
 		lblLVQ.setForeground(Color.white);
 		lblLVQ.setBounds(43, -25, 150, 100);
 		panelLVQ.add(lblLVQ);
@@ -143,7 +143,7 @@ public class Layout extends JPanel {
 		iconLVQDrop.setBounds(230, 1, 20, 50);
 		panelLVQ.add(iconLVQDrop);
 		
-		btnPelatihan = new JButton("Pelatihan Sistem", new ImageIcon(getClass().getResource("/resource/iconSubMenu.png")));
+		btnPelatihan = new JButton("Pelatihan", new ImageIcon(getClass().getResource("/resource/iconSubMenu.png")));
 		btnPelatihan.setForeground(new Color(127, 157, 161));
 		btnPelatihan.setHorizontalAlignment(SwingConstants.LEFT);
 		btnPelatihan.setBackground(new Color(44, 59, 65));
@@ -154,7 +154,7 @@ public class Layout extends JPanel {
 		btnPelatihan.addActionListener(new ButtonController());
 		panelSidebar.add(btnPelatihan);
 		
-		btnPengujian = new JButton("Pengujian Sistem", new ImageIcon(getClass().getResource("/resource/iconSubMenu.png")));
+		btnPengujian = new JButton("Pengujian", new ImageIcon(getClass().getResource("/resource/iconSubMenu.png")));
 		btnPengujian.setForeground(new Color(127, 157, 161));
 		btnPengujian.setHorizontalAlignment(SwingConstants.LEFT);
 		btnPengujian.setBackground(new Color(44, 59, 65));
