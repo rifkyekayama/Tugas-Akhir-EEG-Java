@@ -32,10 +32,9 @@ import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.data.time.Second;
-import org.jfree.data.time.TimeSeries;
-import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import mysql.Database;
 import wavelet.WaveletEkstraksi;
@@ -311,10 +310,10 @@ public class EkstraksiWavelet extends JPanel {
 	}
 	
 	public JFreeChart createChart(XYDataset dataset){
-		return ChartFactory.createTimeSeriesChart(
+		return ChartFactory.createXYLineChart(
 				"Grafik Wavelet", 
 				"waktu (detik)", 
-				"Nilai titik sinyal", 
+				"Amplitudo", 
 				dataset);
 	}
 	
@@ -361,79 +360,104 @@ public class EkstraksiWavelet extends JPanel {
 	}
 	
 	public XYDataset createDataSetSinyalAsli(boolean isUseRileks, boolean isUseNonRileks, boolean isUseAlfa, boolean isUseBeta, boolean isUseTeta, boolean isUseFilter, int naracoba){
-		final TimeSeriesCollection collection = new TimeSeriesCollection();
+		final XYSeriesCollection collection = new XYSeriesCollection();
 		int i=0, j=0;
 		
 		if(isUseRileks == true){
-			final TimeSeries seriesRileks = new TimeSeries("Sinyal Rileks");
-			Second current = new Second();
+			final XYSeries seriesRileks = new XYSeries("Sinyal Rileks");
 			ArrayList<double[]> sinyalRileks = new ArrayList<double[]>();
 			sinyalRileks = dbAction.getDataLatihRileks(naracoba);
+			int x=1, waktu=1;
 			
 			for(i=0;i<sinyalRileks.size();i++){
 				for(j=0;j<sinyalRileks.get(i).length;j++){
-					seriesRileks.add(current, sinyalRileks.get(i)[j]);
-					current = ( Second ) current.next( ); 
+					if(x == 60){
+						waktu++;
+						x=1;
+					}
+					seriesRileks.add(waktu, sinyalRileks.get(i)[j]);
+					x++;
+					waktu++;
 				}
 			}
 			collection.addSeries(seriesRileks);
 		}
 		
 		if(isUseNonRileks == true){
-			final TimeSeries seriesNonRileks = new TimeSeries("Sinyal Non Rileks");
-			Second current = new Second();
+			final XYSeries seriesNonRileks = new XYSeries("Sinyal Non Rileks");
 			ArrayList<double[]> sinyalNonRileks = new ArrayList<double[]>();
 			sinyalNonRileks = dbAction.getDataLatihNonRileks(naracoba);
+			int x=1, waktu=1;
 			
 			for(i=0;i<sinyalNonRileks.size();i++){
 				for(j=0;j<sinyalNonRileks.get(i).length;j++){
-					seriesNonRileks.add(current, sinyalNonRileks.get(i)[j]);
-					current = ( Second ) current.next( ); 
+					if(x == 60){
+						waktu++;
+						x=1;
+					}
+					seriesNonRileks.add(waktu, sinyalNonRileks.get(i)[j]);
+					x++;
+					waktu++;
 				}
 			}
 			collection.addSeries(seriesNonRileks);
 		}
 		
 		if(isUseAlfa == true){
-			final TimeSeries seriesAlfa = new TimeSeries("Sinyal Alfa");
-			Second current = new Second();
+			final XYSeries seriesAlfa = new XYSeries("Sinyal Alfa");
 			ArrayList<double[]> sinyalAlfa = new ArrayList<double[]>();
 			sinyalAlfa = dbAction.getAlfaByNaracoba(naracoba);
+			int x=1, waktu=1;
 			
 			for(i=0;i<sinyalAlfa.size();i++){
 				for(j=0;j<sinyalAlfa.get(i).length;j++){
-					seriesAlfa.add(current, sinyalAlfa.get(i)[j]);
-					current = ( Second ) current.next( ); 
+					if(x == 60){
+						waktu++;
+						x=1;
+					}
+					seriesAlfa.add(waktu, sinyalAlfa.get(i)[j]);
+					x++;
+					waktu++;
 				}
 			}
 			collection.addSeries(seriesAlfa);
 		}
 		
 		if(isUseBeta == true){
-			final TimeSeries seriesBeta = new TimeSeries("Sinyal Beta");
-			Second current = new Second();
+			final XYSeries seriesBeta = new XYSeries("Sinyal Beta");
 			ArrayList<double[]> sinyalBeta = new ArrayList<double[]>();
 			sinyalBeta = dbAction.getBetaByNaracoba(naracoba);
+			int x=1, waktu=1;
 			
 			for(i=0;i<sinyalBeta.size();i++){
 				for(j=0;j<sinyalBeta.get(i).length;j++){
-					seriesBeta.add(current, sinyalBeta.get(i)[j]);
-					current = ( Second ) current.next( ); 
+					if(x == 60){
+						waktu++;
+						x=1;
+					}
+					seriesBeta.add(waktu, sinyalBeta.get(i)[j]);
+					x++;
+					waktu++;
 				}
 			}
 			collection.addSeries(seriesBeta);
 		}
 		
 		if(isUseTeta == true){
-			final TimeSeries seriesTeta = new TimeSeries("Sinyal Teta");
-			Second current = new Second();
+			final XYSeries seriesTeta = new XYSeries("Sinyal Teta");
 			ArrayList<double[]> sinyalTeta = new ArrayList<double[]>();
 			sinyalTeta = dbAction.getTetaByNaracoba(naracoba);
+			int x=1, waktu=1;
 			
 			for(i=0;i<sinyalTeta.size();i++){
 				for(j=0;j<sinyalTeta.get(i).length;j++){
-					seriesTeta.add(current, sinyalTeta.get(i)[j]);
-					current = ( Second ) current.next( ); 
+					if(x == 60){
+						waktu++;
+						x=1;
+					}
+					seriesTeta.add(waktu, sinyalTeta.get(i)[j]);
+					x++;
+					waktu++;
 				}
 			}
 			
@@ -441,15 +465,20 @@ public class EkstraksiWavelet extends JPanel {
 		}
 		
 		if(isUseFilter == true){
-			final TimeSeries seriesFilter = new TimeSeries("Sinyal Filter");
-			Second current = new Second();
+			final XYSeries seriesFilter = new XYSeries("Sinyal Filter");
 			ArrayList<double[]> sinyalFilter = new ArrayList<double[]>();
 			sinyalFilter = dbAction.getFilterByNaracoba(naracoba);
+			int x=1, waktu=1;
 			
 			for(i=0;i<sinyalFilter.size();i++){
 				for(j=0;j<sinyalFilter.get(i).length;j++){
-					seriesFilter.add(current, sinyalFilter.get(i)[j]);
-					current = (Second) current.next();
+					if(x == 60){
+						waktu++;
+						x=1;
+					}
+					seriesFilter.add(waktu, sinyalFilter.get(i)[j]);
+					x++;
+					waktu++;
 				}
 			}
 			collection.addSeries(seriesFilter);

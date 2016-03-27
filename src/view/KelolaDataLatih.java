@@ -547,17 +547,13 @@ public class KelolaDataLatih extends JPanel {
 				
 				dataLatih.dataEeg = dataLatih.readFile(dataLatih.pathFile[i]);
 				if(dataLatih.kanal2 == null){
-					sinyalKanal1 = new String[(int) Math.floor(dataLatih.dataEeg.getItemCount()/(dataLatih.samplingRate*dataLatih.segmentasi))][dataLatih.dataEeg.getItemCount()-1];
 					sinyalKanal1 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal1), dataLatih.segmentasi, dataLatih.samplingRate, dataLatih.alatPerekaman);
 					kanal = Integer.toString(dataLatih.kanalToInt(dataLatih.kanal1));
 					dbAction.inputSegmentasiSinyal(sinyalKanal1, dataLatih.kelasToInt(dataLatih.kelas), naracoba, dataLatih.samplingRate, kanal, dataLatih.alatPerekaman);
 					updateTableDataLatih();
 				}else{
-					sinyalKanal1 = new String[(int) Math.floor(dataLatih.dataEeg.getItemCount()/(dataLatih.samplingRate*dataLatih.segmentasi))][dataLatih.dataEeg.getItemCount()-1];
 					sinyalKanal1 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal1), dataLatih.segmentasi, dataLatih.samplingRate, dataLatih.alatPerekaman);
-					sinyalKanal2 = new String[(int) Math.floor(dataLatih.dataEeg.getItemCount()/(dataLatih.samplingRate*dataLatih.segmentasi))][dataLatih.dataEeg.getItemCount()-1];
 					sinyalKanal2 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal2), dataLatih.segmentasi, dataLatih.samplingRate, dataLatih.alatPerekaman);
-					kanalMerge = new String[sinyalKanal1.length][sinyalKanal1[0].length+sinyalKanal2[0].length];
 					kanalMerge = dataLatih.gabungkanArray(sinyalKanal1, sinyalKanal2);
 					kanal = Integer.toString(dataLatih.kanalToInt(dataLatih.kanal1))+","+Integer.toString(dataLatih.kanalToInt(dataLatih.kanal2));
 					dbAction.inputSegmentasiSinyal(kanalMerge, dataLatih.kelasToInt(dataLatih.kelas), naracoba, dataLatih.samplingRate, kanal, dataLatih.alatPerekaman);

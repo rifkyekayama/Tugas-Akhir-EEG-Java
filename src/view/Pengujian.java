@@ -182,7 +182,7 @@ public class Pengujian extends JPanel {
 		panelTableDataUji.setBounds(15, 30, panelLihatDataUji.getWidth()-30, 490);
 		panelLihatDataUji.add(panelTableDataUji);
 		
-		tableDataUji = new JTable();
+		tableDataUji = new JTable(initTableModelPengujian(null));
 		tableDataUji.setRowSelectionAllowed(false);
 		tableDataUji.setPreferredScrollableViewportSize(getSize());
 		tableDataUji.setFillsViewportHeight(true);
@@ -382,11 +382,13 @@ public class Pengujian extends JPanel {
 		tableModel.addColumn("Segmentasi");
 		tableModel.addColumn("Kondisi");
 		
-		for(i=0;i<kondisi.length;i++){
-			Object[] data = new Object[2];
-			data[0] = (i+1);
-			data[1] = kondisi[i];
-			tableModel.addRow(data);
+		if(kondisi != null){
+			for(i=0;i<kondisi.length;i++){
+				Object[] data = new Object[2];
+				data[0] = (i+1);
+				data[1] = kondisi[i];
+				tableModel.addRow(data);
+			}
 		}
 		return tableModel;
 	}
@@ -410,6 +412,16 @@ public class Pengujian extends JPanel {
 		cbGunakanKanal2.setSelected(false);
 		cmbKanal2.setSelectedIndex(0);
 		cmbKanal2.setEnabled(false);
+	}
+	
+	public void resetHasilPengujian(){
+		updateTablePengujian(initTableModelPengujian(null));
+		panelHasilRileks.setVisible(false);
+		lblJumPresentaseRileks.setText("0.0%");
+		panelHasilNonRileks.setVisible(false);
+		lblJumPresentaseNonRileks.setText("0.0%");
+		panelHasilPengujian.setVisible(false);
+		lblHasilPengujian.setText("-");
 	}
 	
 	public void updateStatusPengujian(double jumRileks, double jumNonRileks, double jumDataUji){
@@ -584,16 +596,12 @@ public class Pengujian extends JPanel {
 		protected Void doInBackground() throws Exception {
 			// TODO Auto-generated method stub
 			String[] hasilPengujian = null;
-			String[][] sinyalKanal1, sinyalKanal2, sinyalFull, sinyalTemp;
+			String[][] sinyalKanal1, sinyalKanal2, sinyalTemp;
 			double[][] bobotPelatihan;
 			ArrayList<double[]> sinyalEEGFiltering = new ArrayList<double[]>();
-			int i, j, progress=0, progressDistance = 70/dataLatih.pathFile.length;
+			ArrayList<String[][]> sinyalFull = new ArrayList<String[][]>();
+			int i, j, k, progress=0, progressDistance = 70/dataLatih.pathFile.length;
 			
-			if(dataLatih.kanal2 == null){
-				sinyalFull = new String[dataLatih.pathFile.length][dataLatih.samplingRate*dataLatih.segmentasi];
-			}else{
-				sinyalFull = new String[dataLatih.pathFile.length][dataLatih.samplingRate*dataLatih.segmentasi*2];
-			}
 			for(i=0; i<dataLatih.pathFile.length; i++){
 				lblStatusLoading.setText("membaca EEG signal ke "+(i+1));
 				progressSubmitDataEEG.setValue(progress+=progressDistance);
@@ -605,16 +613,14 @@ public class Pengujian extends JPanel {
 					e1.printStackTrace();
 				}
 				if(dataLatih.kanal2 == null){
-					sinyalKanal1 = new String[(int) Math.floor(dataLatih.dataEeg.getItemCount()/(dataLatih.samplingRate*dataLatih.segmentasi))][dataLatih.dataEeg.getItemCount()-1];
 					sinyalKanal1 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal1), dataLatih.segmentasi, dataLatih.samplingRate, dataLatih.alatPerekaman);
-					sinyalFull = sinyalKanal1;
+					sinyalFull.add(sinyalKanal1);
+					
 				}else{
-					sinyalKanal1 = new String[(int) Math.floor(dataLatih.dataEeg.getItemCount()/(dataLatih.samplingRate*dataLatih.segmentasi))][dataLatih.dataEeg.getItemCount()-1];
 					sinyalKanal1 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal1), dataLatih.segmentasi, dataLatih.samplingRate, dataLatih.alatPerekaman);
-					sinyalKanal2 = new String[(int) Math.floor(dataLatih.dataEeg.getItemCount()/(dataLatih.samplingRate*dataLatih.segmentasi))][dataLatih.dataEeg.getItemCount()-1];
 					sinyalKanal2 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal2), dataLatih.segmentasi, dataLatih.samplingRate, dataLatih.alatPerekaman);
 					sinyalTemp = dataLatih.gabungkanArray(sinyalKanal1, sinyalKanal2);
-					sinyalFull = sinyalTemp;
+					sinyalFull.add(sinyalTemp);
 				}
 			}
 			lblStatusLoading.setText("Proses Pengujian dengan LVQ");
@@ -622,14 +628,16 @@ public class Pengujian extends JPanel {
 			bobotPelatihan = dbAction.getBobotPelatihan();
 			if(dbAction.getStatusWavelet().equals("ekstraksi")){
 				waveletEkstraksi = new WaveletEkstraksi();
-				hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], waveletEkstraksi.getNeuronPengujian(lvq.string2DtoDouble(sinyalFull), dbAction.getSamplingRate()));
+				hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], waveletEkstraksi.getNeuronPengujian(sinyalFull, dbAction.getSamplingRate()));
 			}else{
-				for(i=0;i<sinyalFull.length;i++){
-					double[] sinyalFilterTemp = new double[sinyalFull[i].length];
-					for(j=0;j<sinyalFull[i].length;j++){
-						sinyalFilterTemp[j] = Double.parseDouble(sinyalFull[i][j]);
+				for(i=0;i<sinyalFull.size();i++){
+					for(j=0;j<sinyalFull.get(i).length;j++){
+						double[] sinyalFilterTemp = new double[sinyalFull.get(i)[j].length];
+						for(k=0;k<sinyalFull.get(i)[j].length;k++){
+							sinyalFilterTemp[k] = Double.parseDouble(sinyalFull.get(i)[j][k]);
+						}
+						sinyalEEGFiltering.add(sinyalFilterTemp);
 					}
-					sinyalEEGFiltering.add(sinyalFilterTemp);
 				}
 				waveletFiltering = new WaveletFiltering(sinyalEEGFiltering);
 				hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], waveletFiltering.getNeuronPengujian(waveletFiltering.sinyalEEG, dbAction.getSamplingRate()));

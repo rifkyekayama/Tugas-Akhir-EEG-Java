@@ -1,5 +1,9 @@
 package wavelet;
 
+import java.util.ArrayList;
+
+import lvq.LVQ;
+
 public class WaveletEkstraksi {
 	
 	public WaveletEkstraksi(){
@@ -270,14 +274,16 @@ public class WaveletEkstraksi {
 		return hasilSinyal;
 	}
 	
-	public double[][] getNeuronPengujian(double[][] dataUji, int samplingRate){
-		double[] hasilWavelet = new double[transformasiWavelet(dataUji[0], true, true, true, samplingRate).length];
-		double[][] neuron = new double[dataUji.length][hasilWavelet.length];
-		int i=0;
+	public double[][] getNeuronPengujian(ArrayList<String[][]> dataUji, int samplingRate){
+		double[] hasilWavelet = new double[transformasiWavelet(LVQ.string2DtoDouble(dataUji.get(0))[0], true, true, true, samplingRate).length];
+		double[][] neuron = new double[dataUji.size()*dataUji.get(0).length][hasilWavelet.length];
+		int i=0, j=0;
 		
-		for(i=0;i<dataUji.length;i++){
-			hasilWavelet = transformasiWavelet(dataUji[i], true, true, true, samplingRate);
-			neuron[i] = hasilWavelet;
+		for(i=0;i<dataUji.size();i++){
+			for(j=0;j<dataUji.get(i).length;j++){
+				hasilWavelet = transformasiWavelet(LVQ.string2DtoDouble(dataUji.get(i))[j], true, true, true, samplingRate);
+				neuron[i] = hasilWavelet;
+			}
 		}
 		return neuron;
 	}

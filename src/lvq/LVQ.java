@@ -122,7 +122,7 @@ public class LVQ {
 		return hasil;
 	}
 	
-	public double[][] string2DtoDouble(String[][] data){
+	public static double[][] string2DtoDouble(String[][] data){
 		double[][] result = new double[data.length][data[0].length];
 		int i=0, j=0;
 		for(i=0;i<result.length;i++){
