@@ -205,24 +205,24 @@ public class Database {
 		    }
 		};
 		listDataBobot.addColumn("No");
-		listDataBobot.addColumn("Bobot Kelas 1");
-		listDataBobot.addColumn("Bobot Kelas 2");
+		listDataBobot.addColumn("Bobot Rileks");
+		listDataBobot.addColumn("Bobot NonRileks");
 		int i=0;
-		String[] bobotW1, bobotW2;
+		String[] bobotRileks, bobotNonRileks;
 		
 		try{
 			stmt = Main.koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM lvq");
 			if(rs.next() && rs.getInt(1) != 0){
-				bobotW1 = new String[rs.getString("w1").split(" ").length];
-				bobotW2 = new String[rs.getString("w2").split(" ").length];
-				bobotW1 = rs.getString("w1").split(" ");
-				bobotW2 = rs.getString("w2").split(" ");
-				for(i=0;i<bobotW1.length;i++){
+				bobotRileks = new String[rs.getString("bobotRileks").split(" ").length];
+				bobotNonRileks = new String[rs.getString("bobotNonRileks").split(" ").length];
+				bobotRileks = rs.getString("bobotRileks").split(" ");
+				bobotNonRileks = rs.getString("bobotNonRileks").split(" ");
+				for(i=0;i<bobotRileks.length;i++){
 					Object[] data = new Object[3];
 					data[0] = (i+1);
-					data[1] = bobotW1[i];
-					data[2] = bobotW2[i];
+					data[1] = bobotRileks[i];
+					data[2] = bobotNonRileks[i];
 					listDataBobot.addRow(data);
 				}
 			}
@@ -354,12 +354,12 @@ public class Database {
 				String tempBobotRileks = Arrays.toString(bobot[0]).substring(1, Arrays.toString(bobot[0]).length()-1).replaceAll(",", "");
 				String tempBobotNonRileks = Arrays.toString(bobot[1]).substring(1, Arrays.toString(bobot[1]).length()-1).replaceAll(",", "");
 				stmt = Main.koneksi.createStatement();
-				stmt.executeUpdate("UPDATE lvq SET w1='"+tempBobotRileks+"', w2='"+tempBobotNonRileks+"' WHERE id='"+rs.getInt("id")+"'");
+				stmt.executeUpdate("UPDATE lvq SET bobotRileks='"+tempBobotRileks+"', bobotNonRileks='"+tempBobotNonRileks+"' WHERE id='"+rs.getInt("id")+"'");
 			}else{				
 				String tempBobotRileks = Arrays.toString(bobot[0]).substring(1, Arrays.toString(bobot[0]).length()-1).replaceAll(",", "");
 				String tempBobotNonRileks = Arrays.toString(bobot[1]).substring(1, Arrays.toString(bobot[1]).length()-1).replaceAll(",", "");
 				stmt = Main.koneksi.createStatement();
-				stmt.executeUpdate("INSERT INTO lvq (w1, w2) VALUES ('"+tempBobotRileks+"', '"+tempBobotNonRileks+"')");
+				stmt.executeUpdate("INSERT INTO lvq (bobotRileks, bobotNonRileks) VALUES ('"+tempBobotRileks+"', '"+tempBobotNonRileks+"')");
 			}
 			stmt.close();
 			rs.close();
@@ -683,24 +683,24 @@ public class Database {
 	
 	public double[][] getBobotPelatihan(){
 		double[][] bobotPelatihan = null;
-		String[] bobotw1, bobotw2;
+		String[] bobotRileks, bobotNonRileks;
 		int i=0;
 		try{
 			stmt = Main.koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM lvq");
 			if(rs.next() && rs.getInt(1) != 0){
-				bobotw1 = new String[rs.getString("w1").split(" ").length];
-				bobotw2 = new String[rs.getString("w2").split(" ").length];
+				bobotRileks = new String[rs.getString("bobotRileks").split(" ").length];
+				bobotNonRileks = new String[rs.getString("bobotNonRileks").split(" ").length];
 				
-				bobotw1 = rs.getString("w1").split(" ");
-				bobotw2 = rs.getString("w2").split(" ");
+				bobotRileks = rs.getString("bobotRileks").split(" ");
+				bobotNonRileks = rs.getString("bobotNonRileks").split(" ");
 				
-				bobotPelatihan = new double[2][bobotw1.length];
-				for(i=0;i<bobotw1.length;i++){
-					bobotPelatihan[0][i] = Double.parseDouble(bobotw1[i]);
+				bobotPelatihan = new double[2][bobotRileks.length];
+				for(i=0;i<bobotRileks.length;i++){
+					bobotPelatihan[0][i] = Double.parseDouble(bobotRileks[i]);
 				}
-				for(i=0;i<bobotw2.length;i++){
-					bobotPelatihan[1][i] = Double.parseDouble(bobotw2[i]);
+				for(i=0;i<bobotNonRileks.length;i++){
+					bobotPelatihan[1][i] = Double.parseDouble(bobotNonRileks[i]);
 				}
 			}
 			stmt.close();

@@ -97,9 +97,9 @@ public class SQLiteConnector {
 			ResultSet tabelKoefisienBobot = dbm.getTables(null, null, "lvq", null);
 			if(tabelKoefisienBobot.next() == false){
 				sql = "CREATE TABLE lvq "+
-						"(id 		INTEGER PRIMARY KEY AUTOINCREMENT," +
-						"w1			TEXT," +
-						"w2			TEXT)";
+						"(id 				INTEGER PRIMARY KEY AUTOINCREMENT," +
+						"bobotRileks		TEXT," +
+						"bobotNonRileks		TEXT)";
 				stmt.executeUpdate(sql);
 			}
 		} catch (SQLException e) {
