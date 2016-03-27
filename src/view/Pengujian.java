@@ -518,6 +518,7 @@ public class Pengujian extends JPanel {
 					changeSettingAlat(2);
 				}
 			}else if(e.getActionCommand().equals("pilihDataEEG")){
+				resetHasilPengujian();
 				if((String)cmbAlatPerekaman.getSelectedItem() == "Emotiv"){
 					FileNameExtensionFilter filterFile = new FileNameExtensionFilter("CSV FILE", "csv");
 					inputDataEEG.setFileFilter(filterFile);
