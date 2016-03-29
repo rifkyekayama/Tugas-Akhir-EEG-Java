@@ -599,7 +599,8 @@ public class Pengujian extends JPanel {
 			String[] hasilPengujian = null;
 			String[][] sinyalKanal1, sinyalKanal2, sinyalTemp;
 			double[][] bobotPelatihan;
-			ArrayList<double[]> sinyalEEGFiltering = new ArrayList<double[]>();
+			ArrayList<double[]> sinyalEEGFilteringList = new ArrayList<double[]>();
+			ArrayList<ArrayList<double[]>> sinyalEEGFiltering = new ArrayList<ArrayList<double[]>>();
 			ArrayList<String[][]> sinyalFull = new ArrayList<String[][]>();
 			int i, j, k, progress=0, progressDistance = 70/dataLatih.pathFile.length;
 			
@@ -627,19 +628,22 @@ public class Pengujian extends JPanel {
 			lblStatusLoading.setText("Proses Pengujian dengan LVQ");
 			progressSubmitDataEEG.setValue(80);
 			bobotPelatihan = dbAction.getBobotPelatihan();
-			if(dbAction.getStatusWavelet().equals("ekstraksi")){
-				waveletEkstraksi = new WaveletEkstraksi();
-				hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], waveletEkstraksi.getNeuronPengujian(sinyalFull, dbAction.getSamplingRate()));
-			}else{
-				for(i=0;i<sinyalFull.size();i++){
-					for(j=0;j<sinyalFull.get(i).length;j++){
-						double[] sinyalFilterTemp = new double[sinyalFull.get(i)[j].length];
-						for(k=0;k<sinyalFull.get(i)[j].length;k++){
-							sinyalFilterTemp[k] = Double.parseDouble(sinyalFull.get(i)[j][k]);
-						}
-						sinyalEEGFiltering.add(sinyalFilterTemp);
+			
+			for(i=0;i<sinyalFull.size();i++){
+				for(j=0;j<sinyalFull.get(i).length;j++){
+					double[] sinyalFilterTemp = new double[sinyalFull.get(i)[j].length];
+					for(k=0;k<sinyalFull.get(i)[j].length;k++){
+						sinyalFilterTemp[k] = Double.parseDouble(sinyalFull.get(i)[j][k]);
 					}
+					sinyalEEGFilteringList.add(sinyalFilterTemp);
 				}
+			}
+			sinyalEEGFiltering.add(sinyalEEGFilteringList);
+			
+			if(dbAction.getStatusWavelet().equals("ekstraksi")){
+				waveletEkstraksi = new WaveletEkstraksi(sinyalEEGFiltering);
+				hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], waveletEkstraksi.getNeuronPengujian(waveletEkstraksi.sinyalEEG, dbAction.getSamplingRate()));
+			}else{
 				waveletFiltering = new WaveletFiltering(sinyalEEGFiltering);
 				hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], waveletFiltering.getNeuronPengujian(waveletFiltering.sinyalEEG, dbAction.getSamplingRate()));
 			}

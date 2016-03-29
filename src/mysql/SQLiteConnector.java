@@ -47,9 +47,9 @@ public class SQLiteConnector {
 			stmt = connect.createStatement();
 			DatabaseMetaData dbm = connect.getMetaData();
 			
-			ResultSet tabelDataLatih = dbm.getTables(null, null, "data_latih", null);
+			ResultSet tabelDataLatih = dbm.getTables(null, null, "dataLatih", null);
 			if(tabelDataLatih.next() == false){
-				sql = "CREATE TABLE data_latih "+
+				sql = "CREATE TABLE dataLatih "+
 					  "(id 				INTEGER PRIMARY KEY AUTOINCREMENT," +
 					  "dataEeg			TEXT," +
 					  "kelas			INTEGER," +

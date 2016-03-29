@@ -27,7 +27,7 @@ public class Layout extends JPanel {
 	public JLabel lblJudulAtas, titlePage, lblAvaHeader, lblNamaHeader, lblAvaSidebar,
 				  lblNamaSidebar, lblNimSidebar, lblMainNavigation, lblLVQ, iconLVQ,
 				  iconLVQDrop, lblFooterCopyright, lblFooterNama, lblFooterKelas;
-	public JButton btnDashboard, btnKelolaDataLatih, btnEkstraksiWavelet, btnPelatihan, btnPengujian, btnExit;
+	public JButton btnDashboard, btnKelolaDataLatih, btnEkstraksiWavelet, btnPelatihan, btnPengujian, btnBantuan, btnExit;
 
 	public Layout(String title){
 		setSize(1200,650);
@@ -143,7 +143,7 @@ public class Layout extends JPanel {
 		iconLVQDrop.setBounds(230, 1, 20, 50);
 		panelLVQ.add(iconLVQDrop);
 		
-		btnPelatihan = new JButton("Pelatihan", new ImageIcon(getClass().getResource("/resource/iconSubMenu.png")));
+		btnPelatihan = new JButton(" Pelatihan", new ImageIcon(getClass().getResource("/resource/iconSubMenu.png")));
 		btnPelatihan.setForeground(new Color(127, 157, 161));
 		btnPelatihan.setHorizontalAlignment(SwingConstants.LEFT);
 		btnPelatihan.setBackground(new Color(44, 59, 65));
@@ -154,7 +154,7 @@ public class Layout extends JPanel {
 		btnPelatihan.addActionListener(new ButtonController());
 		panelSidebar.add(btnPelatihan);
 		
-		btnPengujian = new JButton("Pengujian", new ImageIcon(getClass().getResource("/resource/iconSubMenu.png")));
+		btnPengujian = new JButton(" Pengujian", new ImageIcon(getClass().getResource("/resource/iconSubMenu.png")));
 		btnPengujian.setForeground(new Color(127, 157, 161));
 		btnPengujian.setHorizontalAlignment(SwingConstants.LEFT);
 		btnPengujian.setBackground(new Color(44, 59, 65));
@@ -165,11 +165,22 @@ public class Layout extends JPanel {
 		btnPengujian.addActionListener(new ButtonController());
 		panelSidebar.add(btnPengujian);
 		
-		btnExit = new JButton("Keluar", new ImageIcon(getClass().getResource("/resource/iconExit.png")));
+		btnBantuan = new JButton(" Bantuan", new ImageIcon(getClass().getResource("/resource/iconHelp.png")));
+		btnBantuan.setHorizontalAlignment(SwingConstants.LEFT);
+		btnBantuan.setForeground(Color.white);
+		btnBantuan.setBackground(new Color(34, 45, 50));
+		btnBantuan.setBounds(0, 470, 270, 50);
+		btnBantuan.setActionCommand("btnBantuan");
+		btnBantuan.setBorderPainted(false);
+		btnBantuan.addMouseListener(new MouseController());
+		btnBantuan.addActionListener(new ButtonController());
+		panelSidebar.add(btnBantuan);
+		
+		btnExit = new JButton(" Keluar", new ImageIcon(getClass().getResource("/resource/iconExit.png")));
 		btnExit.setHorizontalAlignment(SwingConstants.LEFT);
 		btnExit.setForeground(Color.white);
 		btnExit.setBackground(new Color(34, 45, 50));
-		btnExit.setBounds(0, 470, 270, 50);
+		btnExit.setBounds(0, 520, 270, 50);
 		btnExit.setActionCommand("btnExit");
 		btnExit.setBorderPainted(false);
 		btnExit.addMouseListener(new MouseController());
@@ -252,6 +263,8 @@ public class Layout extends JPanel {
 				Home.changeCard("panelPelatihanSistem");
 			}else if(e.getActionCommand().equals("btnPengujian")){
 				Home.changeCard("panelPengujianSistem");
+			}else if(e.getActionCommand().equals("btnBantuan")){
+				Home.changeCard("panelBantuan");
 			}else if(e.getActionCommand().equals("btnExit")){
 				int dialogResult = JOptionPane.showConfirmDialog(null, "Apakah yakin akan keluar?", "Konfirmasi Keluar", JOptionPane.YES_NO_OPTION);
 				if(dialogResult == JOptionPane.YES_OPTION){

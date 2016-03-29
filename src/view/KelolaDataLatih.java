@@ -145,7 +145,7 @@ public class KelolaDataLatih extends JPanel {
 		txtSamplingrate.setEnabled(false);
 		panelFormDataLatih.add(txtSamplingrate);
 		
-		btnSubmitDataEEG = new JButton("Mulai");
+		btnSubmitDataEEG = new JButton("Tambah Data Latih");
 		btnSubmitDataEEG.setForeground(Color.white);
 		btnSubmitDataEEG.setBackground(new Color(60, 137, 185));
 		btnSubmitDataEEG.setActionCommand("submitDataEEG");
@@ -215,7 +215,7 @@ public class KelolaDataLatih extends JPanel {
 		panelEditDataLatih.setBackground(Color.white);
 		panelEditDataLatih.setBounds(panelLihatDataLatih.getX(), panelLihatDataLatih.getHeight()+10, panelLihatDataLatih.getWidth(), 60);
 		
-		JButton btnEditDataLatih = new JButton("Edit Data Latih");
+		JButton btnEditDataLatih = new JButton("Edit/Hapus Data Latih");
 		btnEditDataLatih.setActionCommand("btnEditDataLatih");
 		btnEditDataLatih.setBackground(new Color(60, 137, 185));
 		btnEditDataLatih.setForeground(Color.white);

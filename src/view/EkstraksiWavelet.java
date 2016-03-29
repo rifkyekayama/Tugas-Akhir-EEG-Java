@@ -367,18 +367,13 @@ public class EkstraksiWavelet extends JPanel {
 			final XYSeries seriesRileks = new XYSeries("Sinyal Rileks");
 			ArrayList<double[]> sinyalRileks = new ArrayList<double[]>();
 			sinyalRileks = dbAction.getDataLatihRileks(naracoba);
-			int x=1, waktu=1;
+			int x=0;
 			
 			for(i=0;i<sinyalRileks.size();i++){
 				for(j=0;j<sinyalRileks.get(i).length;j++){
-					if(x == 60){
-						waktu++;
-						x=1;
-					}
-					seriesRileks.add(waktu, sinyalRileks.get(i)[j]);
-					x++;
-					waktu++;
+					seriesRileks.add((j+1)+(sinyalRileks.get(i).length*x), sinyalRileks.get(i)[j]);
 				}
+				x++;
 			}
 			collection.addSeries(seriesRileks);
 		}
@@ -387,37 +382,25 @@ public class EkstraksiWavelet extends JPanel {
 			final XYSeries seriesNonRileks = new XYSeries("Sinyal Non Rileks");
 			ArrayList<double[]> sinyalNonRileks = new ArrayList<double[]>();
 			sinyalNonRileks = dbAction.getDataLatihNonRileks(naracoba);
-			int x=1, waktu=1;
+			int x=0;
 			
 			for(i=0;i<sinyalNonRileks.size();i++){
 				for(j=0;j<sinyalNonRileks.get(i).length;j++){
-					if(x == 60){
-						waktu++;
-						x=1;
-					}
-					seriesNonRileks.add(waktu, sinyalNonRileks.get(i)[j]);
-					x++;
-					waktu++;
+					seriesNonRileks.add((j+1)+(sinyalNonRileks.get(i).length*x), sinyalNonRileks.get(i)[j]);
 				}
+				x++;
 			}
 			collection.addSeries(seriesNonRileks);
 		}
 		
 		if(isUseAlfa == true){
 			final XYSeries seriesAlfa = new XYSeries("Sinyal Alfa");
-			ArrayList<double[]> sinyalAlfa = new ArrayList<double[]>();
+			ArrayList<double[][]> sinyalAlfa = new ArrayList<double[][]>();
 			sinyalAlfa = dbAction.getAlfaByNaracoba(naracoba);
-			int x=1, waktu=1;
 			
 			for(i=0;i<sinyalAlfa.size();i++){
 				for(j=0;j<sinyalAlfa.get(i).length;j++){
-					if(x == 60){
-						waktu++;
-						x=1;
-					}
-					seriesAlfa.add(waktu, sinyalAlfa.get(i)[j]);
-					x++;
-					waktu++;
+					seriesAlfa.add(sinyalAlfa.get(i)[j][1], sinyalAlfa.get(i)[j][0]);
 				}
 			}
 			collection.addSeries(seriesAlfa);
@@ -425,19 +408,12 @@ public class EkstraksiWavelet extends JPanel {
 		
 		if(isUseBeta == true){
 			final XYSeries seriesBeta = new XYSeries("Sinyal Beta");
-			ArrayList<double[]> sinyalBeta = new ArrayList<double[]>();
+			ArrayList<double[][]> sinyalBeta = new ArrayList<double[][]>();
 			sinyalBeta = dbAction.getBetaByNaracoba(naracoba);
-			int x=1, waktu=1;
 			
 			for(i=0;i<sinyalBeta.size();i++){
 				for(j=0;j<sinyalBeta.get(i).length;j++){
-					if(x == 60){
-						waktu++;
-						x=1;
-					}
-					seriesBeta.add(waktu, sinyalBeta.get(i)[j]);
-					x++;
-					waktu++;
+					seriesBeta.add(sinyalBeta.get(i)[j][1], sinyalBeta.get(i)[j][0]);
 				}
 			}
 			collection.addSeries(seriesBeta);
@@ -445,19 +421,12 @@ public class EkstraksiWavelet extends JPanel {
 		
 		if(isUseTeta == true){
 			final XYSeries seriesTeta = new XYSeries("Sinyal Teta");
-			ArrayList<double[]> sinyalTeta = new ArrayList<double[]>();
+			ArrayList<double[][]> sinyalTeta = new ArrayList<double[][]>();
 			sinyalTeta = dbAction.getTetaByNaracoba(naracoba);
-			int x=1, waktu=1;
 			
 			for(i=0;i<sinyalTeta.size();i++){
 				for(j=0;j<sinyalTeta.get(i).length;j++){
-					if(x == 60){
-						waktu++;
-						x=1;
-					}
-					seriesTeta.add(waktu, sinyalTeta.get(i)[j]);
-					x++;
-					waktu++;
+					seriesTeta.add(sinyalTeta.get(i)[j][1], sinyalTeta.get(i)[j][0]);
 				}
 			}
 			
@@ -466,19 +435,12 @@ public class EkstraksiWavelet extends JPanel {
 		
 		if(isUseFilter == true){
 			final XYSeries seriesFilter = new XYSeries("Sinyal Filter");
-			ArrayList<double[]> sinyalFilter = new ArrayList<double[]>();
+			ArrayList<double[][]> sinyalFilter = new ArrayList<double[][]>();
 			sinyalFilter = dbAction.getFilterByNaracoba(naracoba);
-			int x=1, waktu=1;
-			
+
 			for(i=0;i<sinyalFilter.size();i++){
 				for(j=0;j<sinyalFilter.get(i).length;j++){
-					if(x == 60){
-						waktu++;
-						x=1;
-					}
-					seriesFilter.add(waktu, sinyalFilter.get(i)[j]);
-					x++;
-					waktu++;
+					seriesFilter.add(sinyalFilter.get(i)[j][1], sinyalFilter.get(i)[j][0]);
 				}
 			}
 			collection.addSeries(seriesFilter);
@@ -607,7 +569,7 @@ public class EkstraksiWavelet extends JPanel {
 					JOptionPane.showMessageDialog(null, "Pilihan naracoba tidak boleh kosong!", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else if((kelas == 1 && dbAction.getNeuronRileks().size() == 0) || (kelas == -1 && dbAction.getNeuronNonRileks().size() == 0)){
 					JOptionPane.showMessageDialog(null, "Data latih belum diekstraksi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				}else if(dbAction.getDataLatih().size() != dbAction.getJumDataWavelet()){
+				}else if((dbAction.getDataLatih().size()*dbAction.getDataLatih().get(0).size()) != dbAction.getJumDataWavelet()){
 					JOptionPane.showMessageDialog(null, "Data ekstraksi belum di update!", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}
 				
@@ -645,19 +607,19 @@ public class EkstraksiWavelet extends JPanel {
 	class CoreEkstraksiWavelet extends SwingWorker<Void, Void>{
 		
 		WaveletEkstraksi waveletEkstraksi;
-		ArrayList<double[]> sinyalEEG = dbAction.getDataLatih();
+		ArrayList<ArrayList<double[]>> sinyalEEG;
 		List idOfDataLatih = dbAction.getIdOfDataLatih();
-		double[] alfa = null, beta = null, teta = null;
+		double[][] alfa = null, beta = null, teta = null;
 		int i=0, progress=0, progressDistance;
 		
 		public CoreEkstraksiWavelet() {
 			// TODO Auto-generated constructor stub
-			waveletEkstraksi = new WaveletEkstraksi();
 			sinyalEEG = dbAction.getDataLatih();
+			waveletEkstraksi = new WaveletEkstraksi(sinyalEEG);
 			idOfDataLatih = dbAction.getIdOfDataLatih();
 			lblStatusLoading.setVisible(true);
 			progressEkstraksiWavelet.setValue(0);
-			progressDistance = 1000/(sinyalEEG.size()*3);
+			progressDistance = 1000/(waveletEkstraksi.sinyalEEG.size()*3);
 		}
 
 		@Override
@@ -665,12 +627,12 @@ public class EkstraksiWavelet extends JPanel {
 			// TODO Auto-generated method stub
 			dbAction.deleteEkstraksiWavelet();
 			updateTabelEkstraksiWavelet();
-			for(i=0;i<sinyalEEG.size();i++){
-				alfa = waveletEkstraksi.getAlfa(sinyalEEG.get(i), dbAction.getSamplingRate());
+			for(i=0;i<waveletEkstraksi.sinyalEEG.size();i++){
+				alfa = waveletEkstraksi.getAlfa(waveletEkstraksi.sinyalEEG.get(i), dbAction.getSamplingRate());
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				beta = waveletEkstraksi.getBeta(sinyalEEG.get(i), dbAction.getSamplingRate());
+				beta = waveletEkstraksi.getBeta(waveletEkstraksi.sinyalEEG.get(i), dbAction.getSamplingRate());
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				teta = waveletEkstraksi.getTeta(sinyalEEG.get(i), dbAction.getSamplingRate());
+				teta = waveletEkstraksi.getTeta(waveletEkstraksi.sinyalEEG.get(i), dbAction.getSamplingRate());
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
 				dbAction.inputEkstraksiWavelet(alfa, beta, teta, null, Integer.parseInt(idOfDataLatih.getItem(i)));
 				updateTabelEkstraksiWavelet();
@@ -693,7 +655,7 @@ public class EkstraksiWavelet extends JPanel {
 	class CoreFilteringWavelet extends SwingWorker<Void, Void>{
 		
 		WaveletFiltering waveletFilter;
-		ArrayList<double[]> sinyalEEG;
+		ArrayList<ArrayList<double[]>> sinyalEEG;
 		List idOfDataLatih;
 		double[][] freq5to8=null, freq9to16=null, freq17to24=null, freq25to28=null, freq29to30=null, gabung=null, hasilUrut=null;
 		double[] hasilSinyal=null;
@@ -706,7 +668,7 @@ public class EkstraksiWavelet extends JPanel {
 			idOfDataLatih = dbAction.getIdOfDataLatih();
 			lblStatusLoading.setVisible(true);
 			progressEkstraksiWavelet.setValue(0);
-			progressDistance = 1000/(sinyalEEG.size()*8);
+			progressDistance = 1000/(waveletFilter.sinyalEEG.size()*8);
 		}
 
 		@Override
@@ -729,9 +691,9 @@ public class EkstraksiWavelet extends JPanel {
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
 				hasilUrut = waveletFilter.pengurutanSinyal(gabung);
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				hasilSinyal = waveletFilter.getSinyalHasilFiltering(hasilUrut);
-				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				dbAction.inputEkstraksiWavelet(null, null, null, hasilSinyal, Integer.parseInt(idOfDataLatih.getItem(i)));
+//				hasilSinyal = waveletFilter.getSinyalHasilFiltering(hasilUrut);
+//				progressEkstraksiWavelet.setValue(progress+=progressDistance);
+				dbAction.inputEkstraksiWavelet(null, null, null, hasilUrut, Integer.parseInt(idOfDataLatih.getItem(i)));
 				updateTabelEkstraksiWavelet();
 			}
 			return null;

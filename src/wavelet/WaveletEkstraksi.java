@@ -2,53 +2,72 @@ package wavelet;
 
 import java.util.ArrayList;
 
-import lvq.LVQ;
-
 public class WaveletEkstraksi {
+	
+	public ArrayList<double[][]> sinyalEEG = new ArrayList<double[][]>();
 	
 	public WaveletEkstraksi(){
 		//constructor kosong
 	}
 	
-	public double[] downSampling(double[] sinyalEEG, int factor){
-		double[] hasilSinyal = new double[sinyalEEG.length/factor];
-		int idx = 0, i=0;
+	public WaveletEkstraksi(ArrayList<ArrayList<double[]>> sinyalEEG){
+		int i=0, j=0, k=0, x=0;
 		
-		for(i=0;i<hasilSinyal.length;i++){
-			hasilSinyal[i] = sinyalEEG[idx];
-			if(i != hasilSinyal.length-1){
-				idx+=factor;
+		for(i=0;i<sinyalEEG.size();i++){
+			for(j=0;j<sinyalEEG.get(i).size();j++){
+				double[][] sinyal = new double[sinyalEEG.get(i).get(j).length][2];
+				for(k=0;k<sinyalEEG.get(i).get(j).length;k++){
+					sinyal[k][0] = sinyalEEG.get(i).get(j)[k];
+					sinyal[k][1] = (k+1)+(sinyalEEG.get(i).get(j).length*x);
+				}
+				x++;
+				this.sinyalEEG.add(sinyal);
 			}
+			x=0;
 		}
-		return hasilSinyal;
 	}
 	
-	public double[] downSamplingGenap(double[] sinyalEEG){
-		double[] hasilSinyal = new double[sinyalEEG.length/2];
+//	public double[] downSampling(double[] sinyalEEG, int factor){
+//		double[] hasilSinyal = new double[sinyalEEG.length/factor];
+//		int idx = 0, i=0;
+//		
+//		for(i=0;i<hasilSinyal.length;i++){
+//			hasilSinyal[i] = sinyalEEG[idx];
+//			if(i != hasilSinyal.length-1){
+//				idx+=factor;
+//			}
+//		}
+//		return hasilSinyal;
+//	}
+	
+	public double[][] downSamplingGenap(double[][] sinyalEEG){
+		double[][] hasilSinyal = new double[sinyalEEG.length/2][2];
 		int i=0, j=1;
 		
 		for(i=0;i<hasilSinyal.length;i++){
-			hasilSinyal[i] = sinyalEEG[j];
+			hasilSinyal[i][0] = sinyalEEG[j][0];
+			hasilSinyal[i][1] = sinyalEEG[j][1];
 			j+=2;
 		}
 		return hasilSinyal;
 	}
 	
-	public double[] downSamplingGanjil(double[] sinyalEEG){
-		double[] hasilSinyal = new double[sinyalEEG.length/2];
+	public double[][] downSamplingGanjil(double[][] sinyalEEG){
+		double[][] hasilSinyal = new double[sinyalEEG.length/2][2];
 		int i=0, j=0;
 		
 		for(i=0;i<hasilSinyal.length;i++){
-			hasilSinyal[i] = sinyalEEG[j];
+			hasilSinyal[i][0] = sinyalEEG[j][0];
+			hasilSinyal[i][1] = sinyalEEG[j][1];
 			j+=2;
 		}
 		return hasilSinyal;
 	}
 	
-	public double[] konvolusiLow(double[] sinyalEEG){
+	public double[][] konvolusiLow(double[][] sinyalEEG){
 		double[] lowPassFilter = {0.482962913144534, 0.836516303737808, 0.224143868042013, -0.129409522551260};
 		double[] LPF_temp = new double[sinyalEEG.length];
-		double[] hasilSinyal = new double[sinyalEEG.length];
+		double[][] hasilSinyal = new double[sinyalEEG.length][2];
 		int idx=0, i=0, j=0, i_temp=0, idx_temp=0;
 		
 		for(i=0;i<sinyalEEG.length;i++){
@@ -63,19 +82,20 @@ public class WaveletEkstraksi {
 			i_temp = i;
 			idx_temp = 0;
 			for(j=i; j<sinyalEEG.length; j++){
-				hasilSinyal[idx] = hasilSinyal[idx] + (sinyalEEG[i_temp] * LPF_temp[idx_temp]);
+				hasilSinyal[idx][0] = hasilSinyal[idx][0] + (sinyalEEG[i_temp][0] * LPF_temp[idx_temp]);
 				i_temp++;
 				idx_temp++;
 			}
+			hasilSinyal[idx][1] = sinyalEEG[idx][1];
 			idx++;
 		}
 		return hasilSinyal;
 	}
 	
-	public double[] konvolusiHigh(double[] sinyalEEG){
+	public double[][] konvolusiHigh(double[][] sinyalEEG){
 		double[] highPassFilter = {-0.129409522551260, -0.224143868042013, 0.836516303737808, -0.482962913144534};
 		double[] HPF_temp = new double[sinyalEEG.length];
-		double[] hasilSinyal = new double[sinyalEEG.length];
+		double[][] hasilSinyal = new double[sinyalEEG.length][2];
 		int idx=0, i=0, j=0, i_temp=0, idx_temp=0;
 		
 		for(i=0;i<sinyalEEG.length;i++){
@@ -90,18 +110,19 @@ public class WaveletEkstraksi {
 			i_temp = i;
 			idx_temp = 0;
 			for(j=i; j<sinyalEEG.length; j++){
-				hasilSinyal[idx] = hasilSinyal[idx] + (sinyalEEG[i_temp] * HPF_temp[idx_temp]);
+				hasilSinyal[idx][0] = hasilSinyal[idx][0] + (sinyalEEG[i_temp][0] * HPF_temp[idx_temp]);
 				i_temp++;
 				idx_temp++;
 			}
+			hasilSinyal[idx][1] = sinyalEEG[idx][1];
 			idx++;
 		}
 		return hasilSinyal;
 	}
 	
-	public double[] getAlfa(double[] sinyalEEG, int samplingRate){
-		double[] BA, BA1, BA1_1, BA2, A1_1 = null, AA2, AA2_2, AAA3, AAA3_3, DAAA4, DAAA4_4, ADAAA5, ADAAA5_5, DDAAA5, DDAAA5_5, ADDAAA6, ADDAAA6_6;
-		double[] hasilSinyal;
+	public double[][] getAlfa(double[][] sinyalEEG, int samplingRate){
+		double[][] BA, BA1, BA1_1, BA2, A1_1 = null, AA2, AA2_2, AAA3, AAA3_3, DAAA4, DAAA4_4, ADAAA5, ADAAA5_5, DDAAA5, DDAAA5_5, ADDAAA6, ADDAAA6_6;
+		double[][] hasilSinyal;
 		int i, i_temp;
 		
 		if(samplingRate == 128){
@@ -134,22 +155,24 @@ public class WaveletEkstraksi {
 		ADDAAA6 = konvolusiLow(DDAAA5_5);
 		ADDAAA6_6 = downSamplingGanjil(ADDAAA6);
 		
-		hasilSinyal = new double[ADAAA5_5.length + ADDAAA6_6.length];
+		hasilSinyal = new double[ADAAA5_5.length + ADDAAA6_6.length][2];
 		for(i=0;i<ADAAA5_5.length;i++){
-			hasilSinyal[i] = ADAAA5_5[i];
+			hasilSinyal[i][0] = ADAAA5_5[i][0];
+			hasilSinyal[i][1] = ADAAA5_5[i][1];
 		}
 		i_temp = ADAAA5_5.length;
 		for(i=0;i<ADDAAA6_6.length;i++){
-			hasilSinyal[i_temp] = ADDAAA6_6[i];
+			hasilSinyal[i_temp][0] = ADDAAA6_6[i][0];
+			hasilSinyal[i_temp][1] = ADDAAA6_6[i][1];
 			i_temp++;
 		}
 		
 		return hasilSinyal;
 	}
 	
-	public double[] getBeta(double[] sinyalEEG, int samplingRate){
-		double[] BA, BA1, BA1_1, BA2, A1_1 = null, AA2, AA2_2, AAA3, AAA3_3, DAA3, DAA3_3, DAAA4, DAAA4_4, DDAAA5, DDAAA5_5, DDDAAA6, DDDAAA6_6;
-		double[] hasilSinyal;
+	public double[][] getBeta(double[][] sinyalEEG, int samplingRate){
+		double[][] BA, BA1, BA1_1, BA2, A1_1 = null, AA2, AA2_2, AAA3, AAA3_3, DAA3, DAA3_3, DAAA4, DAAA4_4, DDAAA5, DDAAA5_5, DDDAAA6, DDDAAA6_6;
+		double[][] hasilSinyal;
 		int i, i_temp;
 		
 		if(samplingRate == 128){
@@ -182,21 +205,23 @@ public class WaveletEkstraksi {
 		DDDAAA6 = konvolusiHigh(DDAAA5_5);
 		DDDAAA6_6 = downSamplingGenap(DDDAAA6);
 		
-		hasilSinyal = new double[DAA3_3.length + DDDAAA6_6.length];
+		hasilSinyal = new double[DAA3_3.length + DDDAAA6_6.length][2];
 		for(i=0;i<DAA3_3.length;i++){
-			hasilSinyal[i] = DAA3_3[i];
+			hasilSinyal[i][0] = DAA3_3[i][0];
+			hasilSinyal[i][1] = DAA3_3[i][1];
 		}
 		i_temp = DAA3_3.length;
 		for(i=0;i<DDDAAA6_6.length;i++){
-			hasilSinyal[i_temp] = DDDAAA6_6[i];
+			hasilSinyal[i_temp][0] = DDDAAA6_6[i][0];
+			hasilSinyal[i_temp][1] = DDDAAA6_6[i][1];
 			i_temp++;
 		}
 		
 		return hasilSinyal;
 	}
 	
-	public double[] getTeta(double[] sinyalEEG, int samplingRate){
-		double[] BA, BA1, BA1_1, BA2, A1_1 = null, AA2, AA2_2, AAA3, AAA3_3, AAAA4, AAAA4_4, DAAAA5, DAAAA5_5;
+	public double[][] getTeta(double[][] sinyalEEG, int samplingRate){
+		double[][] BA, BA1, BA1_1, BA2, A1_1 = null, AA2, AA2_2, AAA3, AAA3_3, AAAA4, AAAA4_4, DAAAA5, DAAAA5_5;
 		
 		if(samplingRate == 128){
 			A1_1 = downSamplingGanjil(sinyalEEG);
@@ -225,8 +250,9 @@ public class WaveletEkstraksi {
 		return DAAAA5_5;
 	}
 	
-	public double[] transformasiWavelet(double[] sinyalEEG, boolean isAlfaUse, boolean isBetaUse, boolean isTetaUse, int samplingRate){
-		double[] alfa, beta, teta, hasilSinyal;
+	public double[] transformasiWavelet(double[][] sinyalEEG, boolean isAlfaUse, boolean isBetaUse, boolean isTetaUse, int samplingRate){
+		double[][] alfa, beta, teta;
+		double[] hasilSinyal;
 		int i, i_temp=0, idx=0;
 		alfa = getAlfa(sinyalEEG, samplingRate);
 		beta = getBeta(sinyalEEG, samplingRate);
@@ -247,7 +273,7 @@ public class WaveletEkstraksi {
 		
 		if(isAlfaUse == true){
 			for(i=0;i<alfa.length;i++){
-				hasilSinyal[i_temp] = alfa[i];
+				hasilSinyal[i_temp] = alfa[i][0];
 				if(i_temp < idx){
 					i_temp++;
 				}
@@ -256,7 +282,7 @@ public class WaveletEkstraksi {
 		
 		if(isBetaUse == true){
 			for(i=0;i<beta.length;i++){
-				hasilSinyal[i_temp] = beta[i];
+				hasilSinyal[i_temp] = beta[i][0];
 				if(i_temp < idx){
 					i_temp++;
 				}
@@ -265,7 +291,7 @@ public class WaveletEkstraksi {
 		
 		if(isTetaUse == true){
 			for(i=0;i<teta.length;i++){
-				hasilSinyal[i_temp] = teta[i];
+				hasilSinyal[i_temp] = teta[i][0];
 				if(i_temp < idx){
 					i_temp++;
 				}
@@ -274,14 +300,14 @@ public class WaveletEkstraksi {
 		return hasilSinyal;
 	}
 	
-	public double[][] getNeuronPengujian(ArrayList<String[][]> dataUji, int samplingRate){
-		double[] hasilWavelet = new double[transformasiWavelet(LVQ.string2DtoDouble(dataUji.get(0))[0], true, true, true, samplingRate).length];
+	public double[][] getNeuronPengujian(ArrayList<double[][]> dataUji, int samplingRate){
+		double[] hasilWavelet = new double[transformasiWavelet(dataUji.get(0), true, true, true, samplingRate).length];
 		double[][] neuron = new double[dataUji.size()*dataUji.get(0).length][hasilWavelet.length];
 		int i=0, j=0;
 		
 		for(i=0;i<dataUji.size();i++){
 			for(j=0;j<dataUji.get(i).length;j++){
-				hasilWavelet = transformasiWavelet(LVQ.string2DtoDouble(dataUji.get(i))[j], true, true, true, samplingRate);
+				hasilWavelet = transformasiWavelet(dataUji.get(i), true, true, true, samplingRate);
 				neuron[i] = hasilWavelet;
 			}
 		}

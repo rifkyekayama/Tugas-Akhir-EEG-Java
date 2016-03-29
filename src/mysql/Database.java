@@ -28,7 +28,7 @@ public class Database {
 		
 		try {
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT MAX(naracoba) FROM data_latih");
+			rs = stmt.executeQuery("SELECT MAX(naracoba) FROM dataLatih");
 			if(rs.next()){
 				maxNaracoba = rs.getInt(1);
 			}
@@ -48,7 +48,7 @@ public class Database {
 		
 		try{
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT COUNT(*) AS total FROM data_latih");
+			rs = stmt.executeQuery("SELECT COUNT(*) AS total FROM dataLatih");
 			if(rs.next()){
 				jumSegmentasi = rs.getInt(1);
 			}
@@ -66,7 +66,7 @@ public class Database {
 		
 		try{
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM data_latih WHERE kelas=1");
+			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM dataLatih WHERE kelas=1");
 			while(rs.next()){
 				jumRileks++;
 			}
@@ -83,7 +83,7 @@ public class Database {
 		
 		try{
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM data_latih WHERE kelas=-1");
+			rs = stmt.executeQuery("SELECT DISTINCT naracoba FROM dataLatih WHERE kelas=-1");
 			while(rs.next()){
 				jumNonRileks++;
 			}
@@ -102,7 +102,7 @@ public class Database {
 		String[] temp;
 		try{
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT DISTINCT kanal FROM data_latih");
+			rs = stmt.executeQuery("SELECT DISTINCT kanal FROM dataLatih");
 			if(rs.next() && rs.getInt(1) != 0){
 				kanal = new int[rs.getString("kanal").split(",").length];
 				temp = rs.getString("kanal").split(",");
@@ -122,7 +122,7 @@ public class Database {
 		String hasil = null;
 		try {
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT alatPerekaman FROM data_latih");
+			rs = stmt.executeQuery("SELECT alatPerekaman FROM dataLatih");
 			if(rs.next()){
 				hasil = rs.getString("alatPerekaman");
 			}
@@ -160,7 +160,7 @@ public class Database {
 		
 		try{
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM data_latih");
+			rs = stmt.executeQuery("SELECT * FROM dataLatih");
 			while(rs.next()){
 				Object[] data = new Object[5];
 				data[0] = no++;
@@ -303,7 +303,7 @@ public class Database {
 			for(int i=0;i<sinyal.length;i++){
 				String tempSinyal = Arrays.toString(sinyal[i]).substring(1, Arrays.toString(sinyal[i]).length()-1).replaceAll(",", "");
 				stmt = Main.koneksi.createStatement();
-				stmt.executeUpdate("INSERT INTO data_latih (dataEeg, kelas, naracoba, samplingRate, kanal, alatPerekaman) VALUES ('"+tempSinyal+"', '"+kelas+"', '"+naracoba+"', '"+samplingRate+"', '"+kanal+"', '"+alatPerekaman+"')");
+				stmt.executeUpdate("INSERT INTO dataLatih (dataEeg, kelas, naracoba, samplingRate, kanal, alatPerekaman) VALUES ('"+tempSinyal+"', '"+kelas+"', '"+naracoba+"', '"+samplingRate+"', '"+kanal+"', '"+alatPerekaman+"')");
 			}
 			stmt.close();
 			rs.close();
@@ -313,16 +313,39 @@ public class Database {
 		}
 	}
 	
-	public void inputEkstraksiWavelet(double[] alfa, double[] beta, double[] teta, double[] filter, int dataLatih_id){
+	public void inputEkstraksiWavelet(double[][] alfa, double[][] beta, double[][] teta, double[][] filter, int dataLatih_id){
+		int i=0;
 		try {
 			if(filter == null && alfa != null && beta != null && teta != null){
-				String tempSinyalAlfa = Arrays.toString(alfa).substring(1, Arrays.toString(alfa).length()-1).replaceAll(",", "");
-				String tempSinyalBeta = Arrays.toString(beta).substring(1, Arrays.toString(beta).length()-1).replaceAll(",", "");
-				String tempSinyalTeta = Arrays.toString(teta).substring(1, Arrays.toString(teta).length()-1).replaceAll(",", "");
+				String[] alfaTemp = new String[alfa.length];
+				String[] betaTemp = new String[beta.length];
+				String[] tetaTemp = new String[teta.length];
+				
+				for(i=0;i<alfaTemp.length;i++){
+					alfaTemp[i] = Double.toString(alfa[i][0]);
+					alfaTemp[i] = alfaTemp[i]+"@"+Double.toString(alfa[i][1]);
+				}
+				for(i=0;i<betaTemp.length;i++){
+					betaTemp[i] = Double.toString(beta[i][0]);
+					betaTemp[i] = betaTemp[i]+"@"+Double.toString(beta[i][1]);
+				}
+				for(i=0;i<tetaTemp.length;i++){
+					tetaTemp[i] = Double.toString(teta[i][0]);
+					tetaTemp[i] = tetaTemp[i]+"@"+Double.toString(teta[i][1]);
+				}
+				String tempSinyalAlfa = Arrays.toString(alfaTemp).substring(1, Arrays.toString(alfaTemp).length()-1).replaceAll(",", "");
+				String tempSinyalBeta = Arrays.toString(betaTemp).substring(1, Arrays.toString(betaTemp).length()-1).replaceAll(",", "");
+				String tempSinyalTeta = Arrays.toString(tetaTemp).substring(1, Arrays.toString(tetaTemp).length()-1).replaceAll(",", "");
 				stmt = Main.koneksi.createStatement();
 				stmt.executeUpdate("INSERT INTO wavelet (dataLatih_id, alfa, beta, teta, filter) VALUES ('"+dataLatih_id+"', '"+tempSinyalAlfa+"', '"+tempSinyalBeta+"', '"+tempSinyalTeta+"', '-')");
 			}else if(filter != null && alfa == null && beta == null && teta == null){
-				String tempSinyalFilter = Arrays.toString(filter).substring(1, Arrays.toString(filter).length()-1).replaceAll(",", "");
+				String[] filterTemp = new String[filter.length];
+
+				for(i=0;i<filterTemp.length;i++){
+					filterTemp[i] = Double.toString(filter[i][0]);
+					filterTemp[i] = filterTemp[i]+"@"+Double.toString(filter[i][1]);
+				}
+				String tempSinyalFilter = Arrays.toString(filterTemp).substring(1, Arrays.toString(filterTemp).length()-1).replaceAll(",", "");
 				stmt = Main.koneksi.createStatement();
 				stmt.executeUpdate("INSERT INTO wavelet (dataLatih_id, alfa, beta, teta, filter) VALUES ('"+dataLatih_id+"', '-', '-', '-', '"+tempSinyalFilter+"')");
 			}
@@ -368,25 +391,30 @@ public class Database {
 		}
 	}
 	
-	public ArrayList<double[]> getDataLatih(){
-		ArrayList<double[]> sinyalDataLatih = new ArrayList<double[]>();
-		String[] sinyalTemp;
+	public ArrayList<ArrayList<double[]>> getDataLatih(){
+		ArrayList<ArrayList<double[]>> sinyalDataLatih = new ArrayList<ArrayList<double[]>>();
+		String[] sinyalTemp = null;
+		int i=0;
 		try {
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM data_latih");
-			if(rs.next()){
-				sinyalTemp = rs.getString("dataEeg").split(" ");
-				sinyalDataLatih.add(DataLatih.stringToDouble(sinyalTemp));
-				while(rs.next()){
+			for(i=0;i<getJumNaracoba();i++){
+				rs = stmt.executeQuery("SELECT * FROM dataLatih WHERE naracoba="+Integer.toString(i+1));
+				if(rs.next()){
+					ArrayList<double[]> sinyalList = new ArrayList<double[]>();
 					sinyalTemp = rs.getString("dataEeg").split(" ");
-					sinyalDataLatih.add(DataLatih.stringToDouble(sinyalTemp));
+					sinyalList.add(DataLatih.stringToDouble(sinyalTemp));
+					while(rs.next()){
+						sinyalTemp = rs.getString("dataEeg").split(" ");
+						sinyalList.add(DataLatih.stringToDouble(sinyalTemp));
+					}
+					sinyalDataLatih.add(sinyalList);
+				}else{
+					JOptionPane.showMessageDialog(null, "Data latih kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+					Home.changeCard("panelKelolaDataLatih");
 				}
-			}else{
-				JOptionPane.showMessageDialog(null, "Data latih kelas Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				Home.changeCard("panelKelolaDataLatih");
+				stmt.close();
+				rs.close();
 			}
-			stmt.close();
-			rs.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -414,7 +442,7 @@ public class Database {
 		String[] sinyalTemp;
 		try {
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE naracoba="+naracoba+" AND kelas=1");
+			rs = stmt.executeQuery("SELECT * FROM dataLatih WHERE naracoba="+naracoba+" AND kelas=1");
 			if(rs.next()){
 				sinyalTemp = rs.getString("dataEeg").split(" ");
 				sinyalRileks.add(DataLatih.stringToDouble(sinyalTemp));
@@ -440,7 +468,7 @@ public class Database {
 		String[] sinyalTemp;
 		try {
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM data_latih WHERE naracoba="+naracoba+" AND kelas=-1");
+			rs = stmt.executeQuery("SELECT * FROM dataLatih WHERE naracoba="+naracoba+" AND kelas=-1");
 			if(rs.next()){
 				sinyalTemp = rs.getString("dataEeg").split(" ");
 				sinyalRileks.add(DataLatih.stringToDouble(sinyalTemp));
@@ -466,7 +494,7 @@ public class Database {
 		
 		try {
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM data_latih");
+			rs = stmt.executeQuery("SELECT * FROM dataLatih");
 			while(rs.next()){
 				hasil.add(rs.getString("id"));
 			}
@@ -479,14 +507,19 @@ public class Database {
 		return hasil;
 	}
 	
-	public ArrayList<double[]> getAlfaByNaracoba(int naracoba){
-		ArrayList<double[]> sinyalAlfa = new ArrayList<double[]>();
+	public ArrayList<double[][]> getAlfaByNaracoba(int naracoba){
+		ArrayList<double[][]> sinyalAlfa = new ArrayList<double[][]>();
 		try {
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT wavelet.alfa FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id WHERE data_latih.naracoba="+naracoba);
+			rs = stmt.executeQuery("SELECT wavelet.alfa FROM dataLatih INNER JOIN wavelet ON dataLatih.id = wavelet.dataLatih_id WHERE dataLatih.naracoba="+naracoba);
 			while(rs.next()){
 				String[] alfa = rs.getString("alfa").split(" ");
-				sinyalAlfa.add(DataLatih.stringToDouble(alfa));
+				double[][] hasil = new double[alfa.length][2];
+				for(int i=0;i<hasil.length;i++){
+					hasil[i][0] = Double.parseDouble(alfa[i].split("@")[0]);
+					hasil[i][1] = Double.parseDouble(alfa[i].split("@")[1]);
+				}
+				sinyalAlfa.add(hasil);
 			}
 			stmt.close();
 			rs.close();
@@ -497,14 +530,19 @@ public class Database {
 		return sinyalAlfa;
 	}
 	
-	public ArrayList<double[]> getBetaByNaracoba(int naracoba){
-		ArrayList<double[]> sinyalBeta = new ArrayList<double[]>();
+	public ArrayList<double[][]> getBetaByNaracoba(int naracoba){
+		ArrayList<double[][]> sinyalBeta = new ArrayList<double[][]>();
 		try {
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT wavelet.beta FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id WHERE data_latih.naracoba="+naracoba);
+			rs = stmt.executeQuery("SELECT wavelet.beta FROM dataLatih INNER JOIN wavelet ON dataLatih.id = wavelet.dataLatih_id WHERE dataLatih.naracoba="+naracoba);
 			while(rs.next()){
 				String[] beta = rs.getString("beta").split(" ");
-				sinyalBeta.add(DataLatih.stringToDouble(beta));
+				double[][] hasil = new double[beta.length][2];
+				for(int i=0;i<hasil.length;i++){
+					hasil[i][0] = Double.parseDouble(beta[i].split("@")[0]);
+					hasil[i][1] = Double.parseDouble(beta[i].split("@")[1]);
+				}
+				sinyalBeta.add(hasil);
 			}
 			stmt.close();
 			rs.close();
@@ -515,14 +553,19 @@ public class Database {
 		return sinyalBeta;
 	}
 	
-	public ArrayList<double[]> getTetaByNaracoba(int naracoba){
-		ArrayList<double[]> sinyalTeta = new ArrayList<double[]>();
+	public ArrayList<double[][]> getTetaByNaracoba(int naracoba){
+		ArrayList<double[][]> sinyalTeta = new ArrayList<double[][]>();
 		try {
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT wavelet.teta FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id WHERE data_latih.naracoba="+naracoba);
+			rs = stmt.executeQuery("SELECT wavelet.teta FROM dataLatih INNER JOIN wavelet ON dataLatih.id = wavelet.dataLatih_id WHERE dataLatih.naracoba="+naracoba);
 			while(rs.next()){
 				String[] teta = rs.getString("teta").split(" ");
-				sinyalTeta.add(DataLatih.stringToDouble(teta));
+				double[][] hasil = new double[teta.length][2];
+				for(int i=0;i<hasil.length;i++){
+					hasil[i][0] = Double.parseDouble(teta[i].split("@")[0]);
+					hasil[i][1] = Double.parseDouble(teta[i].split("@")[1]);
+				}
+				sinyalTeta.add(hasil);
 			}
 			stmt.close();
 			rs.close();
@@ -533,14 +576,19 @@ public class Database {
 		return sinyalTeta;
 	}
 	
-	public ArrayList<double[]> getFilterByNaracoba(int naracoba){
-		ArrayList<double[]> sinyalFilter = new ArrayList<double[]>();
+	public ArrayList<double[][]> getFilterByNaracoba(int naracoba){
+		ArrayList<double[][]> sinyalFilter = new ArrayList<double[][]>();
 		try {
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT wavelet.filter FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id WHERE data_latih.naracoba="+naracoba);
+			rs = stmt.executeQuery("SELECT wavelet.filter FROM dataLatih INNER JOIN wavelet ON dataLatih.id = wavelet.dataLatih_id WHERE dataLatih.naracoba="+naracoba);
 			while(rs.next()){
 				String[] filter = rs.getString("filter").split(" ");
-				sinyalFilter.add(DataLatih.stringToDouble(filter));
+				double[][] hasil = new double[filter.length][2];
+				for(int i=0;i<hasil.length;i++){
+					hasil[i][0] = Double.parseDouble(filter[i].split("@")[0]);
+					hasil[i][1] = Double.parseDouble(filter[i].split("@")[1]);
+				}
+				sinyalFilter.add(hasil);
 			}
 			stmt.close();
 			rs.close();
@@ -555,7 +603,7 @@ public class Database {
 		ArrayList<double[][]> neuron = new ArrayList<double[][]>();
 		try {
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id WHERE data_latih.kelas = 1");
+			rs = stmt.executeQuery("SELECT * FROM dataLatih INNER JOIN wavelet ON dataLatih.id = wavelet.dataLatih_id WHERE dataLatih.kelas = 1");
 			while(rs.next()){
 				if(rs.getString("filter").equals("-")){
 					String[] alfa = rs.getString("alfa").split(" ");
@@ -564,15 +612,15 @@ public class Database {
 					double[][] hasil = new double[2][alfa.length+beta.length+teta.length];
 					int i=0, idx=0;
 					for(i=0;i<alfa.length;i++){
-						hasil[0][idx] = Double.parseDouble(alfa[i]);
+						hasil[0][idx] = Double.parseDouble(alfa[i].split("@")[0]);
 						idx++;
 					}
 					for(i=0;i<beta.length;i++){
-						hasil[0][idx] = Double.parseDouble(beta[i]);
+						hasil[0][idx] = Double.parseDouble(beta[i].split("@")[0]);
 						idx++;
 					}
 					for(i=0;i<teta.length;i++){
-						hasil[0][idx] = Double.parseDouble(teta[i]);
+						hasil[0][idx] = Double.parseDouble(teta[i].split("@")[0]);
 						idx++;
 					}
 					hasil[1][0] = rs.getDouble("kelas");
@@ -583,7 +631,7 @@ public class Database {
 					int i=0;
 					
 					for(i=0;i<filter.length;i++){
-						hasil[0][i] = Double.parseDouble(filter[i]);
+						hasil[0][i] = Double.parseDouble(filter[i].split("@")[0]);
 					}
 					hasil[1][0] = rs.getDouble("kelas");
 					neuron.add(hasil);
@@ -602,7 +650,7 @@ public class Database {
 		ArrayList<double[][]> neuron = new ArrayList<double[][]>();
 		try {
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id WHERE data_latih.kelas = -1");
+			rs = stmt.executeQuery("SELECT * FROM dataLatih INNER JOIN wavelet ON dataLatih.id = wavelet.dataLatih_id WHERE dataLatih.kelas = -1");
 			while(rs.next()){
 				if(rs.getString("filter").equals("-")){
 					String[] alfa = rs.getString("alfa").split(" ");
@@ -611,15 +659,15 @@ public class Database {
 					double[][] hasil = new double[2][alfa.length+beta.length+teta.length];
 					int i=0, idx=0;
 					for(i=0;i<alfa.length;i++){
-						hasil[0][idx] = Double.parseDouble(alfa[i]);
+						hasil[0][idx] = Double.parseDouble(alfa[i].split("@")[0]);
 						idx++;
 					}
 					for(i=0;i<beta.length;i++){
-						hasil[0][idx] = Double.parseDouble(beta[i]);
+						hasil[0][idx] = Double.parseDouble(beta[i].split("@")[0]);
 						idx++;
 					}
 					for(i=0;i<teta.length;i++){
-						hasil[0][idx] = Double.parseDouble(teta[i]);
+						hasil[0][idx] = Double.parseDouble(teta[i].split("@")[0]);
 						idx++;
 					}
 					hasil[1][0] = rs.getDouble("kelas");
@@ -630,7 +678,7 @@ public class Database {
 					int i=0;
 					
 					for(i=0;i<filter.length;i++){
-						hasil[0][i] = Double.parseDouble(filter[i]);
+						hasil[0][i] = Double.parseDouble(filter[i].split("@")[0]);
 					}
 					hasil[1][0] = rs.getDouble("kelas");
 					neuron.add(hasil);
@@ -649,7 +697,7 @@ public class Database {
 		String hasil = null;
 		try {
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM data_latih INNER JOIN wavelet ON data_latih.id = wavelet.dataLatih_id");
+			rs = stmt.executeQuery("SELECT * FROM dataLatih INNER JOIN wavelet ON dataLatih.id = wavelet.dataLatih_id");
 			if(rs.next()){
 				if(rs.getString("filter").equals("-")){
 					hasil = "ekstraksi";
@@ -669,7 +717,7 @@ public class Database {
 		int samplingRate = 0;
 		try{
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT DISTINCT samplingRate FROM data_latih");
+			rs = stmt.executeQuery("SELECT DISTINCT samplingRate FROM dataLatih");
 			if(rs.next()){
 				samplingRate = rs.getInt(1);
 			}
@@ -715,7 +763,7 @@ public class Database {
 		int hasilNaracoba = 0;
 		try {
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT kelas FROM data_latih WHERE naracoba="+Integer.toString(naracoba));
+			rs = stmt.executeQuery("SELECT kelas FROM dataLatih WHERE naracoba="+Integer.toString(naracoba));
 			hasilNaracoba = rs.getInt("kelas");
 			stmt.close();
 			rs.close();
@@ -729,7 +777,7 @@ public class Database {
 	public boolean editDataLatih(int indexKelas, int naracoba){
 		try {
 			stmt = Main.koneksi.createStatement();
-			stmt.executeUpdate("UPDATE data_latih SET kelas="+Integer.toString(indexKelas)+" WHERE naracoba="+Integer.toString(naracoba));
+			stmt.executeUpdate("UPDATE dataLatih SET kelas="+Integer.toString(indexKelas)+" WHERE naracoba="+Integer.toString(naracoba));
 			stmt.close();
 			rs.close();
 		} catch (SQLException e) {
@@ -747,9 +795,9 @@ public class Database {
 			Main.koneksi.setAutoCommit(false);
 			stmt = Main.koneksi.createStatement();
 			if(naracoba == "Semua"){
-				sql = "DELETE FROM data_latih";
+				sql = "DELETE FROM dataLatih";
 			}else{
-				sql = "DELETE FROM data_latih WHERE naracoba="+Integer.parseInt(naracoba);
+				sql = "DELETE FROM dataLatih WHERE naracoba="+Integer.parseInt(naracoba);
 			}
 			stmt.executeUpdate(sql);
 			stmt.close();

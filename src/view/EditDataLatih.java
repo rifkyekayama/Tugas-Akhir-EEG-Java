@@ -63,7 +63,7 @@ public class EditDataLatih extends JPanel {
 		naracobaHapus[naracobaHapus.length-1] = "Semua";
 		
 		add(getContent());
-		add(new Layout("Edit Data Latih"));
+		add(new Layout("Edit/Hapus Data Latih"));
 	}
 	
 	public JPanel getContent(){
