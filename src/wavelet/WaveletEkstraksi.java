@@ -302,14 +302,12 @@ public class WaveletEkstraksi {
 	
 	public double[][] getNeuronPengujian(ArrayList<double[][]> dataUji, int samplingRate){
 		double[] hasilWavelet = new double[transformasiWavelet(dataUji.get(0), true, true, true, samplingRate).length];
-		double[][] neuron = new double[dataUji.size()*dataUji.get(0).length][hasilWavelet.length];
-		int i=0, j=0;
+		double[][] neuron = new double[dataUji.size()][hasilWavelet.length];
+		int i=0;
 		
 		for(i=0;i<dataUji.size();i++){
-			for(j=0;j<dataUji.get(i).length;j++){
-				hasilWavelet = transformasiWavelet(dataUji.get(i), true, true, true, samplingRate);
-				neuron[i] = hasilWavelet;
-			}
+			hasilWavelet = transformasiWavelet(dataUji.get(i), true, true, true, samplingRate);
+			neuron[i] = hasilWavelet;
 		}
 		return neuron;
 	}
