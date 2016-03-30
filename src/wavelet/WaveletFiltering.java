@@ -31,8 +31,7 @@ public class WaveletFiltering {
 		int i=0, j=1;
 		
 		for(i=0; i<hasilSinyal.length;i++){
-			hasilSinyal[i][0] = sinyalEEG[j][0];
-			hasilSinyal[i][1] = sinyalEEG[j][1];
+			hasilSinyal[i] = sinyalEEG[j];
 			j+=2;
 		}
 		return hasilSinyal;
@@ -43,8 +42,7 @@ public class WaveletFiltering {
 		int i=0, j=0;
 		
 		for(i=0;i<hasilSinyal.length;i++){
-			hasilSinyal[i][0] = sinyalEEG[j][0];
-			hasilSinyal[i][1] = sinyalEEG[j][1];
+			hasilSinyal[i] = sinyalEEG[j];
 			j+=2;
 		}
 		return hasilSinyal;
@@ -273,32 +271,27 @@ public class WaveletFiltering {
 		int i=0, idx=0;
 		
 		for(i=0;i<freq5to8.length;i++){
-			hasilSinyal[idx][0] = freq5to8[i][0];
-			hasilSinyal[idx][1] = freq5to8[i][1];
+			hasilSinyal[idx] = freq5to8[i];
 			idx++;
 		}
 		
 		for(i=0;i<freq9to16.length;i++){
-			hasilSinyal[idx][0] = freq9to16[i][0];
-			hasilSinyal[idx][1] = freq9to16[i][1];
+			hasilSinyal[idx] = freq9to16[i];
 			idx++;
 		}
 		
 		for(i=0;i<freq17to24.length;i++){
-			hasilSinyal[idx][0] = freq17to24[i][0];
-			hasilSinyal[idx][1] = freq17to24[i][1];
+			hasilSinyal[idx] = freq17to24[i];
 			idx++;
 		}
 		
 		for(i=0;i<freq25to28.length;i++){
-			hasilSinyal[idx][0] = freq25to28[i][0];
-			hasilSinyal[idx][1] = freq25to28[i][1];
+			hasilSinyal[idx] = freq25to28[i];
 			idx++;
 		}
 		
 		for(i=0;i<freq29to30.length;i++){
-			hasilSinyal[idx][0] = freq29to30[i][0];
-			hasilSinyal[idx][1] = freq29to30[i][1];
+			hasilSinyal[idx] = freq29to30[i];
 			idx++;
 		}
 		return hasilSinyal;
@@ -338,8 +331,7 @@ public class WaveletFiltering {
 		
 		if(isUseFreq5to8 == true){
 			for(i=0;i<freq5to8.length;i++){
-				hasilSinyal[i_temp][0] = freq5to8[i][0];
-				hasilSinyal[i_temp][1] = freq5to8[i][1];
+				hasilSinyal[i_temp] = freq5to8[i];
 				if(i_temp < idx){
 					i_temp++;
 				}
@@ -348,8 +340,7 @@ public class WaveletFiltering {
 		
 		if(isUseFreq9to16 == true){
 			for(i=0;i<freq9to16.length;i++){
-				hasilSinyal[i_temp][0] = freq9to16[i][0];
-				hasilSinyal[i_temp][1] = freq9to16[i][1];
+				hasilSinyal[i_temp] = freq9to16[i];
 				if(i_temp < idx){
 					i_temp++;
 				}
@@ -358,8 +349,7 @@ public class WaveletFiltering {
 		
 		if(isUseFreq17to24 == true){
 			for(i=0;i<freq17to24.length;i++){
-				hasilSinyal[i_temp][0] = freq17to24[i][0];
-				hasilSinyal[i_temp][1] = freq17to24[i][1];
+				hasilSinyal[i_temp] = freq17to24[i];
 				if(i_temp < idx){
 					i_temp++;
 				}
@@ -368,8 +358,7 @@ public class WaveletFiltering {
 		
 		if(isUseFreq25to28 == true){
 			for(i=0;i<freq25to28.length;i++){
-				hasilSinyal[i_temp][0] = freq25to28[i][0];
-				hasilSinyal[i_temp][1] = freq25to28[i][1];
+				hasilSinyal[i_temp] = freq25to28[i];
 				if(i_temp < idx){
 					i_temp++;
 				}
@@ -378,8 +367,7 @@ public class WaveletFiltering {
 		
 		if(isUseFreq29to30 == true){
 			for(i=0;i<freq29to30.length;i++){
-				hasilSinyal[i_temp][0] = freq29to30[i][0];
-				hasilSinyal[i_temp][1] = freq29to30[i][1];
+				hasilSinyal[i_temp] = freq29to30[i];
 				if(i_temp < idx){
 					i_temp++;
 				}
@@ -390,7 +378,7 @@ public class WaveletFiltering {
 	
 	public double[][] pengurutanSinyal(double[][] sinyalEEG){
 		int i=0,j=0, minIndex;
-		double tmpData, tmpIndex;
+		double[] tmp;
 		
 		for(i=0;i<sinyalEEG.length-1;i++){
 			minIndex = i;
@@ -401,12 +389,9 @@ public class WaveletFiltering {
 			}
 			
 			if(minIndex != i){
-				tmpData = sinyalEEG[i][0];
-				tmpIndex = sinyalEEG[i][1];
-				sinyalEEG[i][0] = sinyalEEG[minIndex][0];
-				sinyalEEG[i][1] = sinyalEEG[minIndex][1];
-				sinyalEEG[minIndex][0] = tmpData;
-				sinyalEEG[minIndex][1] = tmpIndex;
+				tmp = sinyalEEG[i];
+				sinyalEEG[i] = sinyalEEG[minIndex];
+				sinyalEEG[minIndex] = tmp;
 			}
 		}
 		return sinyalEEG;

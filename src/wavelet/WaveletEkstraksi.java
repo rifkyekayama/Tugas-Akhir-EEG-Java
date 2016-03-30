@@ -27,26 +27,12 @@ public class WaveletEkstraksi {
 		}
 	}
 	
-//	public double[] downSampling(double[] sinyalEEG, int factor){
-//		double[] hasilSinyal = new double[sinyalEEG.length/factor];
-//		int idx = 0, i=0;
-//		
-//		for(i=0;i<hasilSinyal.length;i++){
-//			hasilSinyal[i] = sinyalEEG[idx];
-//			if(i != hasilSinyal.length-1){
-//				idx+=factor;
-//			}
-//		}
-//		return hasilSinyal;
-//	}
-	
 	public double[][] downSamplingGenap(double[][] sinyalEEG){
 		double[][] hasilSinyal = new double[sinyalEEG.length/2][2];
 		int i=0, j=1;
 		
 		for(i=0;i<hasilSinyal.length;i++){
-			hasilSinyal[i][0] = sinyalEEG[j][0];
-			hasilSinyal[i][1] = sinyalEEG[j][1];
+			hasilSinyal[i] = sinyalEEG[j];
 			j+=2;
 		}
 		return hasilSinyal;
@@ -57,8 +43,7 @@ public class WaveletEkstraksi {
 		int i=0, j=0;
 		
 		for(i=0;i<hasilSinyal.length;i++){
-			hasilSinyal[i][0] = sinyalEEG[j][0];
-			hasilSinyal[i][1] = sinyalEEG[j][1];
+			hasilSinyal[i] = sinyalEEG[j];
 			j+=2;
 		}
 		return hasilSinyal;
@@ -157,13 +142,11 @@ public class WaveletEkstraksi {
 		
 		hasilSinyal = new double[ADAAA5_5.length + ADDAAA6_6.length][2];
 		for(i=0;i<ADAAA5_5.length;i++){
-			hasilSinyal[i][0] = ADAAA5_5[i][0];
-			hasilSinyal[i][1] = ADAAA5_5[i][1];
+			hasilSinyal[i] = ADAAA5_5[i];
 		}
 		i_temp = ADAAA5_5.length;
 		for(i=0;i<ADDAAA6_6.length;i++){
-			hasilSinyal[i_temp][0] = ADDAAA6_6[i][0];
-			hasilSinyal[i_temp][1] = ADDAAA6_6[i][1];
+			hasilSinyal[i_temp] = ADDAAA6_6[i];
 			i_temp++;
 		}
 		
@@ -207,13 +190,11 @@ public class WaveletEkstraksi {
 		
 		hasilSinyal = new double[DAA3_3.length + DDDAAA6_6.length][2];
 		for(i=0;i<DAA3_3.length;i++){
-			hasilSinyal[i][0] = DAA3_3[i][0];
-			hasilSinyal[i][1] = DAA3_3[i][1];
+			hasilSinyal[i] = DAA3_3[i];
 		}
 		i_temp = DAA3_3.length;
 		for(i=0;i<DDDAAA6_6.length;i++){
-			hasilSinyal[i_temp][0] = DDDAAA6_6[i][0];
-			hasilSinyal[i_temp][1] = DDDAAA6_6[i][1];
+			hasilSinyal[i_temp] = DDDAAA6_6[i];
 			i_temp++;
 		}
 		
