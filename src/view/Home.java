@@ -30,12 +30,14 @@ public class Home extends JFrame {
 						 panelPelatihanSistem, panelPengujianSistem;
 	public JButton buttonAwal;
 	public JLabel labelJudul;
-	private static Dashboard dashboard = new Dashboard(new Layout("Dashboard"));
+	
+	private static Dashboard dashboard = new Dashboard();
 	private static KelolaDataLatih kelolaDataLatih = new KelolaDataLatih();
 	private static EditDataLatih editDataLatih = new EditDataLatih();
 	private static EkstraksiWavelet ekstraksiWavelet = new EkstraksiWavelet();
 	private static Pelatihan pelatihanSistem = new Pelatihan();
 	private static Pengujian pengujianSistem = new Pengujian();
+	private static Bantuan bantuan = new Bantuan();
 	private static Database dbAction = new Database();
 	
 	public Home() throws SQLException{
@@ -56,6 +58,7 @@ public class Home extends JFrame {
 			mainPanel.add(ekstraksiWavelet, "panelEkstraksiWavelet");
 			mainPanel.add(pelatihanSistem, "panelPelatihanSistem");
 			mainPanel.add(pengujianSistem, "panelPengujianSistem");
+			mainPanel.add(bantuan, "panelBantuan");
 			add(mainPanel);
 		}
 	}
