@@ -23,7 +23,7 @@ public class Main {
                 	SQLiteConnector sqlite = new SQLiteConnector();
                 	sqlite.createDatabase();
                 	koneksi = sqlite.getKoneksi();
-					new Home().setVisible(true);
+					new ViewController().setVisible(true);
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

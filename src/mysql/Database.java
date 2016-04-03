@@ -12,7 +12,7 @@ import javax.swing.table.DefaultTableModel;
 
 import dataLatih.DataLatih;
 import main.Main;
-import view.Home;
+import view.ViewController;
 
 public class Database {
 	
@@ -410,7 +410,7 @@ public class Database {
 					sinyalDataLatih.add(sinyalList);
 				}else{
 					JOptionPane.showMessageDialog(null, "Data latih kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-					Home.changeCard("panelKelolaDataLatih");
+					ViewController.changeCard("panelKelolaDataLatih");
 				}
 				stmt.close();
 				rs.close();
@@ -452,7 +452,7 @@ public class Database {
 				}
 			}else{
 				JOptionPane.showMessageDialog(null, "Data latih kelas Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				Home.changeCard("panelKelolaDataLatih");
+				ViewController.changeCard("panelKelolaDataLatih");
 			}
 			stmt.close();
 			rs.close();
@@ -478,7 +478,7 @@ public class Database {
 				}
 			}else{
 				JOptionPane.showMessageDialog(null, "Data latih kelas Rileks kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				Home.changeCard("panelKelolaDataLatih");
+				ViewController.changeCard("panelKelolaDataLatih");
 			}
 			stmt.close();
 			rs.close();
@@ -774,7 +774,7 @@ public class Database {
 		return hasilNaracoba;
 	}
 	
-	public boolean editDataLatih(int indexKelas, int naracoba){
+	public boolean ubahDataLatih(int indexKelas, int naracoba){
 		try {
 			stmt = Main.koneksi.createStatement();
 			stmt.executeUpdate("UPDATE dataLatih SET kelas="+Integer.toString(indexKelas)+" WHERE naracoba="+Integer.toString(naracoba));

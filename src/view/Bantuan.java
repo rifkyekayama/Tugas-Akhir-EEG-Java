@@ -20,7 +20,7 @@ public class Bantuan extends JPanel {
 		setSize(1200, 650);
 		setLayout(null);
 		add(getContent());
-		add(new Layout("Bantuan"));
+		add(new MenuUtama("Bantuan"));
 	}
 	
 	public JPanel getContent(){

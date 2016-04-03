@@ -53,7 +53,7 @@ public class Pelatihan extends JPanel {
 		centerTable = new DefaultTableCellRenderer();
 		centerTable.setHorizontalAlignment(SwingConstants.CENTER);
 		add(getContent());
-		add(new Layout("Pelatihan Sistem"));
+		add(new MenuUtama("Pelatihan Sistem"));
 	}
 	
 	public JPanel getContent(){
@@ -289,7 +289,7 @@ public class Pelatihan extends JPanel {
 			progressBarPelatihan.setValue(100);
 			lblStatusLoading.setVisible(false);
 			progressBarPelatihan.setValue(0);
-			Home.refreshAllElement();
+			ViewController.refreshAllElement();
 			updateTableDataBobot();
 			JOptionPane.showMessageDialog(null, "Proses pelatihan beres", "Pelatihan", JOptionPane.INFORMATION_MESSAGE);
 		}

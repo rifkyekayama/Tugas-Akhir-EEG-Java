@@ -29,7 +29,7 @@ public class Dashboard extends JPanel {
 		setSize(1200, 650);
 		setLayout(null);
 		add(getContent());
-		add(new Layout("Dashboard"));
+		add(new MenuUtama("Dashboard"));
 		
 		lblJumNaracoba.setText(Integer.toString(dbAction.getJumNaracoba()));
 		lblJumSegmentasi.setText(Integer.toString(dbAction.getJumSegmentasi()));
@@ -219,13 +219,13 @@ public class Dashboard extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getActionCommand().equals("btnViewNaracoba")){
-				Home.changeCard("panelKelolaDataLatih");
+				ViewController.changeCard("panelKelolaDataLatih");
 			}else if(e.getActionCommand().equals("btnViewSegmentasi")){
-				Home.changeCard("panelKelolaDataLatih");
+				ViewController.changeCard("panelKelolaDataLatih");
 			}else if(e.getActionCommand().equals("btnViewRileks")){
-				Home.changeCard("panelKelolaDataLatih");
+				ViewController.changeCard("panelKelolaDataLatih");
 			}else if(e.getActionCommand().equals("btnViewNonRileks")){
-				Home.changeCard("panelKelolaDataLatih");
+				ViewController.changeCard("panelKelolaDataLatih");
 			}
 		}
 	}

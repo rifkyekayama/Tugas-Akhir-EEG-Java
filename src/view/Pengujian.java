@@ -72,7 +72,7 @@ public class Pengujian extends JPanel {
 		centerTable = new DefaultTableCellRenderer();
 		centerTable.setHorizontalAlignment(SwingConstants.CENTER);
 		add(getContent());
-		add(new Layout("Pengujian Sistem"));
+		add(new MenuUtama("Pengujian Sistem"));
 		updateStatusAlat();
 		updateStatusKanal();
 	}
@@ -552,7 +552,7 @@ public class Pengujian extends JPanel {
 					JOptionPane.showMessageDialog(null, "Sampling Rate tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else if(!dbAction.isBobotNotNull()){
 					JOptionPane.showMessageDialog(null, "Belum Melakukan Pelatihan!", "Peringatan", JOptionPane.WARNING_MESSAGE);
-					Home.changeCard("panelPelatihanSistem");
+					ViewController.changeCard("panelPelatihanSistem");
 				}else{
 					if((String)cmbAlatPerekaman.getSelectedItem() == "Emotiv"){
 						if((String)cmbKanal1.getSelectedItem() == "Pilih salah satu..."){
@@ -659,7 +659,7 @@ public class Pengujian extends JPanel {
 			progressSubmitDataEEG.setValue(100);
 			resetFormDataUji();
 			updateStatusAlat();
-			Home.refreshAllElement();
+			ViewController.refreshAllElement();
 			updateStatusKanal();
 			JOptionPane.showMessageDialog(null, "Proses Pengujian Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
 			lblStatusLoading.setVisible(false);

@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-public class Layout extends JPanel {
+public class MenuUtama extends JPanel {
 	/**
 	 * 
 	 */
@@ -29,7 +29,7 @@ public class Layout extends JPanel {
 				  iconLVQDrop, lblFooterCopyright, lblFooterNama, lblFooterKelas;
 	public JButton btnDashboard, btnKelolaDataLatih, btnEkstraksiWavelet, btnPelatihan, btnPengujian, btnBantuan, btnExit;
 
-	public Layout(String title){
+	public MenuUtama(String title){
 		setSize(1200,650);
 		setLayout(null);
 		setBackground(new Color(236, 240, 245));
@@ -252,19 +252,19 @@ public class Layout extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getActionCommand().equals("btnDashboard")){
-				Home.changeCard("panelDashboard");
+				ViewController.changeCard("panelDashboard");
 			}else if(e.getActionCommand().equals("btnKelolaDataLatih")){
-				Home.changeCard("panelKelolaDataLatih");
+				ViewController.changeCard("panelKelolaDataLatih");
 			}else if(e.getActionCommand().equals("btnEkstraksiWavelet")){
-				Home.changeCard("panelEkstraksiWavelet");
+				ViewController.changeCard("panelEkstraksiWavelet");
 			}else if(e.getActionCommand().equals("btnEkstraksiWavelet")){
-				Home.changeCard("panelEkstraksiWavelet");
+				ViewController.changeCard("panelEkstraksiWavelet");
 			}else if(e.getActionCommand().equals("btnPelatihan")){
-				Home.changeCard("panelPelatihanSistem");
+				ViewController.changeCard("panelPelatihanSistem");
 			}else if(e.getActionCommand().equals("btnPengujian")){
-				Home.changeCard("panelPengujianSistem");
+				ViewController.changeCard("panelPengujianSistem");
 			}else if(e.getActionCommand().equals("btnBantuan")){
-				Home.changeCard("panelBantuan");
+				ViewController.changeCard("panelBantuan");
 			}else if(e.getActionCommand().equals("btnExit")){
 				int dialogResult = JOptionPane.showConfirmDialog(null, "Apakah yakin akan keluar?", "Konfirmasi Keluar", JOptionPane.YES_NO_OPTION);
 				if(dialogResult == JOptionPane.YES_OPTION){

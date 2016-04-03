@@ -40,7 +40,7 @@ import mysql.Database;
 import wavelet.WaveletEkstraksi;
 import wavelet.WaveletFiltering;
 
-public class EkstraksiWavelet extends JPanel {
+public class Ekstraksi extends JPanel {
 
 	/**
 	 * 
@@ -66,7 +66,7 @@ public class EkstraksiWavelet extends JPanel {
 	private JPanel panelChart;
 	private int i=0;
 	
-	public EkstraksiWavelet() {
+	public Ekstraksi() {
 		setSize(1200, 650);
 		setLayout(null);
 		
@@ -80,7 +80,7 @@ public class EkstraksiWavelet extends JPanel {
 		}
 		
 		add(getContent());
-		add(new Layout("Ekstraksi Wavelet"));
+		add(new MenuUtama("Ekstraksi Wavelet"));
 	}
 	
 	public JPanel getContent(){
@@ -644,7 +644,7 @@ public class EkstraksiWavelet extends JPanel {
 		protected void done() {
 			// TODO Auto-generated method stub
 			super.done();
-			Home.refreshAllElement();
+			ViewController.refreshAllElement();
 			progressEkstraksiWavelet.setValue(1000);
 			JOptionPane.showMessageDialog(null, "Proses Ekstraksi Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
 			lblStatusLoading.setVisible(false);
@@ -703,7 +703,7 @@ public class EkstraksiWavelet extends JPanel {
 		protected void done() {
 			// TODO Auto-generated method stub
 			super.done();
-			Home.refreshAllElement();
+			ViewController.refreshAllElement();
 			progressEkstraksiWavelet.setValue(1000);
 			JOptionPane.showMessageDialog(null, "Proses Filtering Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
 			lblStatusLoading.setVisible(false);
