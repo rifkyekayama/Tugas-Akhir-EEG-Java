@@ -291,7 +291,7 @@ public class Ekstraksi extends JPanel {
 		btnLihatGrafik.addMouseListener(new MouseController());
 		panelChartWavelet.add(btnLihatGrafik);
 		
-		dataset = createDataSetSinyalAsli(false, false, false, false, false, false, 0);
+		dataset = createDataSetSinyal(false, false, false, false, false, false, 0);
 		chart = createChart(dataset);
 		chartPanel = new ChartPanel(chart);
 		chartPanel.setMouseWheelEnabled(true);
@@ -359,7 +359,7 @@ public class Ekstraksi extends JPanel {
 		tableDataWavelet.getColumnModel().getColumn(0).setMaxWidth(30);
 	}
 	
-	public XYDataset createDataSetSinyalAsli(boolean isUseRileks, boolean isUseNonRileks, boolean isUseAlfa, boolean isUseBeta, boolean isUseTeta, boolean isUseFilter, int naracoba){
+	public XYDataset createDataSetSinyal(boolean isUseRileks, boolean isUseNonRileks, boolean isUseAlfa, boolean isUseBeta, boolean isUseTeta, boolean isUseFilter, int naracoba){
 		final XYSeriesCollection collection = new XYSeriesCollection();
 		int i=0, j=0;
 		
@@ -592,7 +592,7 @@ public class Ekstraksi extends JPanel {
 					isUseFilter = true;
 				}
 				
-				dataset = createDataSetSinyalAsli(isUseRileks, isUseNonRileks, isUseAlfa, isUseBeta, isUseTeta, isUseFilter, Integer.parseInt((String)cmbNaracoba.getSelectedItem()));
+				dataset = createDataSetSinyal(isUseRileks, isUseNonRileks, isUseAlfa, isUseBeta, isUseTeta, isUseFilter, Integer.parseInt((String)cmbNaracoba.getSelectedItem()));
 				updateGrafikWavelet(dataset);
 				isUseRileks = false;
 				isUseNonRileks = false;
@@ -629,10 +629,13 @@ public class Ekstraksi extends JPanel {
 			updateTabelEkstraksiWavelet();
 			for(i=0;i<waveletEkstraksi.sinyalEEG.size();i++){
 				alfa = waveletEkstraksi.getAlfa(waveletEkstraksi.sinyalEEG.get(i), dbAction.getSamplingRate());
+				System.out.println("alfa = "+alfa.length);
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
 				beta = waveletEkstraksi.getBeta(waveletEkstraksi.sinyalEEG.get(i), dbAction.getSamplingRate());
+				System.out.println("beta = "+beta.length);
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
 				teta = waveletEkstraksi.getTeta(waveletEkstraksi.sinyalEEG.get(i), dbAction.getSamplingRate());
+				System.out.println("teta = "+teta.length);
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
 				dbAction.inputEkstraksiWavelet(alfa, beta, teta, null, Integer.parseInt(idOfDataLatih.getItem(i)));
 				updateTabelEkstraksiWavelet();

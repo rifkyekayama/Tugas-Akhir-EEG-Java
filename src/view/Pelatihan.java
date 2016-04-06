@@ -130,9 +130,13 @@ public class Pelatihan extends JPanel {
 		lblStatusLoading.setVisible(true);
 		panelLblStatusLoading.add(lblStatusLoading);
 		
+		JLabel lblTxtAreaProgressMonitor = new JLabel("Proses Pelatihan");
+		lblTxtAreaProgressMonitor.setBounds(0, 330, 450, 30);
+		panelContent.add(lblTxtAreaProgressMonitor);
+		
 		JPanel panelTextAreaProgressMonitor = new JPanel();
 		panelTextAreaProgressMonitor.setLayout(new BorderLayout());
-		panelTextAreaProgressMonitor.setBounds(0, 330, 450, 200);
+		panelTextAreaProgressMonitor.setBounds(0, 360, 450, 370);
 		
 		txtAreaProgressMonitor = new JTextArea(10,5);
 		txtAreaProgressMonitor.setEditable(false);

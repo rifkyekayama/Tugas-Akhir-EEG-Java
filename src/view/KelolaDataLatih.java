@@ -42,7 +42,7 @@ public class KelolaDataLatih extends JPanel {
 	protected JPanel panelFormEmotiv, panelFormNeurosky, panelFormInputDataLatih, panelFormEditDanHapusDataLatih;
 	protected JButton btnPilihDataEEG, btnSubmitDataEEG, btnUbahDataLatih, btnHapusDataLatih, btnCariDataNaracoba;
 	protected JLabel lblFileDataEEG, isLockedKanal1, isLockedKanal2;
-	protected JComboBox<?> cmbAlatPerekaman, cmbKelas, cmbKanal1, cmbKanal2, cmbNaracobaEdit, cmbNaracobaHapus;
+	protected JComboBox<?> cmbAlatPerekaman, cmbKelasInput, cmbKelasEdit, cmbKanal1, cmbKanal2, cmbNaracobaEdit, cmbNaracobaHapus;
 	protected JTextField txtSegmentasi, txtSamplingrate, txtKanalNeurosky;
 	protected JCheckBox cbGunakanKanal2;
 	protected DefaultTableModel tableModel;
@@ -185,10 +185,10 @@ public class KelolaDataLatih extends JPanel {
 		lblKelas.setBounds(15, 160, 110, 30);
 		panelFormDataLatih.add(lblKelas);
 		
-		cmbKelas = new JComboBox<>(kelas);
-		cmbKelas.setBackground(Color.white);
-		cmbKelas.setBounds(15, 190, 420, 30);
-		panelFormDataLatih.add(cmbKelas);
+		cmbKelasInput = new JComboBox<>(kelas);
+		cmbKelasInput.setBackground(Color.white);
+		cmbKelasInput.setBounds(15, 190, 420, 30);
+		panelFormDataLatih.add(cmbKelasInput);
 		
 		JLabel lblSegmentasi = new JLabel("Segmentasi (per detik) :");
 		lblSegmentasi.setFont(lblSegmentasi.getFont().deriveFont(Font.BOLD, 15f));
@@ -303,11 +303,11 @@ public class KelolaDataLatih extends JPanel {
 		lblKelas.setBounds(15, 110, 150, 30);
 		panelFormEditDataLatih.add(lblKelas);
 		
-		cmbKelas = new JComboBox<>(kelas);
-		cmbKelas.setBackground(Color.white);
-		cmbKelas.setBounds(15, 140, 150, 30);
-		cmbKelas.setEnabled(false);
-		panelFormEditDataLatih.add(cmbKelas);
+		cmbKelasEdit = new JComboBox<>(kelas);
+		cmbKelasEdit.setBackground(Color.white);
+		cmbKelasEdit.setBounds(15, 140, 150, 30);
+		cmbKelasEdit.setEnabled(false);
+		panelFormEditDataLatih.add(cmbKelasEdit);
 		
 		btnUbahDataLatih = new JButton("Ubah Data Latih");
 		btnUbahDataLatih.setForeground(Color.white);
@@ -566,7 +566,8 @@ public class KelolaDataLatih extends JPanel {
 	public void resetFormDataLatih(){
 		fullPathDataEEG = null;
 		lblFileDataEEG.setText("Tidak ada file dipilih.");
-		cmbKelas.setSelectedIndex(0);
+		cmbKelasInput.setSelectedIndex(0);
+		cmbKelasEdit.setSelectedIndex(0);
 		txtSegmentasi.setText("60");;
 		txtSamplingrate.setText("128");;
 		cmbKanal1.setSelectedIndex(0);
@@ -655,7 +656,7 @@ public class KelolaDataLatih extends JPanel {
 			}else if(e.getActionCommand().equals("submitDataEEG")){
 				if(fullPathDataEEG == null){
 					JOptionPane.showMessageDialog(null, "Sinyal EEG belum dipilih", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				}else if((String)cmbKelas.getSelectedItem() == "Pilih salah satu..."){
+				}else if(cmbKelasInput.getSelectedIndex() == 0){
 					JOptionPane.showMessageDialog(null, "Pilihan kelas tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else if(txtSegmentasi == null){
 					JOptionPane.showMessageDialog(null, "Segmentasi tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -677,11 +678,11 @@ public class KelolaDataLatih extends JPanel {
 						}else if((String)cmbAlatPerekaman.getSelectedItem() == "Neurosky"){
 							kanal = (String)txtKanalNeurosky.getText();
 						}
-						dataLatih = new DataLatih(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), kanal, null, (String)cmbAlatPerekaman.getSelectedItem());
+						dataLatih = new DataLatih(fullPathDataEEG, (String)cmbKelasInput.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), kanal, null, (String)cmbAlatPerekaman.getSelectedItem());
 						CoreKelolaDataLatih coreKelolaDataLatih = new CoreKelolaDataLatih(dataLatih);
 						coreKelolaDataLatih.execute();
 					}else{
-						dataLatih = new DataLatih(fullPathDataEEG, (String)cmbKelas.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), (String)cmbKanal2.getSelectedItem(), (String)cmbAlatPerekaman.getSelectedItem());
+						dataLatih = new DataLatih(fullPathDataEEG, (String)cmbKelasInput.getSelectedItem(), Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), (String)cmbKanal2.getSelectedItem(), (String)cmbAlatPerekaman.getSelectedItem());
 						CoreKelolaDataLatih coreKelolaDataLatih = new CoreKelolaDataLatih(dataLatih);
 						coreKelolaDataLatih.execute();
 					}
@@ -700,29 +701,29 @@ public class KelolaDataLatih extends JPanel {
 				if((String)cmbNaracobaEdit.getSelectedItem() != "-"){
 					int kelasNaracoba = dbAction.getKelasFromDataLatih(Integer.parseInt((String)cmbNaracobaEdit.getSelectedItem()));
 					if(kelasNaracoba == 1){
-						cmbKelas.setSelectedIndex(1);
+						cmbKelasEdit.setSelectedIndex(1);
 					}else if(kelasNaracoba == -1){
-						cmbKelas.setSelectedIndex(2);
+						cmbKelasEdit.setSelectedIndex(2);
 					}
-					cmbKelas.setEnabled(true);
+					cmbKelasEdit.setEnabled(true);
 					btnUbahDataLatih.setEnabled(true);
 				}else{
-					cmbKelas.setSelectedIndex(0);
-					cmbKelas.setEnabled(false);
+					cmbKelasEdit.setSelectedIndex(0);
+					cmbKelasEdit.setEnabled(false);
 					btnUbahDataLatih.setEnabled(false);
 				}
 			}else if(e.getActionCommand().equals("btnUbahDataLatih")){
 				int indexKelas = 0;
 				if((String)cmbNaracobaEdit.getSelectedItem() != "-"){
-					if(cmbKelas.getSelectedIndex() == 1){
+					if(cmbKelasEdit.getSelectedIndex() == 1){
 						indexKelas = 1;
-					}else if(cmbKelas.getSelectedIndex() == 2){
+					}else if(cmbKelasEdit.getSelectedIndex() == 2){
 						indexKelas = -1;
 					}
 					dbAction.ubahDataLatih(indexKelas, Integer.parseInt((String)cmbNaracobaEdit.getSelectedItem()));
 				}
-				cmbKelas.setSelectedIndex(0);
-				cmbKelas.setEnabled(false);
+				cmbKelasEdit.setSelectedIndex(0);
+				cmbKelasEdit.setEnabled(false);
 				btnUbahDataLatih.setEnabled(false);
 				ViewController.refreshAllElement();
 			}else if(e.getActionCommand().equals("btnHapusDataLatih")){
