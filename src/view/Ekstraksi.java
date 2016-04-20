@@ -629,13 +629,10 @@ public class Ekstraksi extends JPanel {
 			updateTabelEkstraksiWavelet();
 			for(i=0;i<waveletEkstraksi.sinyalEEG.size();i++){
 				alfa = waveletEkstraksi.getAlfa(waveletEkstraksi.sinyalEEG.get(i), dbAction.getSamplingRate());
-				System.out.println("alfa = "+alfa.length);
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
 				beta = waveletEkstraksi.getBeta(waveletEkstraksi.sinyalEEG.get(i), dbAction.getSamplingRate());
-				System.out.println("beta = "+beta.length);
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
 				teta = waveletEkstraksi.getTeta(waveletEkstraksi.sinyalEEG.get(i), dbAction.getSamplingRate());
-				System.out.println("teta = "+teta.length);
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
 				dbAction.inputEkstraksiWavelet(alfa, beta, teta, null, Integer.parseInt(idOfDataLatih.getItem(i)));
 				updateTabelEkstraksiWavelet();

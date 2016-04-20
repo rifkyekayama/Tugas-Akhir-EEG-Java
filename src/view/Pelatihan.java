@@ -136,7 +136,7 @@ public class Pelatihan extends JPanel {
 		
 		JPanel panelTextAreaProgressMonitor = new JPanel();
 		panelTextAreaProgressMonitor.setLayout(new BorderLayout());
-		panelTextAreaProgressMonitor.setBounds(0, 360, 450, 370);
+		panelTextAreaProgressMonitor.setBounds(0, 360, 450, 150);
 		
 		txtAreaProgressMonitor = new JTextArea(10,5);
 		txtAreaProgressMonitor.setEditable(false);
