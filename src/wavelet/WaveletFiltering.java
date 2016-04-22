@@ -1,6 +1,7 @@
 package wavelet;
 
 import java.util.ArrayList;
+
 public class WaveletFiltering {
 	
 	public ArrayList<double[][]> sinyalEEG = new ArrayList<double[][]>();

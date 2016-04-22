@@ -316,10 +316,11 @@ public class Database {
 	public void inputEkstraksiWavelet(double[][] alfa, double[][] beta, double[][] teta, double[][] filter, int dataLatih_id){
 		int i=0;
 		try {
-			if(filter == null && alfa != null && beta != null && teta != null){
+//			if(filter == null && alfa != null && beta != null && teta != null){
 				String[] alfaTemp = new String[alfa.length];
 				String[] betaTemp = new String[beta.length];
 				String[] tetaTemp = new String[teta.length];
+				String[] filterTemp = new String[filter.length];
 				
 				for(i=0;i<alfaTemp.length;i++){
 					alfaTemp[i] = Double.toString(alfa[i][0]);
@@ -333,22 +334,28 @@ public class Database {
 					tetaTemp[i] = Double.toString(teta[i][0]);
 					tetaTemp[i] = tetaTemp[i]+"@"+Double.toString(teta[i][1]);
 				}
-				String tempSinyalAlfa = Arrays.toString(alfaTemp).substring(1, Arrays.toString(alfaTemp).length()-1).replaceAll(",", "");
-				String tempSinyalBeta = Arrays.toString(betaTemp).substring(1, Arrays.toString(betaTemp).length()-1).replaceAll(",", "");
-				String tempSinyalTeta = Arrays.toString(tetaTemp).substring(1, Arrays.toString(tetaTemp).length()-1).replaceAll(",", "");
-				stmt = Main.koneksi.createStatement();
-				stmt.executeUpdate("INSERT INTO wavelet (dataLatih_id, alfa, beta, teta, filter) VALUES ('"+dataLatih_id+"', '"+tempSinyalAlfa+"', '"+tempSinyalBeta+"', '"+tempSinyalTeta+"', '-')");
-			}else if(filter != null && alfa == null && beta == null && teta == null){
-				String[] filterTemp = new String[filter.length];
-
 				for(i=0;i<filterTemp.length;i++){
 					filterTemp[i] = Double.toString(filter[i][0]);
 					filterTemp[i] = filterTemp[i]+"@"+Double.toString(filter[i][1]);
 				}
+				
+				String tempSinyalAlfa = Arrays.toString(alfaTemp).substring(1, Arrays.toString(alfaTemp).length()-1).replaceAll(",", "");
+				String tempSinyalBeta = Arrays.toString(betaTemp).substring(1, Arrays.toString(betaTemp).length()-1).replaceAll(",", "");
+				String tempSinyalTeta = Arrays.toString(tetaTemp).substring(1, Arrays.toString(tetaTemp).length()-1).replaceAll(",", "");
 				String tempSinyalFilter = Arrays.toString(filterTemp).substring(1, Arrays.toString(filterTemp).length()-1).replaceAll(",", "");
 				stmt = Main.koneksi.createStatement();
-				stmt.executeUpdate("INSERT INTO wavelet (dataLatih_id, alfa, beta, teta, filter) VALUES ('"+dataLatih_id+"', '-', '-', '-', '"+tempSinyalFilter+"')");
-			}
+				stmt.executeUpdate("INSERT INTO wavelet (dataLatih_id, alfa, beta, teta, filter) VALUES ('"+dataLatih_id+"', '"+tempSinyalAlfa+"', '"+tempSinyalBeta+"', '"+tempSinyalTeta+"', '"+tempSinyalFilter+"')");
+//			}else if(filter != null && alfa == null && beta == null && teta == null){
+//				String[] filterTemp = new String[filter.length];
+//
+//				for(i=0;i<filterTemp.length;i++){
+//					filterTemp[i] = Double.toString(filter[i][0]);
+//					filterTemp[i] = filterTemp[i]+"@"+Double.toString(filter[i][1]);
+//				}
+//				String tempSinyalFilter = Arrays.toString(filterTemp).substring(1, Arrays.toString(filterTemp).length()-1).replaceAll(",", "");
+//				stmt = Main.koneksi.createStatement();
+//				stmt.executeUpdate("INSERT INTO wavelet (dataLatih_id, alfa, beta, teta, filter) VALUES ('"+dataLatih_id+"', '-', '-', '-', '"+tempSinyalFilter+"')");
+//			}
 			stmt.close();
 			rs.close();
 		} catch (SQLException e) {
@@ -792,7 +799,6 @@ public class Database {
 //		Boolean hasil;
 		
 		try {
-			Main.koneksi.setAutoCommit(false);
 			stmt = Main.koneksi.createStatement();
 			if(naracoba == "Semua"){
 				sql = "DELETE FROM dataLatih";

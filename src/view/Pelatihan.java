@@ -11,11 +11,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -36,6 +38,7 @@ public class Pelatihan extends JPanel {
 	private static final long serialVersionUID = 1L;
 	protected JTextField txtMaksimumEpoch, txtMinimumError, txtLearningRate, txtPenguranganLR;
 	protected JButton btnPelatihan;
+	private JRadioButton rdWaveletFilter, rdWaveletGelombang;
 	public JProgressBar progressBarPelatihan;
 	public JLabel lblStatusLoading;
 	public static JTextArea txtAreaProgressMonitor;
@@ -106,6 +109,25 @@ public class Pelatihan extends JPanel {
 		txtPenguranganLR = new JTextField("0.1");
 		txtPenguranganLR.setBounds(panelFormPelatihan.getWidth()-220, 130, 205, 30);
 		panelFormPelatihan.add(txtPenguranganLR);
+		
+		JLabel lblJenisNeuron = new JLabel("Jenis Neuron:");
+		lblJenisNeuron.setFont(lblJenisNeuron.getFont().deriveFont(Font.BOLD, 15f));
+		lblJenisNeuron.setBounds(15, 170, 200, 30);
+		panelFormPelatihan.add(lblJenisNeuron);
+		
+		rdWaveletFilter = new JRadioButton("Filter");
+		rdWaveletFilter.setBackground(Color.white);
+		rdWaveletFilter.setBounds(15, 200, 70, 30);
+		panelFormPelatihan.add(rdWaveletFilter);
+		
+		rdWaveletGelombang = new JRadioButton("Gelombang");
+		rdWaveletGelombang.setBackground(Color.white);
+		rdWaveletGelombang.setBounds(80, 200, 110, 30);
+		panelFormPelatihan.add(rdWaveletGelombang);
+		
+		ButtonGroup groupTipeWavelet = new ButtonGroup();
+		groupTipeWavelet.add(rdWaveletFilter);
+		groupTipeWavelet.add(rdWaveletGelombang);
 		
 		btnPelatihan = new JButton("Mulai Pelatihan");
 		btnPelatihan.setForeground(Color.white);
