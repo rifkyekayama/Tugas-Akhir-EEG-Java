@@ -640,10 +640,10 @@ public class Pengujian extends JPanel {
 			}
 			sinyalEEGFiltering.add(sinyalEEGFilteringList);
 			
-			if(dbAction.getStatusWavelet().equals("ekstraksi")){
+			if(dbAction.getStatusWavelet().equals("gelombang")){
 				waveletEkstraksi = new WaveletEkstraksi(sinyalEEGFiltering);
 				hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], waveletEkstraksi.getNeuronPengujian(waveletEkstraksi.sinyalEEG, dbAction.getSamplingRate()));
-			}else{
+			}else if(dbAction.getStatusWavelet().equals("filter")){
 				waveletFiltering = new WaveletFiltering(sinyalEEGFiltering);
 				hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], waveletFiltering.getNeuronPengujian(waveletFiltering.sinyalEEG, dbAction.getSamplingRate()));
 			}

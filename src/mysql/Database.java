@@ -376,7 +376,7 @@ public class Database {
 		}
 	}
 	
-	public void inputHasilBobot(double[][] bobot){
+	public void inputHasilBobot(double[][] bobot, String jenisNeuron){
 		try{
 			stmt = Main.koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM lvq");
@@ -384,12 +384,12 @@ public class Database {
 				String tempBobotRileks = Arrays.toString(bobot[0]).substring(1, Arrays.toString(bobot[0]).length()-1).replaceAll(",", "");
 				String tempBobotNonRileks = Arrays.toString(bobot[1]).substring(1, Arrays.toString(bobot[1]).length()-1).replaceAll(",", "");
 				stmt = Main.koneksi.createStatement();
-				stmt.executeUpdate("UPDATE lvq SET bobotRileks='"+tempBobotRileks+"', bobotNonRileks='"+tempBobotNonRileks+"' WHERE id='"+rs.getInt("id")+"'");
+				stmt.executeUpdate("UPDATE lvq SET bobotRileks='"+tempBobotRileks+"', bobotNonRileks='"+tempBobotNonRileks+"', jenisNeuron='"+jenisNeuron+"' WHERE id='"+rs.getInt("id")+"'");
 			}else{				
 				String tempBobotRileks = Arrays.toString(bobot[0]).substring(1, Arrays.toString(bobot[0]).length()-1).replaceAll(",", "");
 				String tempBobotNonRileks = Arrays.toString(bobot[1]).substring(1, Arrays.toString(bobot[1]).length()-1).replaceAll(",", "");
 				stmt = Main.koneksi.createStatement();
-				stmt.executeUpdate("INSERT INTO lvq (bobotRileks, bobotNonRileks) VALUES ('"+tempBobotRileks+"', '"+tempBobotNonRileks+"')");
+				stmt.executeUpdate("INSERT INTO lvq (bobotRileks, bobotNonRileks, jenisNeuron) VALUES ('"+tempBobotRileks+"', '"+tempBobotNonRileks+"', '"+jenisNeuron+"')");
 			}
 			stmt.close();
 			rs.close();
@@ -606,13 +606,13 @@ public class Database {
 		return sinyalFilter;
 	}
 	
-	public ArrayList<double[][]> getNeuronRileks(){
+	public ArrayList<double[][]> getNeuronRileks(String jenisNeuron){
 		ArrayList<double[][]> neuron = new ArrayList<double[][]>();
 		try {
 			stmt = Main.koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM dataLatih INNER JOIN wavelet ON dataLatih.id = wavelet.dataLatih_id WHERE dataLatih.kelas = 1");
 			while(rs.next()){
-				if(rs.getString("filter").equals("-")){
+				if(jenisNeuron.equals("gelombang")){
 					String[] alfa = rs.getString("alfa").split(" ");
 					String[] beta = rs.getString("beta").split(" ");
 					String[] teta = rs.getString("teta").split(" ");
@@ -632,7 +632,7 @@ public class Database {
 					}
 					hasil[1][0] = rs.getDouble("kelas");
 					neuron.add(hasil);
-				}else{
+				}else if(jenisNeuron.equals("filter")){
 					String[] filter = rs.getString("filter").split(" ");
 					double[][] hasil = new double[2][filter.length];
 					int i=0;
@@ -653,13 +653,13 @@ public class Database {
 		return neuron;
 	}
 	
-	public ArrayList<double[][]> getNeuronNonRileks(){
+	public ArrayList<double[][]> getNeuronNonRileks(String jenisNeuron){
 		ArrayList<double[][]> neuron = new ArrayList<double[][]>();
 		try {
 			stmt = Main.koneksi.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM dataLatih INNER JOIN wavelet ON dataLatih.id = wavelet.dataLatih_id WHERE dataLatih.kelas = -1");
 			while(rs.next()){
-				if(rs.getString("filter").equals("-")){
+				if(jenisNeuron.equals("gelombang")){
 					String[] alfa = rs.getString("alfa").split(" ");
 					String[] beta = rs.getString("beta").split(" ");
 					String[] teta = rs.getString("teta").split(" ");
@@ -679,7 +679,7 @@ public class Database {
 					}
 					hasil[1][0] = rs.getDouble("kelas");
 					neuron.add(hasil);
-				}else{
+				}else if(jenisNeuron.equals("filter")){
 					String[] filter = rs.getString("filter").split(" ");
 					double[][] hasil = new double[2][filter.length];
 					int i=0;
@@ -704,13 +704,9 @@ public class Database {
 		String hasil = null;
 		try {
 			stmt = Main.koneksi.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM dataLatih INNER JOIN wavelet ON dataLatih.id = wavelet.dataLatih_id");
+			rs = stmt.executeQuery("SELECT DISTINCT jenisNeuron FROM lvq");
 			if(rs.next()){
-				if(rs.getString("filter").equals("-")){
-					hasil = "ekstraksi";
-				}else if(!rs.getString("filter").equals("-")){
-					hasil = "filter";
-				}
+				hasil = rs.getString("jenisNeuron");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

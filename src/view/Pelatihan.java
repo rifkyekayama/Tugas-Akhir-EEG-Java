@@ -67,7 +67,7 @@ public class Pelatihan extends JPanel {
 		JPanel panelFormPelatihan = new JPanel();
 		panelFormPelatihan.setLayout(null);
 		panelFormPelatihan.setBackground(Color.white);
-		panelFormPelatihan.setBounds(0, 0, 450, 250);
+		panelFormPelatihan.setBounds(0, 0, 450, 300);
 		
 		JLabel lblTitleFormPelatihan = new JLabel("Pelatihan Sistem");
 		lblTitleFormPelatihan.setForeground(new Color(68, 68, 68));
@@ -97,7 +97,7 @@ public class Pelatihan extends JPanel {
 		lblLearningRate.setBounds(15, 100, 150, 30);
 		panelFormPelatihan.add(lblLearningRate);
 		
-		txtLearningRate = new JTextField("0.05");
+		txtLearningRate = new JTextField("0.3");
 		txtLearningRate.setBounds(15, 130, 205, 30);
 		panelFormPelatihan.add(txtLearningRate);
 		
@@ -136,7 +136,7 @@ public class Pelatihan extends JPanel {
 		btnPelatihan.setActionCommand("mulaiPelatihan");
 		btnPelatihan.addMouseListener(new MouseController());
 		btnPelatihan.addActionListener(new ButtonController());
-		btnPelatihan.setBounds(15, 180, 420, 50);
+		btnPelatihan.setBounds(15, 240, 420, 50);
 		panelFormPelatihan.add(btnPelatihan);
 		
 		progressBarPelatihan = new JProgressBar();
@@ -153,12 +153,12 @@ public class Pelatihan extends JPanel {
 		panelLblStatusLoading.add(lblStatusLoading);
 		
 		JLabel lblTxtAreaProgressMonitor = new JLabel("Proses Pelatihan");
-		lblTxtAreaProgressMonitor.setBounds(0, 330, 450, 30);
+		lblTxtAreaProgressMonitor.setBounds(0, 370, 450, 30);
 		panelContent.add(lblTxtAreaProgressMonitor);
 		
 		JPanel panelTextAreaProgressMonitor = new JPanel();
 		panelTextAreaProgressMonitor.setLayout(new BorderLayout());
-		panelTextAreaProgressMonitor.setBounds(0, 360, 450, 150);
+		panelTextAreaProgressMonitor.setBounds(0, 400, 450, 130);
 		
 		txtAreaProgressMonitor = new JTextArea(10,5);
 		txtAreaProgressMonitor.setEditable(false);
@@ -259,21 +259,34 @@ public class Pelatihan extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getActionCommand().equals("mulaiPelatihan")){
-				if(txtMaksimumEpoch.getText().isEmpty()){
-					JOptionPane.showMessageDialog(null, "Kolom Maksimum Epoch tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				}else if(txtMinimumError.getText().isEmpty()){
-					JOptionPane.showMessageDialog(null, "Kolom Minimum Error tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				}else if(txtLearningRate.getText().isEmpty()){
-					JOptionPane.showMessageDialog(null, "Kolom Learning Rate tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				}else if(txtPenguranganLR.getText().isEmpty()){
-					JOptionPane.showMessageDialog(null, "Kolom Pengurangan Learning Rate tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				}else if(dbAction.getNeuronRileks().size() == 0){
-					JOptionPane.showMessageDialog(null, "Data kelas RILEKS belum diekstraksi", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				}else if(dbAction.getNeuronNonRileks().size() == 0){
-					JOptionPane.showMessageDialog(null, "Data kelas Non-RILEKS belum diekstraksi", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				String jenisNeuron = "";
+				if(!rdWaveletFilter.isSelected() && !rdWaveletGelombang.isSelected()){
+					JOptionPane.showMessageDialog(null, "Pilihan jenis neuron harus diisi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else{
-					CorePelatihan corePelatihan = new CorePelatihan();
-					corePelatihan.execute();
+					if(rdWaveletFilter.isSelected()){
+						jenisNeuron = "filter";
+					}else if(rdWaveletGelombang.isSelected()){
+						jenisNeuron = "gelombang";
+					}
+				}
+				
+				if(jenisNeuron != ""){
+					if(txtMaksimumEpoch.getText().isEmpty()){
+						JOptionPane.showMessageDialog(null, "Kolom Maksimum Epoch tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+					}else if(txtMinimumError.getText().isEmpty()){
+						JOptionPane.showMessageDialog(null, "Kolom Minimum Error tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+					}else if(txtLearningRate.getText().isEmpty()){
+						JOptionPane.showMessageDialog(null, "Kolom Learning Rate tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+					}else if(txtPenguranganLR.getText().isEmpty()){
+						JOptionPane.showMessageDialog(null, "Kolom Pengurangan Learning Rate tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+					}else if(dbAction.getNeuronRileks(jenisNeuron).size() == 0){
+						JOptionPane.showMessageDialog(null, "Data kelas RILEKS belum diekstraksi", "Peringatan", JOptionPane.WARNING_MESSAGE);
+					}else if(dbAction.getNeuronNonRileks(jenisNeuron).size() == 0){
+						JOptionPane.showMessageDialog(null, "Data kelas Non-RILEKS belum diekstraksi", "Peringatan", JOptionPane.WARNING_MESSAGE);
+					}else{
+						CorePelatihan corePelatihan = new CorePelatihan(jenisNeuron);
+						corePelatihan.execute();
+					}
 				}
 			}
 		}
@@ -285,11 +298,13 @@ public class Pelatihan extends JPanel {
 		ArrayList<double[][]> neuronNonRileks = new ArrayList<double[][]>();
 		double[][] belajar;
 		LVQ lvq = new LVQ();
+		String jenisNeuron = "";
 		
-		public CorePelatihan() {
+		public CorePelatihan(String jenisNeuron) {
 			// TODO Auto-generated constructor stub
 			lblStatusLoading.setVisible(true);
 			txtAreaProgressMonitor.setText("");
+			this.jenisNeuron = jenisNeuron;
 		}
 		
 		@Override
@@ -297,16 +312,16 @@ public class Pelatihan extends JPanel {
 			// TODO Auto-generated method stub
 			lblStatusLoading.setText("Pembangkitan Neuron Rileks");
 			progressBarPelatihan.setValue(25);
-			neuronRileks = dbAction.getNeuronRileks();
+			neuronRileks = dbAction.getNeuronRileks(jenisNeuron);
 			lblStatusLoading.setText("Pembangkitan Neuron Tidak Rileks");
 			progressBarPelatihan.setValue(50);
-			neuronNonRileks = dbAction.getNeuronNonRileks();
+			neuronNonRileks = dbAction.getNeuronNonRileks(jenisNeuron);
 			lblStatusLoading.setText("Pembelajaran LVQ");
 			progressBarPelatihan.setValue(75);
 			belajar = lvq.pembelajaran(neuronRileks, neuronNonRileks, Double.parseDouble(txtLearningRate.getText()), Double.parseDouble(txtPenguranganLR.getText()), Integer.parseInt(txtMaksimumEpoch.getText()), Double.parseDouble(txtMinimumError.getText()));
 			lblStatusLoading.setText("Input hasil pelatihan bobot ke DB");
 			progressBarPelatihan.setValue(90);
-			dbAction.inputHasilBobot(belajar);
+			dbAction.inputHasilBobot(belajar, jenisNeuron);
 			return null;
 		}
 		

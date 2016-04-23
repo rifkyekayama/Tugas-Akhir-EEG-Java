@@ -99,7 +99,8 @@ public class SQLiteConnector {
 				sql = "CREATE TABLE lvq "+
 						"(id 				INTEGER PRIMARY KEY AUTOINCREMENT," +
 						"bobotRileks		TEXT," +
-						"bobotNonRileks		TEXT)";
+						"bobotNonRileks		TEXT," +
+						"jenisNeuron		TEXT)";
 				stmt.executeUpdate(sql);
 			}
 		} catch (SQLException e) {

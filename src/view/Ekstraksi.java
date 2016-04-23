@@ -48,7 +48,7 @@ public class Ekstraksi extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private Database dbAction = new Database();
-	private JRadioButton rdWaveletFilter, rdWaveletGelombang, RdDb4, RdDb8;
+	private JRadioButton RdDb4, RdDb8;
 	private JCheckBox cbSinyalRileks, cbSinyalNonRileks, cbGelAlfa, cbGelBeta, cbGelTeta, cbGelFilter;
 	private JButton btnEkstraksiWavelet, btnLihatGrafik, btnCariDataNaracoba;
 	private JLabel lblStatusLoading;
@@ -570,7 +570,7 @@ public class Ekstraksi extends JPanel {
 				
 				if((String)cmbNaracoba.getSelectedItem() == "Pilih salah satu..."){
 					JOptionPane.showMessageDialog(null, "Pilihan naracoba tidak boleh kosong!", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				}else if((kelas == 1 && dbAction.getNeuronRileks().size() == 0) || (kelas == -1 && dbAction.getNeuronNonRileks().size() == 0)){
+				}else if((kelas == 1 && dbAction.getNeuronRileks("gelombang").size() == 0) || (kelas == -1 && dbAction.getNeuronNonRileks("gelombang").size() == 0)){
 					JOptionPane.showMessageDialog(null, "Data latih belum diekstraksi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else if((dbAction.getDataLatih().size()*dbAction.getDataLatih().get(0).size()) != dbAction.getJumDataWavelet()){
 					JOptionPane.showMessageDialog(null, "Data ekstraksi belum di update!", "Peringatan", JOptionPane.WARNING_MESSAGE);
