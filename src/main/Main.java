@@ -19,7 +19,7 @@ public class Main {
 		}
 		java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                try {
+                try {             	
                 	SQLiteConnector sqlite = new SQLiteConnector();
                 	sqlite.createDatabase();
                 	koneksi = sqlite.getKoneksi();

@@ -97,7 +97,7 @@ public class Pelatihan extends JPanel {
 		lblLearningRate.setBounds(15, 100, 150, 30);
 		panelFormPelatihan.add(lblLearningRate);
 		
-		txtLearningRate = new JTextField("0.3");
+		txtLearningRate = new JTextField("0.05");
 		txtLearningRate.setBounds(15, 130, 205, 30);
 		panelFormPelatihan.add(txtLearningRate);
 		

@@ -54,15 +54,21 @@ public class LVQ {
 		double[] bobot2 = new double[neuronNonRileks.get(0)[0].length];
 		ArrayList<double[][]> data = new ArrayList<double[][]>();
 		double[][] result = new double[2][bobot1.length];
+		int random;
 		
-		bobot1 = neuronRileks.get(0)[0];
-		bobot2 = neuronNonRileks.get(0)[0];
+		random = 1+(int)(Math.random()*(neuronRileks.size()-1));
+		bobot1 = neuronRileks.get(random)[0];
+		neuronRileks.remove(random);
 		
-		for(i=1;i<neuronRileks.size();i++){
+		random = 1+(int)(Math.random()*(neuronNonRileks.size()-1));
+		bobot2 = neuronNonRileks.get(random)[0];
+		neuronNonRileks.remove(random);
+		
+		for(i=0;i<neuronRileks.size();i++){
 			data.add(neuronRileks.get(i));
 		}
 		
-		for(i=1;i<neuronNonRileks.size();i++){
+		for(i=0;i<neuronNonRileks.size();i++){
 			data.add(neuronNonRileks.get(i));
 		}
 		

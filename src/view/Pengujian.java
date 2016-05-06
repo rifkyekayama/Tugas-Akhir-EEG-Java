@@ -33,6 +33,7 @@ import javax.swing.table.DefaultTableModel;
 import dataLatih.DataLatih;
 import lvq.LVQ;
 import mysql.Database;
+import wavelet.Wavelet;
 import wavelet.WaveletEkstraksi;
 import wavelet.WaveletFiltering;
 
@@ -582,6 +583,7 @@ public class Pengujian extends JPanel {
 	
 	class CorePengujian extends SwingWorker<Void, Void>{
 		
+		Wavelet wavelet;
 		WaveletEkstraksi waveletEkstraksi;
 		WaveletFiltering waveletFiltering;
 		DataLatih dataLatih;
@@ -640,12 +642,14 @@ public class Pengujian extends JPanel {
 			}
 			sinyalEEGFiltering.add(sinyalEEGFilteringList);
 			
+			wavelet = new Wavelet(sinyalEEGFiltering);
+			
 			if(dbAction.getStatusWavelet().equals("gelombang")){
-				waveletEkstraksi = new WaveletEkstraksi(sinyalEEGFiltering);
-				hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], waveletEkstraksi.getNeuronPengujian(waveletEkstraksi.sinyalEEG, dbAction.getSamplingRate()));
+//				waveletEkstraksi = new WaveletEkstraksi(sinyalEEGFiltering);
+				hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.waveletEkstraksi.getNeuronPengujian(wavelet.sinyalEEG, dbAction.getSamplingRate()));
 			}else if(dbAction.getStatusWavelet().equals("filter")){
-				waveletFiltering = new WaveletFiltering(sinyalEEGFiltering);
-				hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], waveletFiltering.getNeuronPengujian(waveletFiltering.sinyalEEG, dbAction.getSamplingRate()));
+//				waveletFiltering = new WaveletFiltering(sinyalEEGFiltering);
+				hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.waveletFiltering.getNeuronPengujian(wavelet.sinyalEEG, dbAction.getSamplingRate()));
 			}
 			lblStatusLoading.setText("Update Tabel Bobot");
 			progressSubmitDataEEG.setValue(90);

@@ -37,8 +37,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import mysql.Database;
-import wavelet.WaveletEkstraksi;
-import wavelet.WaveletFiltering;
+import wavelet.Wavelet;
 
 public class Ekstraksi extends JPanel {
 
@@ -609,9 +608,7 @@ public class Ekstraksi extends JPanel {
 	
 	class CoreWavelet extends SwingWorker<Void, Void>{
 		
-		WaveletEkstraksi waveletEkstraksi;
-		WaveletFiltering waveletFilter;
-		ArrayList<ArrayList<double[]>> sinyalEEG;
+		Wavelet wavelet;
 		List idOfDataLatih = dbAction.getIdOfDataLatih();
 		double[][] alfa = null, beta = null, teta = null;
 		double[][] freq5to8=null, freq9to16=null, freq17to24=null, freq25to28=null, freq29to30=null, gabung=null, hasilUrut=null;
@@ -620,14 +617,12 @@ public class Ekstraksi extends JPanel {
 		
 		public CoreWavelet() {
 			// TODO Auto-generated constructor stub
-			sinyalEEG = dbAction.getDataLatih();
-			waveletEkstraksi = new WaveletEkstraksi(sinyalEEG);
-			waveletFilter = new WaveletFiltering(sinyalEEG);
+			wavelet = new Wavelet(dbAction.getDataLatih());
 			idOfDataLatih = dbAction.getIdOfDataLatih();
 			lblStatusLoading.setVisible(true);
 			progressEkstraksiWavelet.setValue(0);
 			progressEkstraksiWavelet.setMaximum(1000);
-			progressDistance = 1000/(waveletEkstraksi.sinyalEEG.size()*10);
+			progressDistance = 1000/(wavelet.sinyalEEG.size()*10);
 		}
 
 		@Override
@@ -635,27 +630,27 @@ public class Ekstraksi extends JPanel {
 			// TODO Auto-generated method stub
 			dbAction.deleteEkstraksiWavelet();
 			updateTabelEkstraksiWavelet();
-			for(i=0;i<waveletEkstraksi.sinyalEEG.size();i++){
-				alfa = waveletEkstraksi.getAlfa(waveletEkstraksi.sinyalEEG.get(i), dbAction.getSamplingRate());
+			for(i=0;i<wavelet.sinyalEEG.size();i++){
+				alfa = wavelet.waveletEkstraksi.getAlfa(wavelet.sinyalEEG.get(i), dbAction.getSamplingRate());
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				beta = waveletEkstraksi.getBeta(waveletEkstraksi.sinyalEEG.get(i), dbAction.getSamplingRate());
+				beta = wavelet.waveletEkstraksi.getBeta(wavelet.sinyalEEG.get(i), dbAction.getSamplingRate());
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				teta = waveletEkstraksi.getTeta(waveletEkstraksi.sinyalEEG.get(i), dbAction.getSamplingRate());
+				teta = wavelet.waveletEkstraksi.getTeta(wavelet.sinyalEEG.get(i), dbAction.getSamplingRate());
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
 				
-				freq5to8 = waveletFilter.getFrekuensi5to8(waveletFilter.sinyalEEG.get(i), dbAction.getSamplingRate());
+				freq5to8 = wavelet.waveletFiltering.getFrekuensi5to8(wavelet.sinyalEEG.get(i), dbAction.getSamplingRate());
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				freq9to16 = waveletFilter.getFrekuensi9to16(waveletFilter.sinyalEEG.get(i), dbAction.getSamplingRate());
+				freq9to16 = wavelet.waveletFiltering.getFrekuensi9to16(wavelet.sinyalEEG.get(i), dbAction.getSamplingRate());
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				freq17to24 = waveletFilter.getFrekuensi17to24(waveletFilter.sinyalEEG.get(i), dbAction.getSamplingRate());
+				freq17to24 = wavelet.waveletFiltering.getFrekuensi17to24(wavelet.sinyalEEG.get(i), dbAction.getSamplingRate());
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				freq25to28 = waveletFilter.getFrekuensi25to28(waveletFilter.sinyalEEG.get(i), dbAction.getSamplingRate());
+				freq25to28 = wavelet.waveletFiltering.getFrekuensi25to28(wavelet.sinyalEEG.get(i), dbAction.getSamplingRate());
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				freq29to30 = waveletFilter.getFrekuensi29to30(waveletFilter.sinyalEEG.get(i), dbAction.getSamplingRate());
+				freq29to30 = wavelet.waveletFiltering.getFrekuensi29to30(wavelet.sinyalEEG.get(i), dbAction.getSamplingRate());
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				gabung = waveletFilter.gabungkanSinyal(freq5to8, freq9to16, freq17to24, freq25to28, freq29to30);
+				gabung = wavelet.waveletFiltering.gabungkanSinyal(freq5to8, freq9to16, freq17to24, freq25to28, freq29to30);
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				hasilUrut = waveletFilter.pengurutanSinyal(gabung);
+				hasilUrut = wavelet.waveletFiltering.pengurutanSinyal(gabung);
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
 				
 				dbAction.inputEkstraksiWavelet(alfa, beta, teta, hasilUrut, Integer.parseInt(idOfDataLatih.getItem(i)));
