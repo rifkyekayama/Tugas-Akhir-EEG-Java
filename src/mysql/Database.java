@@ -168,7 +168,7 @@ public class Database {
 				if(rs.getInt("kelas") == 1){
 					data[2] = "Rileks";
 				}else{
-					data[2] = "Non-Rileks";
+					data[2] = "Tidak Rileks";
 				}
 				data[3] = rs.getString("naracoba");
 				kanalTemp = new String[rs.getString("kanal").split(",").length];

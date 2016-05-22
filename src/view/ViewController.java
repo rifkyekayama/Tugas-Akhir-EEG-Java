@@ -20,10 +20,10 @@ public class ViewController extends JFrame {
 	private static Dashboard dashboard = new Dashboard();
 	private static KelolaDataLatih kelolaDataLatih = new KelolaDataLatih();
 	private static Ekstraksi ekstraksi = new Ekstraksi();
-	private static Pelatihan pelatihanSistem = new Pelatihan();
-	private static Pengujian pengujianSistem = new Pengujian();
+	private static Pelatihan pelatihanLVQ = new Pelatihan();
+	private static Identifikasi identifikasi = new Identifikasi();
 	private static Bantuan bantuan = new Bantuan();
-	private static Database dbAction = new Database();
+	private static Database database = new Database();
 	
 	public ViewController() throws SQLException{
 		super("Identifikasi Kondisi Rileks - 3411121013 Rifky Ekayama");
@@ -39,26 +39,26 @@ public class ViewController extends JFrame {
 			mainPanel.add(dashboard, "panelDashboard");
 			mainPanel.add(kelolaDataLatih, "panelKelolaDataLatih");
 			mainPanel.add(ekstraksi, "panelEkstraksiWavelet");
-			mainPanel.add(pelatihanSistem, "panelPelatihanSistem");
-			mainPanel.add(pengujianSistem, "panelPengujianSistem");
+			mainPanel.add(pelatihanLVQ, "panelPelatihanSistem");
+			mainPanel.add(identifikasi, "panelPengujianSistem");
 			mainPanel.add(bantuan, "panelBantuan");
 			add(mainPanel);
 		}
 	}
 	
 	public static void refreshAllElement(){
-		dashboard.lblJumNaracoba.setText(Integer.toString(dbAction.getJumNaracoba()));
-		dashboard.lblJumSegmentasi.setText(Integer.toString(dbAction.getJumSegmentasi()));
-		dashboard.lblJumRileks.setText(Integer.toString(dbAction.getJumRileks()));
-		dashboard.lblJumNonRileks.setText(Integer.toString(dbAction.getJumNonRileks()));
+		dashboard.lblJumNaracoba.setText(Integer.toString(database.getJumNaracoba()));
+		dashboard.lblJumSegmentasi.setText(Integer.toString(database.getJumSegmentasi()));
+		dashboard.lblJumRileks.setText(Integer.toString(database.getJumRileks()));
+		dashboard.lblJumNonRileks.setText(Integer.toString(database.getJumNonRileks()));
 		kelolaDataLatih.updateTableDataLatih();
 		kelolaDataLatih.updateStatusAlat();
 		kelolaDataLatih.updateStatusKanal();
 		kelolaDataLatih.updateCmbEditNaracoba();
 		ekstraksi.updateTabelEkstraksiWavelet();
 		ekstraksi.updateCmbNaracoba();
-		pengujianSistem.updateStatusAlat();
-		pengujianSistem.updateStatusKanal();
+		identifikasi.updateStatusAlat();
+		identifikasi.updateStatusKanal();
 	}
 	
 	public static void changeCard(String cardName){

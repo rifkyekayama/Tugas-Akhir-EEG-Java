@@ -53,37 +53,40 @@ public class KelolaDataLatih extends JPanel {
 	public JProgressBar progressSubmitDataEEG;
 	public JLabel lblStatusLoading;
 	protected String[] alatPerekaman = {"Pilih salah satu...", "Emotiv", "Neurosky"};
-	protected String[] kelas = {"Pilih salah satu...", "Rileks", "Non-Rileks"};
+	protected String[] kelas = {"Pilih salah satu...", "Rileks", "Tidak Rileks"};
 	protected String[] kanal = {"Pilih salah satu...", "AF3", "F7", "F3", "FC5", "T7", "P7", "O1", "O2", "P8", "T8", "FC6", "F4", "F8", "AF4"};
-	protected Database dbAction = new Database();
+	protected Database database = new Database();
 	protected DataLatih dataLatih;
 	protected String[] fullPathDataEEG, naracobaEdit, naracobaHapus;
 	protected int i=0;
+	protected Menu menu;
 	
 	public KelolaDataLatih(){
 		setSize(1200, 650);
 		setLayout(null);
-		tableModel = dbAction.getListDataLatih();
+		tableModel = database.getListDataLatih();
 		centerTable = new DefaultTableCellRenderer();
 		centerTable.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		naracobaEdit = new String[dbAction.getJumNaracoba()+1];
+		naracobaEdit = new String[database.getJumNaracoba()+1];
 		naracobaEdit[0] = "-";
-		for(i=0;i<dbAction.getJumNaracoba();i++){
+		for(i=0;i<database.getJumNaracoba();i++){
 			naracobaEdit[i+1] = Integer.toString(i+1);
 		}
 		
-		naracobaHapus = new String[dbAction.getJumNaracoba()+2];
+		naracobaHapus = new String[database.getJumNaracoba()+2];
 		naracobaHapus[0] = "-";
-		for(i=0;i<dbAction.getJumNaracoba();i++){
+		for(i=0;i<database.getJumNaracoba();i++){
 			naracobaHapus[i+1] = Integer.toString(i+1);
 		}
 		naracobaHapus[naracobaHapus.length-1] = "Semua";
 		
+		menu = new Menu("Tambah Data Latih");
+		
 		add(getTableDataLatih());
 		add(getFormInputDataLatih());
 		add(getPanelUbahDanHapusDataLatih());
-		add(new MenuUtama("Kelola Data Latih"));
+		add(menu);
 		updateStatusAlat();
 		updateStatusKanal();
 	}
@@ -357,7 +360,7 @@ public class KelolaDataLatih extends JPanel {
 		panelKelolaDataLatih.setBackground(Color.white);
 		panelKelolaDataLatih.setBounds(460, 470, 450, 60);
 		
-		JButton btnKelolaDataLatih = new JButton("Kelola Data Latih");
+		JButton btnKelolaDataLatih = new JButton("Tambah Data Latih");
 		btnKelolaDataLatih.setActionCommand("btnKelolaDataLatih");
 		btnKelolaDataLatih.setBackground(new Color(60, 137, 185));
 		btnKelolaDataLatih.setForeground(Color.white);
@@ -445,18 +448,18 @@ public class KelolaDataLatih extends JPanel {
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void updateCmbEditNaracoba(){
-		String[] naracobaEdit = new String[dbAction.getJumNaracoba()+1];
-		String[] naracobaHapus = new String[dbAction.getJumNaracoba()+2];
+		String[] naracobaEdit = new String[database.getJumNaracoba()+1];
+		String[] naracobaHapus = new String[database.getJumNaracoba()+2];
 		DefaultComboBoxModel modelNaracobaEdit, modelNaracobaHapus;
 		
 		naracobaEdit[0] = "-";
-		for(i=0;i<dbAction.getJumNaracoba();i++){
+		for(i=0;i<database.getJumNaracoba();i++){
 			naracobaEdit[i+1] = Integer.toString(i+1);
 		}
 		modelNaracobaEdit = new DefaultComboBoxModel(naracobaEdit);
 		
 		naracobaHapus[0] = "-";
-		for(i=0;i<dbAction.getJumNaracoba();i++){
+		for(i=0;i<database.getJumNaracoba();i++){
 			naracobaHapus[i+1] = Integer.toString(i+1);
 		}
 		naracobaHapus[naracobaHapus.length-1] = "Semua";
@@ -472,7 +475,7 @@ public class KelolaDataLatih extends JPanel {
 	}
 	
 	public void updateTableDataLatih(){
-		tableDataLatih.setModel(dbAction.getListDataLatih());
+		tableDataLatih.setModel(database.getListDataLatih());
 		tableDataLatih.repaint();
 		tableDataLatih.setRowSelectionAllowed(false);
 		tableDataLatih.setPreferredScrollableViewportSize(getSize());
@@ -493,8 +496,8 @@ public class KelolaDataLatih extends JPanel {
 	
 	public void updateStatusKanal(){
 		int[] kanal;
-		if(dbAction.getKanal() != null){
-			kanal = dbAction.getKanal();
+		if(database.getKanal() != null){
+			kanal = database.getKanal();
 			if(kanal[0] != 1){
 				if(kanal.length == 2){
 					cmbKanal1.setSelectedIndex(kanal[0]-1);
@@ -556,9 +559,9 @@ public class KelolaDataLatih extends JPanel {
 	}
 	
 	public void updateStatusAlat(){
-		if(dbAction.getAlatPerekaman() != null){
-			changeSettingAlat(dbAction.getAlatPerekaman());
-			cmbAlatPerekaman.setSelectedItem(dbAction.getAlatPerekaman());
+		if(database.getAlatPerekaman() != null){
+			changeSettingAlat(database.getAlatPerekaman());
+			cmbAlatPerekaman.setSelectedItem(database.getAlatPerekaman());
 			cmbAlatPerekaman.setEnabled(false);
 		}
 	}
@@ -689,17 +692,19 @@ public class KelolaDataLatih extends JPanel {
 				}
 			}else if(e.getActionCommand().equals("btnUbahDataLatih")){
 				if(!panelFormEditDanHapusDataLatih.isVisible()){
+					menu.setTitle("Ubah/Hapus Data Latih");
 					panelFormEditDanHapusDataLatih.setVisible(true);
 					panelFormInputDataLatih.setVisible(false);
 				}
 			}else if(e.getActionCommand().equals("btnKelolaDataLatih")){
 				if(!panelFormInputDataLatih.isVisible()){
+					menu.setTitle("Tambah Data Latih");
 					panelFormInputDataLatih.setVisible(true);
 					panelFormEditDanHapusDataLatih.setVisible(false);
 				}
 			}else if(e.getActionCommand().equals("btnCariDataNaracoba")){
 				if((String)cmbNaracobaEdit.getSelectedItem() != "-"){
-					int kelasNaracoba = dbAction.getKelasFromDataLatih(Integer.parseInt((String)cmbNaracobaEdit.getSelectedItem()));
+					int kelasNaracoba = database.getKelasFromDataLatih(Integer.parseInt((String)cmbNaracobaEdit.getSelectedItem()));
 					if(kelasNaracoba == 1){
 						cmbKelasEdit.setSelectedIndex(1);
 					}else if(kelasNaracoba == -1){
@@ -720,7 +725,7 @@ public class KelolaDataLatih extends JPanel {
 					}else if(cmbKelasEdit.getSelectedIndex() == 2){
 						indexKelas = -1;
 					}
-					dbAction.ubahDataLatih(indexKelas, Integer.parseInt((String)cmbNaracobaEdit.getSelectedItem()));
+					database.ubahDataLatih(indexKelas, Integer.parseInt((String)cmbNaracobaEdit.getSelectedItem()));
 				}
 				cmbKelasEdit.setSelectedIndex(0);
 				cmbKelasEdit.setEnabled(false);
@@ -730,7 +735,7 @@ public class KelolaDataLatih extends JPanel {
 				if((String)cmbNaracobaHapus.getSelectedItem() == "-"){
 					JOptionPane.showMessageDialog(null, "Pilihan naracoba tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else{
-					boolean hasilHapus = dbAction.hapusDataLatih((String)cmbNaracobaHapus.getSelectedItem());
+					boolean hasilHapus = database.hapusDataLatih((String)cmbNaracobaHapus.getSelectedItem());
 					if(hasilHapus == true){
 						ViewController.refreshAllElement();
 						JOptionPane.showMessageDialog(null, "Data latih berhasil dihapus.", "Sukses", JOptionPane.INFORMATION_MESSAGE);
@@ -756,7 +761,7 @@ public class KelolaDataLatih extends JPanel {
 		protected Void doInBackground() throws Exception {
 			// TODO Auto-generated method stub
 			String[][] sinyalKanal1, sinyalKanal2, kanalMerge;
-			int naracoba = dbAction.getJumNaracoba()+1;
+			int naracoba = database.getJumNaracoba()+1;
 			String kanal = null;
 			int i, progress=0, progressDistance = 100/dataLatih.pathFile.length;
 			for(i=0; i<dataLatih.pathFile.length; i++){
@@ -767,14 +772,14 @@ public class KelolaDataLatih extends JPanel {
 				if(dataLatih.kanal2 == null){
 					sinyalKanal1 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal1), dataLatih.segmentasi, dataLatih.samplingRate, dataLatih.alatPerekaman);
 					kanal = Integer.toString(dataLatih.kanalToInt(dataLatih.kanal1));
-					dbAction.inputSegmentasiSinyal(sinyalKanal1, dataLatih.kelasToInt(dataLatih.kelas), naracoba, dataLatih.samplingRate, kanal, dataLatih.alatPerekaman);
+					database.inputSegmentasiSinyal(sinyalKanal1, dataLatih.kelasToInt(dataLatih.kelas), naracoba, dataLatih.samplingRate, kanal, dataLatih.alatPerekaman);
 					updateTableDataLatih();
 				}else{
 					sinyalKanal1 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal1), dataLatih.segmentasi, dataLatih.samplingRate, dataLatih.alatPerekaman);
 					sinyalKanal2 = dataLatih.segmentasiEEG(dataLatih.dataEeg, dataLatih.kanalToInt(dataLatih.kanal2), dataLatih.segmentasi, dataLatih.samplingRate, dataLatih.alatPerekaman);
 					kanalMerge = dataLatih.gabungkanArray(sinyalKanal1, sinyalKanal2);
 					kanal = Integer.toString(dataLatih.kanalToInt(dataLatih.kanal1))+","+Integer.toString(dataLatih.kanalToInt(dataLatih.kanal2));
-					dbAction.inputSegmentasiSinyal(kanalMerge, dataLatih.kelasToInt(dataLatih.kelas), naracoba, dataLatih.samplingRate, kanal, dataLatih.alatPerekaman);
+					database.inputSegmentasiSinyal(kanalMerge, dataLatih.kelasToInt(dataLatih.kelas), naracoba, dataLatih.samplingRate, kanal, dataLatih.alatPerekaman);
 					updateTableDataLatih();
 				}
 			}

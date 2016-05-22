@@ -111,9 +111,11 @@ public class WaveletEkstraksi {
 		int i, i_temp;
 		
 		if(samplingRate == 128){
-			A1_1 = downSamplingGanjil(sinyalEEG);
+//			A1_1 = downSamplingGanjil(sinyalEEG);
+			A1_1 = sinyalEEG;
 		}else if(samplingRate == 512){
-			BA = downSamplingGanjil(sinyalEEG);
+//			BA = downSamplingGanjil(sinyalEEG);
+			BA = sinyalEEG;
 			
 			BA1 = konvolusiLow(BA);
 			BA1_1 = downSamplingGanjil(BA1);
@@ -159,9 +161,11 @@ public class WaveletEkstraksi {
 		int i, i_temp;
 		
 		if(samplingRate == 128){
-			A1_1 = downSamplingGanjil(sinyalEEG);
+//			A1_1 = downSamplingGanjil(sinyalEEG);
+			A1_1 = sinyalEEG;
 		}else if(samplingRate == 512){
-			BA = downSamplingGanjil(sinyalEEG);
+//			BA = downSamplingGanjil(sinyalEEG);
+			BA = sinyalEEG;
 			
 			BA1 = konvolusiLow(BA);
 			BA1_1 = downSamplingGanjil(BA1);
@@ -205,9 +209,11 @@ public class WaveletEkstraksi {
 		double[][] BA, BA1, BA1_1, BA2, A1_1 = null, AA2, AA2_2, AAA3, AAA3_3, AAAA4, AAAA4_4, DAAAA5, DAAAA5_5;
 		
 		if(samplingRate == 128){
-			A1_1 = downSamplingGanjil(sinyalEEG);
+//			A1_1 = downSamplingGanjil(sinyalEEG);
+			A1_1 = sinyalEEG;
 		}else if(samplingRate == 512){
-			BA = downSamplingGanjil(sinyalEEG);
+//			BA = downSamplingGanjil(sinyalEEG);
+			BA = sinyalEEG;
 			
 			BA1 = konvolusiLow(BA);
 			BA1_1 = downSamplingGanjil(BA1);

@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
@@ -27,6 +28,13 @@ import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
 import lvq.LVQ;
 import mysql.Database;
 
@@ -36,6 +44,7 @@ public class Pelatihan extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	protected JPanel panelGrafikLVQ;
 	protected JTextField txtMaksimumEpoch, txtMinimumError, txtLearningRate, txtPenguranganLR;
 	protected JButton btnPelatihan;
 	private JRadioButton rdWaveletFilter, rdWaveletGelombang;
@@ -46,17 +55,21 @@ public class Pelatihan extends JPanel {
 	protected JTable tableBobot;
 	protected JScrollPane scrollTableBobot, scrollTextAreaProgressMonitor;
 	protected DefaultTableCellRenderer centerTable;
-	protected Database dbAction = new Database();
+	protected Database database = new Database();
+	protected LVQ lvq = new LVQ();
+	private XYDataset dataset;
+	private JFreeChart chart;
+	private ChartPanel chartPanel;
 	
 	public Pelatihan(){
 		setSize(1200, 650);
 		setLayout(null);
-		dbAction = new Database();
-		tableModel = dbAction.getListDataBobot();
+		database = new Database();
+		tableModel = database.getListDataBobot();
 		centerTable = new DefaultTableCellRenderer();
 		centerTable.setHorizontalAlignment(SwingConstants.CENTER);
 		add(getContent());
-		add(new MenuUtama("Pelatihan Sistem"));
+		add(new Menu("Pelatihan LVQ"));
 	}
 	
 	public JPanel getContent(){
@@ -171,7 +184,7 @@ public class Pelatihan extends JPanel {
 		JPanel panelTabelPelatihan = new JPanel();
 		panelTabelPelatihan.setLayout(null);
 		panelTabelPelatihan.setBackground(Color.white);
-		panelTabelPelatihan.setBounds(460, 0, 450, 530);
+		panelTabelPelatihan.setBounds(460, 0, 450, 300);
 		
 		JLabel lblTitleTabelPelatihan = new JLabel("Hasil Bobot Pelatihan");
 		lblTitleTabelPelatihan.setForeground(new Color(68, 68, 68));
@@ -181,7 +194,7 @@ public class Pelatihan extends JPanel {
 		JPanel panelTableDataBobot = new JPanel();
 		panelTableDataBobot.setLayout(new BorderLayout());
 		panelTableDataBobot.setBackground(Color.white);
-		panelTableDataBobot.setBounds(15, 30, panelTabelPelatihan.getWidth()-30, 480);
+		panelTableDataBobot.setBounds(15, 30, panelTabelPelatihan.getWidth()-30, panelTabelPelatihan.getHeight()-45);
 		panelTabelPelatihan.add(panelTableDataBobot);
 		
 		tableBobot = new JTable(tableModel);
@@ -198,17 +211,67 @@ public class Pelatihan extends JPanel {
 		scrollTableBobot.setVisible(true);
 		panelTableDataBobot.add(scrollTableBobot, BorderLayout.CENTER);
 		
+		panelGrafikLVQ = new JPanel();
+		panelGrafikLVQ.setLayout(new BorderLayout());
+		panelGrafikLVQ.setBackground(Color.white);
+		panelGrafikLVQ.setBounds(panelTabelPelatihan.getX(), panelTabelPelatihan.getHeight()+10, panelTabelPelatihan.getWidth(), panelTabelPelatihan.getHeight()-80);
+		
+		dataset = createDataSet(false);
+		chart = createChart(dataset);
+		chartPanel = new ChartPanel(chart);
+		chartPanel.setMouseWheelEnabled(true);
+		chartPanel.setMouseZoomable(true);
+		panelGrafikLVQ.add(chartPanel, BorderLayout.CENTER);
+		
 		panelContent.add(panelFormPelatihan);
 		panelContent.add(progressBarPelatihan);
 		panelContent.add(panelTextAreaProgressMonitor);
 		panelContent.add(panelLblStatusLoading);
 		panelContent.add(panelTabelPelatihan);
+		panelContent.add(panelGrafikLVQ);
 		
 		return panelContent;
 	}
 	
+	public JFreeChart createChart(XYDataset dataset){
+		return ChartFactory.createXYLineChart(
+				"Grafik LVQ", 
+				"Epoch", 
+				"Nilai", 
+				dataset);
+	}
+	
+	public XYDataset createDataSet(boolean sudahPelatihan){
+		final XYSeriesCollection collection = new XYSeriesCollection();
+		double[] learningRate;
+		int i=0;
+		
+		if(sudahPelatihan == true){
+			learningRate = lvq.getLearningRate();
+			final XYSeries seriesRileks = new XYSeries("Learning Rate");
+			for(i=0;i<learningRate.length;i++){
+				if(learningRate[i] != 0.0){
+					seriesRileks.add(i+1, learningRate[i]);
+				}
+			}
+			collection.addSeries(seriesRileks);
+		}
+		return collection;
+	}
+	
+	public void updateGrafikLVQ(XYDataset dataset){
+		chart = createChart(dataset);
+		chartPanel.removeAll();
+		chartPanel.setChart(chart);
+		chartPanel.setMouseWheelEnabled(true);
+		chartPanel.setMouseZoomable(true);
+		chartPanel.repaint();
+		panelGrafikLVQ.repaint();
+		panelGrafikLVQ.revalidate();
+	}
+	
 	public void updateTableDataBobot(){
-		tableBobot.setModel(dbAction.getListDataBobot());
+		tableBobot.setModel(database.getListDataBobot());
 		tableBobot.repaint();
 		tableBobot.setRowSelectionAllowed(false);
 		tableBobot.setPreferredScrollableViewportSize(getSize());
@@ -279,9 +342,9 @@ public class Pelatihan extends JPanel {
 						JOptionPane.showMessageDialog(null, "Kolom Learning Rate tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 					}else if(txtPenguranganLR.getText().isEmpty()){
 						JOptionPane.showMessageDialog(null, "Kolom Pengurangan Learning Rate tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-					}else if(dbAction.getNeuronRileks(jenisNeuron).size() == 0){
+					}else if(database.getNeuronRileks(jenisNeuron).size() == 0){
 						JOptionPane.showMessageDialog(null, "Data kelas RILEKS belum diekstraksi", "Peringatan", JOptionPane.WARNING_MESSAGE);
-					}else if(dbAction.getNeuronNonRileks(jenisNeuron).size() == 0){
+					}else if(database.getNeuronNonRileks(jenisNeuron).size() == 0){
 						JOptionPane.showMessageDialog(null, "Data kelas Non-RILEKS belum diekstraksi", "Peringatan", JOptionPane.WARNING_MESSAGE);
 					}else{
 						CorePelatihan corePelatihan = new CorePelatihan(jenisNeuron);
@@ -297,14 +360,18 @@ public class Pelatihan extends JPanel {
 		ArrayList<double[][]> neuronRileks = new ArrayList<double[][]>();
 		ArrayList<double[][]> neuronNonRileks = new ArrayList<double[][]>();
 		double[][] belajar;
-		LVQ lvq = new LVQ();
 		String jenisNeuron = "";
+		double waktuMulai, waktuSelesai;
 		
 		public CorePelatihan(String jenisNeuron) {
 			// TODO Auto-generated constructor stub
 			lblStatusLoading.setVisible(true);
 			txtAreaProgressMonitor.setText("");
 			this.jenisNeuron = jenisNeuron;
+			waktuMulai = System.currentTimeMillis();
+			
+			dataset = createDataSet(false);
+			updateGrafikLVQ(dataset);
 		}
 		
 		@Override
@@ -312,23 +379,31 @@ public class Pelatihan extends JPanel {
 			// TODO Auto-generated method stub
 			lblStatusLoading.setText("Pembangkitan Neuron Rileks");
 			progressBarPelatihan.setValue(25);
-			neuronRileks = dbAction.getNeuronRileks(jenisNeuron);
+			neuronRileks = database.getNeuronRileks(jenisNeuron);
 			lblStatusLoading.setText("Pembangkitan Neuron Tidak Rileks");
 			progressBarPelatihan.setValue(50);
-			neuronNonRileks = dbAction.getNeuronNonRileks(jenisNeuron);
+			neuronNonRileks = database.getNeuronNonRileks(jenisNeuron);
 			lblStatusLoading.setText("Pembelajaran LVQ");
 			progressBarPelatihan.setValue(75);
 			belajar = lvq.pembelajaran(neuronRileks, neuronNonRileks, Double.parseDouble(txtLearningRate.getText()), Double.parseDouble(txtPenguranganLR.getText()), Integer.parseInt(txtMaksimumEpoch.getText()), Double.parseDouble(txtMinimumError.getText()));
 			lblStatusLoading.setText("Input hasil pelatihan bobot ke DB");
 			progressBarPelatihan.setValue(90);
-			dbAction.inputHasilBobot(belajar, jenisNeuron);
+			database.inputHasilBobot(belajar, jenisNeuron);
 			return null;
 		}
 		
 		@Override
 		public void done(){
+			waktuSelesai = System.currentTimeMillis();
+			double newRunTime = (double)(waktuSelesai - waktuMulai) / 1000;  
+			DecimalFormat runtimeDF = new DecimalFormat("##0.000");
+			lblStatusLoading.setText("Durasi eksekusi : "+runtimeDF.format(newRunTime)+" detik ("+runtimeDF.format(newRunTime/60)+" menit)");
+			
+			dataset = createDataSet(true);
+			updateGrafikLVQ(dataset);
+			
 			progressBarPelatihan.setValue(100);
-			lblStatusLoading.setVisible(false);
+//			lblStatusLoading.setVisible(false);
 			progressBarPelatihan.setValue(0);
 			ViewController.refreshAllElement();
 			updateTableDataBobot();

@@ -6,6 +6,8 @@ import view.Pelatihan;
 
 public class LVQ {
 	
+	private double[] learningRate;
+	
 	public LVQ() {
 		// TODO Auto-generated constructor stub
 	}
@@ -56,6 +58,8 @@ public class LVQ {
 		double[][] result = new double[2][bobot1.length];
 		int random;
 		
+		this.learningRate = new double[maxEpoch];
+		
 		random = 1+(int)(Math.random()*(neuronRileks.size()-1));
 		bobot1 = neuronRileks.get(random)[0];
 		neuronRileks.remove(random);
@@ -93,6 +97,7 @@ public class LVQ {
 			epochTemp = epoch;
 			Pelatihan.txtAreaProgressMonitor.append("Epoch ke-"+(epochTemp+1)+"\t"+"Learning Rate = "+learningRate+"\n");
 			
+			this.learningRate[epoch] = learningRate;
 			learningRate = learningRate - (pengurangLR * learningRate);
 			epoch++;
 		}
@@ -104,6 +109,12 @@ public class LVQ {
 			Pelatihan.txtAreaProgressMonitor.append(learningRate+" > "+error+" = "+"false"+"\n");
 		}
 		
+//		if(epoch<maxEpoch){
+//			for(i=epoch;i<maxEpoch;i++){
+//				this.learningRate[i] = 0;
+//			}
+//		}
+		
 		for(i=0;i<bobot1.length;i++){
 			result[0][i] = bobot1[i];
 		}
@@ -111,6 +122,10 @@ public class LVQ {
 			result[1][i] = bobot2[i];
 		}
 		return result;
+	}
+	
+	public double[] getLearningRate(){
+		return this.learningRate;
 	}
 	
 	public String[] pengujian(double[] w1, double[] w2, double[][] data){

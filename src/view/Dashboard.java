@@ -23,18 +23,18 @@ public class Dashboard extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	public JLabel lblJumNaracoba, lblJumSegmentasi, lblJumRileks, lblJumNonRileks;
-	protected Database dbAction = new Database();;
+	protected Database database = new Database();;
 	
 	public Dashboard(){
 		setSize(1200, 650);
 		setLayout(null);
 		add(getContent());
-		add(new MenuUtama("Dashboard"));
+		add(new Menu("Dashboard"));
 		
-		lblJumNaracoba.setText(Integer.toString(dbAction.getJumNaracoba()));
-		lblJumSegmentasi.setText(Integer.toString(dbAction.getJumSegmentasi()));
-		lblJumRileks.setText(Integer.toString(dbAction.getJumRileks()));
-		lblJumNonRileks.setText(Integer.toString(dbAction.getJumNonRileks()));
+		lblJumNaracoba.setText(Integer.toString(database.getJumNaracoba()));
+		lblJumSegmentasi.setText(Integer.toString(database.getJumSegmentasi()));
+		lblJumRileks.setText(Integer.toString(database.getJumRileks()));
+		lblJumNonRileks.setText(Integer.toString(database.getJumNonRileks()));
 	}
 	
 	public JPanel getContent(){
