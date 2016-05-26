@@ -37,7 +37,7 @@ public class SQLiteConnector {
 	
 	public void createDatabase(){
 		createTableDataLatih();
-		createTableKoefisienBobot();
+		createTableLVQ();
 		createTableWavelet();
 	}
 	
@@ -88,7 +88,7 @@ public class SQLiteConnector {
 		}
 	}
 	
-	public void createTableKoefisienBobot(){
+	public void createTableLVQ(){
 		try {
 			connect = getKoneksi();
 			stmt = connect.createStatement();
@@ -99,7 +99,7 @@ public class SQLiteConnector {
 				sql = "CREATE TABLE lvq "+
 						"(id 				INTEGER PRIMARY KEY AUTOINCREMENT," +
 						"bobotRileks		TEXT," +
-						"bobotNonRileks		TEXT," +
+						"bobotTidakRileks		TEXT," +
 						"jenisNeuron		TEXT)";
 				stmt.executeUpdate(sql);
 			}

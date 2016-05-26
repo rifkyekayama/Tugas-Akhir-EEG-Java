@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -36,6 +37,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import lvq.LVQ;
+import main.SoundNotification;
 import mysql.Database;
 
 public class Pelatihan extends JPanel {
@@ -60,6 +62,7 @@ public class Pelatihan extends JPanel {
 	private XYDataset dataset;
 	private JFreeChart chart;
 	private ChartPanel chartPanel;
+	private JCheckBox cbxGunakanEkstraksi;
 	
 	public Pelatihan(){
 		setSize(1200, 650);
@@ -82,7 +85,7 @@ public class Pelatihan extends JPanel {
 		panelFormPelatihan.setBackground(Color.white);
 		panelFormPelatihan.setBounds(0, 0, 450, 300);
 		
-		JLabel lblTitleFormPelatihan = new JLabel("Pelatihan Sistem");
+		JLabel lblTitleFormPelatihan = new JLabel("Form Pelatihan");
 		lblTitleFormPelatihan.setForeground(new Color(68, 68, 68));
 		lblTitleFormPelatihan.setBounds(15, 0, 150, 30);
 		panelFormPelatihan.add(lblTitleFormPelatihan);
@@ -142,6 +145,19 @@ public class Pelatihan extends JPanel {
 		groupTipeWavelet.add(rdWaveletFilter);
 		groupTipeWavelet.add(rdWaveletGelombang);
 		
+		JLabel lblGunakanEkstraksi = new JLabel("Gunakan Ekstraksi :");
+		lblGunakanEkstraksi.setFont(lblGunakanEkstraksi.getFont().deriveFont(Font.BOLD, 15f));
+		lblGunakanEkstraksi.setBounds(panelFormPelatihan.getWidth()-220, 170, 150, 30);
+		panelFormPelatihan.add(lblGunakanEkstraksi);
+		
+		cbxGunakanEkstraksi = new JCheckBox("Gunakan Ekstraksi Wavelet");
+		cbxGunakanEkstraksi.setBounds(panelFormPelatihan.getWidth()-220, 200, 200, 30);
+		cbxGunakanEkstraksi.setBackground(Color.white);
+		cbxGunakanEkstraksi.setSelected(true);
+		cbxGunakanEkstraksi.addActionListener(new ButtonController());
+		cbxGunakanEkstraksi.setActionCommand("cbxGunakanEkstraksi");
+		panelFormPelatihan.add(cbxGunakanEkstraksi);
+		
 		btnPelatihan = new JButton("Mulai Pelatihan");
 		btnPelatihan.setForeground(Color.white);
 		btnPelatihan.setBackground(new Color(60, 137, 185));
@@ -186,7 +202,7 @@ public class Pelatihan extends JPanel {
 		panelTabelPelatihan.setBackground(Color.white);
 		panelTabelPelatihan.setBounds(460, 0, 450, 300);
 		
-		JLabel lblTitleTabelPelatihan = new JLabel("Hasil Bobot Pelatihan");
+		JLabel lblTitleTabelPelatihan = new JLabel("Tabel Hasil Pelatihan");
 		lblTitleTabelPelatihan.setForeground(new Color(68, 68, 68));
 		lblTitleTabelPelatihan.setBounds(15, 0, 250, 30);
 		panelTabelPelatihan.add(lblTitleTabelPelatihan);
@@ -322,34 +338,60 @@ public class Pelatihan extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getActionCommand().equals("mulaiPelatihan")){
-				String jenisNeuron = "";
-				if(!rdWaveletFilter.isSelected() && !rdWaveletGelombang.isSelected()){
-					JOptionPane.showMessageDialog(null, "Pilihan jenis neuron harus diisi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				if(txtMaksimumEpoch.getText().isEmpty()){
+					SoundNotification.playError();
+					JOptionPane.showMessageDialog(null, "Kolom Maksimum Epoch tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				}else if(txtMinimumError.getText().isEmpty()){
+					SoundNotification.playError();
+					JOptionPane.showMessageDialog(null, "Kolom Minimum Error tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				}else if(txtLearningRate.getText().isEmpty()){
+					SoundNotification.playError();
+					JOptionPane.showMessageDialog(null, "Kolom Learning Rate tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+				}else if(txtPenguranganLR.getText().isEmpty()){
+					SoundNotification.playError();
+					JOptionPane.showMessageDialog(null, "Kolom Pengurangan Learning Rate tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else{
-					if(rdWaveletFilter.isSelected()){
-						jenisNeuron = "filter";
-					}else if(rdWaveletGelombang.isSelected()){
-						jenisNeuron = "gelombang";
+					SoundNotification.playClick();
+					if(cbxGunakanEkstraksi.isSelected()){
+						String jenisNeuron = "";
+						if(!rdWaveletFilter.isSelected() && !rdWaveletGelombang.isSelected()){
+							JOptionPane.showMessageDialog(null, "Pilihan jenis neuron harus diisi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+						}else{
+							if(rdWaveletFilter.isSelected()){
+								jenisNeuron = "filter";
+							}else if(rdWaveletGelombang.isSelected()){
+								jenisNeuron = "gelombang";
+							}
+						}
+						
+						if(jenisNeuron != ""){
+							if(database.getNeuronRileks(jenisNeuron).size() == 0){
+								JOptionPane.showMessageDialog(null, "Data kelas RILEKS belum diekstraksi", "Peringatan", JOptionPane.WARNING_MESSAGE);
+							}else if(database.getNeuronTidakRileks(jenisNeuron).size() == 0){
+								JOptionPane.showMessageDialog(null, "Data kelas TIDAK RILEKS belum diekstraksi", "Peringatan", JOptionPane.WARNING_MESSAGE);
+							}else{
+								CorePelatihan corePelatihan = new CorePelatihan(jenisNeuron);
+								corePelatihan.execute();
+							}
+						}
+					}else{
+						if(database.getNeuronRileks().size() == 0){
+							JOptionPane.showMessageDialog(null, "Data kelas RILEKS tidak tersedia", "Peringatan", JOptionPane.WARNING_MESSAGE);
+						}else if(database.getNeuronTidakRileks().size() == 0){
+							JOptionPane.showMessageDialog(null, "Data kelas TIDAK RILEKS tidak tersedia", "Peringatan", JOptionPane.WARNING_MESSAGE);
+						}else{
+							CorePelatihan corePelatihan = new CorePelatihan("");
+							corePelatihan.execute();
+						}
 					}
 				}
-				
-				if(jenisNeuron != ""){
-					if(txtMaksimumEpoch.getText().isEmpty()){
-						JOptionPane.showMessageDialog(null, "Kolom Maksimum Epoch tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-					}else if(txtMinimumError.getText().isEmpty()){
-						JOptionPane.showMessageDialog(null, "Kolom Minimum Error tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-					}else if(txtLearningRate.getText().isEmpty()){
-						JOptionPane.showMessageDialog(null, "Kolom Learning Rate tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-					}else if(txtPenguranganLR.getText().isEmpty()){
-						JOptionPane.showMessageDialog(null, "Kolom Pengurangan Learning Rate tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-					}else if(database.getNeuronRileks(jenisNeuron).size() == 0){
-						JOptionPane.showMessageDialog(null, "Data kelas RILEKS belum diekstraksi", "Peringatan", JOptionPane.WARNING_MESSAGE);
-					}else if(database.getNeuronNonRileks(jenisNeuron).size() == 0){
-						JOptionPane.showMessageDialog(null, "Data kelas Non-RILEKS belum diekstraksi", "Peringatan", JOptionPane.WARNING_MESSAGE);
-					}else{
-						CorePelatihan corePelatihan = new CorePelatihan(jenisNeuron);
-						corePelatihan.execute();
-					}
+			}else if(e.getActionCommand().equals("cbxGunakanEkstraksi")){
+				if(cbxGunakanEkstraksi.isSelected()){
+					rdWaveletFilter.setEnabled(true);
+					rdWaveletGelombang.setEnabled(true);
+				}else{
+					rdWaveletFilter.setEnabled(false);
+					rdWaveletGelombang.setEnabled(false);
 				}
 			}
 		}
@@ -377,18 +419,38 @@ public class Pelatihan extends JPanel {
 		@Override
 		protected Void doInBackground() throws Exception {
 			// TODO Auto-generated method stub
-			lblStatusLoading.setText("Pembangkitan Neuron Rileks");
-			progressBarPelatihan.setValue(25);
-			neuronRileks = database.getNeuronRileks(jenisNeuron);
-			lblStatusLoading.setText("Pembangkitan Neuron Tidak Rileks");
-			progressBarPelatihan.setValue(50);
-			neuronNonRileks = database.getNeuronNonRileks(jenisNeuron);
-			lblStatusLoading.setText("Pembelajaran LVQ");
-			progressBarPelatihan.setValue(75);
-			belajar = lvq.pembelajaran(neuronRileks, neuronNonRileks, Double.parseDouble(txtLearningRate.getText()), Double.parseDouble(txtPenguranganLR.getText()), Integer.parseInt(txtMaksimumEpoch.getText()), Double.parseDouble(txtMinimumError.getText()));
-			lblStatusLoading.setText("Input hasil pelatihan bobot ke DB");
-			progressBarPelatihan.setValue(90);
-			database.inputHasilBobot(belajar, jenisNeuron);
+			if(jenisNeuron != ""){
+				System.out.println("masuk jenis neuron");
+				
+				lblStatusLoading.setText("Pembangkitan Neuron Rileks");
+				progressBarPelatihan.setValue(25);
+				neuronRileks = database.getNeuronRileks(jenisNeuron);
+				lblStatusLoading.setText("Pembangkitan Neuron Tidak Rileks");
+				progressBarPelatihan.setValue(50);
+				neuronNonRileks = database.getNeuronTidakRileks(jenisNeuron);
+				lblStatusLoading.setText("Pembelajaran LVQ");
+				progressBarPelatihan.setValue(75);
+				belajar = lvq.pembelajaran(neuronRileks, neuronNonRileks, Double.parseDouble(txtLearningRate.getText()), Double.parseDouble(txtPenguranganLR.getText()), Integer.parseInt(txtMaksimumEpoch.getText()), Double.parseDouble(txtMinimumError.getText()));
+				lblStatusLoading.setText("Input hasil pelatihan bobot ke DB");
+				progressBarPelatihan.setValue(90);
+				database.inputHasilBobot(belajar, jenisNeuron);
+			}else{
+				lblStatusLoading.setText("Pembangkitan Neuron Rileks");
+				progressBarPelatihan.setValue(25);
+				neuronRileks = database.getNeuronRileks();
+				
+				lblStatusLoading.setText("Pembangkitan Neuron Tidak Rileks");
+				progressBarPelatihan.setValue(50);
+				neuronNonRileks = database.getNeuronTidakRileks();
+				
+				lblStatusLoading.setText("Pembelajaran LVQ");
+				progressBarPelatihan.setValue(75);
+				belajar = lvq.pembelajaran(neuronRileks, neuronNonRileks, Double.parseDouble(txtLearningRate.getText()), Double.parseDouble(txtPenguranganLR.getText()), Integer.parseInt(txtMaksimumEpoch.getText()), Double.parseDouble(txtMinimumError.getText()));
+				
+				lblStatusLoading.setText("Input hasil pelatihan bobot ke DB");
+				progressBarPelatihan.setValue(90);
+				database.inputHasilBobot(belajar, jenisNeuron);
+			}
 			return null;
 		}
 		
@@ -407,6 +469,7 @@ public class Pelatihan extends JPanel {
 			progressBarPelatihan.setValue(0);
 			ViewController.refreshAllElement();
 			updateTableDataBobot();
+			SoundNotification.playNotif();
 			JOptionPane.showMessageDialog(null, "Proses pelatihan beres", "Pelatihan", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}

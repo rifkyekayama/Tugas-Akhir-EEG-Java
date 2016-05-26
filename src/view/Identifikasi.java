@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -24,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
@@ -33,6 +35,7 @@ import javax.swing.table.DefaultTableModel;
 
 import dataLatih.DataLatih;
 import lvq.LVQ;
+import main.SoundNotification;
 import mysql.Database;
 import wavelet.Wavelet;
 import wavelet.WaveletEkstraksi;
@@ -46,13 +49,15 @@ public class Identifikasi extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	protected JPanel panelFormEmotiv, panelFormNeurosky, panelHasilRileks, 
-					 panelHasilNonRileks, panelHasilPengujian;
+					 panelHasilTidakRileks, panelHasilPengujian, panelTextAreaProgressMonitor;
 	protected JButton btnPilihDataEEG, btnSubmitDataEEG;
 	protected JLabel lblFileDataEEG, lblHasilPengujian, lblJumPresentaseRileks, 
-					 lblJumPresentaseNonRileks,isLockedKanal1, isLockedKanal2;
+					 lblJumPresentaseTidakRileks,isLockedKanal1, isLockedKanal2;
 	protected JComboBox<?> cmbAlatPerekaman, cmbKanal1, cmbKanal2;
 	protected JTextField txtSegmentasi, txtSamplingrate, txtKanalNeurosky;
 	protected JCheckBox cbGunakanKanal2;
+	public static JTextArea txtAreaProgressMonitor;
+	protected JScrollPane scrollTextAreaProgressMonitor;
 	protected DefaultTableModel tableModel;
 	protected JTable tableDataUji;
 	protected JScrollPane scrollTableDataUji;
@@ -66,7 +71,7 @@ public class Identifikasi extends JPanel {
 	protected DataLatih dataLatih;
 	protected String[] fullPathDataEEG;
 	protected int i=0;
-	
+
 	public Identifikasi(){
 		setSize(1200, 650);
 		setLayout(null);
@@ -89,7 +94,7 @@ public class Identifikasi extends JPanel {
 		panelFormDataUji.setBackground(Color.white);
 		panelFormDataUji.setBounds(0, 0, 450, 360);
 		
-		JLabel lblTitleInputDataLatih = new JLabel("Input Data Uji");
+		JLabel lblTitleInputDataLatih = new JLabel("Form Data Identifikasi");
 		lblTitleInputDataLatih.setForeground(new Color(68, 68, 68));
 		lblTitleInputDataLatih.setBounds(15, 0, 150, 30);
 		panelFormDataUji.add(lblTitleInputDataLatih);
@@ -142,13 +147,14 @@ public class Identifikasi extends JPanel {
 		txtSamplingrate.setBounds(panelFormDataUji.getWidth()-220, 190, 205, 30);
 		panelFormDataUji.add(txtSamplingrate);
 		
-		btnSubmitDataEEG = new JButton("Mulai Pengujian");
+		btnSubmitDataEEG = new JButton("Mulai Identifikasi");
 		btnSubmitDataEEG.setForeground(Color.white);
 		btnSubmitDataEEG.setBackground(new Color(60, 137, 185));
 		btnSubmitDataEEG.setActionCommand("submitDataEEG");
 		btnSubmitDataEEG.setBounds(15, 305, 420, 40);
 		btnSubmitDataEEG.addMouseListener(new MouseController());
 		btnSubmitDataEEG.addActionListener(new ButtonController());
+		btnSubmitDataEEG.setMnemonic(KeyEvent.VK_ENTER);
 		panelFormDataUji.add(btnSubmitDataEEG);
 		
 		panelFormDataUji.add(panelFormEmotiv());
@@ -168,12 +174,25 @@ public class Identifikasi extends JPanel {
 		lblStatusLoading.setVisible(false);
 		panelStatusLoading.add(lblStatusLoading);
 		
+		panelTextAreaProgressMonitor = new JPanel();
+		panelTextAreaProgressMonitor.setLayout(new BorderLayout());
+		panelTextAreaProgressMonitor.setBounds(0, 430, panelFormDataUji.getWidth(), 100);
+		panelTextAreaProgressMonitor.setVisible(true);
+		
+		txtAreaProgressMonitor = new JTextArea(10,5);
+		txtAreaProgressMonitor.setEditable(false);
+		txtAreaProgressMonitor.setBorder(null);
+		txtAreaProgressMonitor.setVisible(true);
+		
+		scrollTextAreaProgressMonitor = new JScrollPane(txtAreaProgressMonitor);
+		panelTextAreaProgressMonitor.add(scrollTextAreaProgressMonitor, "Center");
+		
 		JPanel panelLihatDataUji = new JPanel();
 		panelLihatDataUji.setLayout(null);
 		panelLihatDataUji.setBackground(Color.white);
 		panelLihatDataUji.setBounds(460, 0, 450, 530);
 		
-		JLabel lblTitleTableDataLatih = new JLabel("Tabel Hasil Pengujian");
+		JLabel lblTitleTableDataLatih = new JLabel("Tabel Hasil Identifikasi");
 		lblTitleTableDataLatih.setForeground(new Color(68, 68, 68));
 		lblTitleTableDataLatih.setBounds(15, 0, 180, 30);
 		panelLihatDataUji.add(lblTitleTableDataLatih);
@@ -211,23 +230,23 @@ public class Identifikasi extends JPanel {
 		lblJumPresentaseRileks.setBounds(130, 10, 200, 30);
 		panelHasilRileks.add(lblJumPresentaseRileks);
 		
-		panelHasilNonRileks = new JPanel();
-		panelHasilNonRileks.setLayout(null);
-		panelHasilNonRileks.setBackground(new Color(221, 75, 57));
-		panelHasilNonRileks.setBounds(panelHasilRileks.getWidth(), 430, panelFormDataUji.getWidth()/2, 50);
-		panelHasilNonRileks.setVisible(false);
+		panelHasilTidakRileks = new JPanel();
+		panelHasilTidakRileks.setLayout(null);
+		panelHasilTidakRileks.setBackground(new Color(221, 75, 57));
+		panelHasilTidakRileks.setBounds(panelHasilRileks.getWidth(), 430, panelFormDataUji.getWidth()/2, 50);
+		panelHasilTidakRileks.setVisible(false);
 		
-		lblJumPresentaseNonRileks = new JLabel("0.0%");
-		lblJumPresentaseNonRileks.setFont(lblJumPresentaseNonRileks.getFont().deriveFont(Font.BOLD, 20f));
-		lblJumPresentaseNonRileks.setForeground(Color.white);
-		lblJumPresentaseNonRileks.setBounds(130, 10, 200, 30);
-		panelHasilNonRileks.add(lblJumPresentaseNonRileks);
+		lblJumPresentaseTidakRileks = new JLabel("0.0%");
+		lblJumPresentaseTidakRileks.setFont(lblJumPresentaseTidakRileks.getFont().deriveFont(Font.BOLD, 20f));
+		lblJumPresentaseTidakRileks.setForeground(Color.white);
+		lblJumPresentaseTidakRileks.setBounds(130, 10, 200, 30);
+		panelHasilTidakRileks.add(lblJumPresentaseTidakRileks);
 		
-		JLabel lblPresentaseNonRileks = new JLabel("Non Rileks = ");
-		lblPresentaseNonRileks.setFont(lblPresentaseNonRileks.getFont().deriveFont(Font.BOLD, 15f));
-		lblPresentaseNonRileks.setForeground(Color.white);
-		lblPresentaseNonRileks.setBounds(10, 10, 200, 30);
-		panelHasilNonRileks.add(lblPresentaseNonRileks);
+		JLabel lblPresentaseTidakRileks = new JLabel("Tidak Rileks = ");
+		lblPresentaseTidakRileks.setFont(lblPresentaseTidakRileks.getFont().deriveFont(Font.BOLD, 15f));
+		lblPresentaseTidakRileks.setForeground(Color.white);
+		lblPresentaseTidakRileks.setBounds(10, 10, 200, 30);
+		panelHasilTidakRileks.add(lblPresentaseTidakRileks);
 		
 		panelHasilPengujian = new JPanel(new GridBagLayout());
 		panelHasilPengujian.setBackground(new Color(0, 166, 90));
@@ -243,8 +262,9 @@ public class Identifikasi extends JPanel {
 		panelContent.add(panelLihatDataUji);
 		panelContent.add(progressSubmitDataEEG);
 		panelContent.add(panelStatusLoading);
+		panelContent.add(panelTextAreaProgressMonitor);
 		panelContent.add(panelHasilRileks);
-		panelContent.add(panelHasilNonRileks);
+		panelContent.add(panelHasilTidakRileks);
 		panelContent.add(panelHasilPengujian);
 		return panelContent;
 	}
@@ -418,25 +438,28 @@ public class Identifikasi extends JPanel {
 	
 	public void resetHasilPengujian(){
 		updateTablePengujian(initTableModelPengujian(null));
+		panelTextAreaProgressMonitor.setVisible(true);
+		txtAreaProgressMonitor.setText("");
+		
 		panelHasilRileks.setVisible(false);
 		lblJumPresentaseRileks.setText("0.0%");
-		panelHasilNonRileks.setVisible(false);
-		lblJumPresentaseNonRileks.setText("0.0%");
+		panelHasilTidakRileks.setVisible(false);
+		lblJumPresentaseTidakRileks.setText("0.0%");
 		panelHasilPengujian.setVisible(false);
 		lblHasilPengujian.setText("-");
 	}
 	
-	public void updateStatusPengujian(double jumRileks, double jumNonRileks, double jumDataUji){
-		double totalRileks, totalNonRileks;
+	public void updateStatusPengujian(double jumRileks, double jumTidakRileks, double jumDataUji){
+		double totalRileks, totalTidakRileks;
 		totalRileks = (jumRileks/jumDataUji)*100;
-		totalNonRileks = (jumNonRileks/jumDataUji)*100;
+		totalTidakRileks = (jumTidakRileks/jumDataUji)*100;
 		
 		lblJumPresentaseRileks.setText(Double.toString(totalRileks)+"%");
-		lblJumPresentaseNonRileks.setText(Double.toString(totalNonRileks)+"%");
-		if(totalRileks >= totalNonRileks){
+		lblJumPresentaseTidakRileks.setText(Double.toString(totalTidakRileks)+"%");
+		if(totalRileks >= totalTidakRileks){
 			lblHasilPengujian.setText("Rileks");
 		}else{
-			lblHasilPengujian.setText("Non-Rileks");
+			lblHasilPengujian.setText("Tidak Rileks");
 		}
 	}
 	
@@ -547,19 +570,26 @@ public class Identifikasi extends JPanel {
 				}
 			}else if(e.getActionCommand().equals("submitDataEEG")){
 				if(fullPathDataEEG == null){
+					SoundNotification.playError();
 					JOptionPane.showMessageDialog(null, "Sinyal EEG belum dipilih", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else if(txtSegmentasi == null){
+					SoundNotification.playError();
 					JOptionPane.showMessageDialog(null, "Segmentasi tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else if(txtSamplingrate == null){
+					SoundNotification.playError();
 					JOptionPane.showMessageDialog(null, "Sampling Rate tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else if(!database.isBobotNotNull()){
+					SoundNotification.playError();
 					JOptionPane.showMessageDialog(null, "Belum Melakukan Pelatihan!", "Peringatan", JOptionPane.WARNING_MESSAGE);
 					ViewController.changeCard("panelPelatihanSistem");
 				}else{
+					SoundNotification.playClick();
 					if((String)cmbAlatPerekaman.getSelectedItem() == "Emotiv"){
 						if((String)cmbKanal1.getSelectedItem() == "Pilih salah satu..."){
+							SoundNotification.playError();
 							JOptionPane.showMessageDialog(null, "Pilihan Kanal 1 tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 						}else if(cmbKanal2.isEnabled() == true && (String)cmbKanal2.getSelectedItem() == "Pilih salah satu..."){
+							SoundNotification.playError();
 							JOptionPane.showMessageDialog(null, "Pilihan Kanal 2 tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 						}
 					}
@@ -575,6 +605,7 @@ public class Identifikasi extends JPanel {
 					}else{
 						dataLatih = new DataLatih(fullPathDataEEG, null, Integer.parseInt(txtSegmentasi.getText()), Integer.parseInt(txtSamplingrate.getText()), (String)cmbKanal1.getSelectedItem(), (String)cmbKanal2.getSelectedItem(), (String)cmbAlatPerekaman.getSelectedItem());
 					}
+					
 					CorePengujian corePengujian = new CorePengujian(dataLatih);
 					corePengujian.execute();
 				}
@@ -590,6 +621,7 @@ public class Identifikasi extends JPanel {
 		DataLatih dataLatih;
 		LVQ lvq = new LVQ();
 		double waktuMulai, waktuSelesai;
+		String[] hasilPengujian = null;
 		
 		public CorePengujian(DataLatih dataLatih) {
 			// TODO Auto-generated constructor stub
@@ -601,7 +633,6 @@ public class Identifikasi extends JPanel {
 		@Override
 		protected Void doInBackground() throws Exception {
 			// TODO Auto-generated method stub
-			String[] hasilPengujian = null;
 			String[][] sinyalKanal1, sinyalKanal2, sinyalTemp;
 			double[][] bobotPelatihan;
 			ArrayList<double[]> sinyalEEGFilteringList = new ArrayList<double[]>();
@@ -647,13 +678,24 @@ public class Identifikasi extends JPanel {
 			
 			wavelet = new Wavelet(sinyalEEGFiltering);
 			
-			if(database.getStatusWavelet().equals("gelombang")){
-//				waveletEkstraksi = new WaveletEkstraksi(sinyalEEGFiltering);
-				hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.waveletEkstraksi.getNeuronPengujian(wavelet.sinyalEEG, database.getSamplingRate()));
-			}else if(database.getStatusWavelet().equals("filter")){
-//				waveletFiltering = new WaveletFiltering(sinyalEEGFiltering);
-				hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.waveletFiltering.getNeuronPengujian(wavelet.sinyalEEG, database.getSamplingRate()));
+			if(database.getNeuronRileks().get(0)[0].length != database.getBobotPelatihan()[0].length){
+				if(database.getStatusWavelet().equals("gelombang")){
+//					waveletEkstraksi = new WaveletEkstraksi(sinyalEEGFiltering);
+					hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.waveletEkstraksi.getNeuronPengujian(wavelet.sinyalEEG, database.getSamplingRate()));
+				}else if(database.getStatusWavelet().equals("filter")){
+//					waveletFiltering = new WaveletFiltering(sinyalEEGFiltering);
+					hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.waveletFiltering.getNeuronPengujian(wavelet.sinyalEEG, database.getSamplingRate()));
+				}
+			}else{
+				double[][] hasil = new double[wavelet.sinyalEEG.size()][wavelet.sinyalEEG.get(0).length];
+				for(i=0;i<wavelet.sinyalEEG.size();i++){
+					for(j=0;j<wavelet.sinyalEEG.get(i).length;j++){
+						hasil[i][j] = wavelet.sinyalEEG.get(i)[j][0];
+					}
+				}
+				hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], hasil);
 			}
+			
 			lblStatusLoading.setText("Update Tabel Bobot");
 			progressSubmitDataEEG.setValue(90);
 			updateTablePengujian(initTableModelPengujian(hasilPengujian));
@@ -668,17 +710,26 @@ public class Identifikasi extends JPanel {
 			DecimalFormat runtimeDF = new DecimalFormat("##0.000");
 			lblStatusLoading.setText("Durasi eksekusi : "+runtimeDF.format(newRunTime)+" detik ("+runtimeDF.format(newRunTime/60)+" menit)");
 			
+//			try {
+//				TulisFile.TulisPengujian(jenisSinyal, n, lvq.getJumlahHasilUjiRileks(hasilPengujian), lvq.getJumlahHasilUjiNonRileks(hasilPengujian), runtimeDF.format(newRunTime));
+//			} catch (IOException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+			
 			progressSubmitDataEEG.setValue(100);
 			resetFormDataUji();
 			updateStatusAlat();
 			ViewController.refreshAllElement();
 			updateStatusKanal();
+			panelTextAreaProgressMonitor.setVisible(false);
+			panelHasilRileks.setVisible(true);
+			panelHasilTidakRileks.setVisible(true);
+			panelHasilPengujian.setVisible(true);
+			SoundNotification.playNotif();
 			JOptionPane.showMessageDialog(null, "Proses Pengujian Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
 //			lblStatusLoading.setVisible(false);
 			progressSubmitDataEEG.setValue(0);
-			panelHasilRileks.setVisible(true);
-			panelHasilNonRileks.setVisible(true);
-			panelHasilPengujian.setVisible(true);
 		}
 	}
 }

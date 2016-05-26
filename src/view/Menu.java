@@ -16,6 +16,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import main.SoundNotification;
+
 public class Menu extends JPanel {
 	/**
 	 * 
@@ -92,7 +94,7 @@ public class Menu extends JPanel {
 		lblMainNavigation.setBounds(15, -25, 120, 100);
 		panelMainNavigation.add(lblMainNavigation);
 		
-		btnDashboard = new JButton(" Dashboard", new ImageIcon(getClass().getResource("/resource/iconDashboard.png")));
+		btnDashboard = new JButton(" Beranda", new ImageIcon(getClass().getResource("/resource/iconDashboard.png")));
 		btnDashboard.setHorizontalAlignment(SwingConstants.LEFT);
 		btnDashboard.setForeground(Color.white);
 		btnDashboard.setBackground(new Color(34, 45, 50));
@@ -103,7 +105,7 @@ public class Menu extends JPanel {
 		btnDashboard.addActionListener(new ButtonController());
 		panelSidebar.add(btnDashboard);
 		
-		btnKelolaDataLatih = new JButton(" Data Latih", new ImageIcon(getClass().getResource("/resource/iconKelolaDataLatih.png")));
+		btnKelolaDataLatih = new JButton(" Kelola Data Latih", new ImageIcon(getClass().getResource("/resource/iconKelolaDataLatih.png")));
 		btnKelolaDataLatih.setHorizontalAlignment(SwingConstants.LEFT);
 		btnKelolaDataLatih.setForeground(Color.white);
 		btnKelolaDataLatih.setBackground(new Color(34, 45, 50));
@@ -237,20 +239,28 @@ public class Menu extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getActionCommand().equals("btnDashboard")){
+				SoundNotification.playClick();
 				ViewController.changeCard("panelDashboard");
 			}else if(e.getActionCommand().equals("btnKelolaDataLatih")){
+				SoundNotification.playClick();
 				ViewController.changeCard("panelKelolaDataLatih");
 			}else if(e.getActionCommand().equals("btnEkstraksiWavelet")){
+				SoundNotification.playClick();
 				ViewController.changeCard("panelEkstraksiWavelet");
 			}else if(e.getActionCommand().equals("btnEkstraksiWavelet")){
+				SoundNotification.playClick();
 				ViewController.changeCard("panelEkstraksiWavelet");
 			}else if(e.getActionCommand().equals("btnPelatihan")){
+				SoundNotification.playClick();
 				ViewController.changeCard("panelPelatihanSistem");
 			}else if(e.getActionCommand().equals("btnPengujian")){
+				SoundNotification.playClick();
 				ViewController.changeCard("panelPengujianSistem");
 			}else if(e.getActionCommand().equals("btnBantuan")){
+				SoundNotification.playClick();
 				ViewController.changeCard("panelBantuan");
 			}else if(e.getActionCommand().equals("btnExit")){
+				SoundNotification.playClick();
 				int dialogResult = JOptionPane.showConfirmDialog(null, "Apakah yakin akan keluar?", "Konfirmasi Keluar", JOptionPane.YES_NO_OPTION);
 				if(dialogResult == JOptionPane.YES_OPTION){
 					System.exit(0);

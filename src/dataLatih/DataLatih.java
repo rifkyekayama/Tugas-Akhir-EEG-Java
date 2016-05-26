@@ -66,7 +66,7 @@ public class DataLatih {
 		int indexKelas = 0;
 		switch (kelas) {
 		case "Rileks": indexKelas=1;break;
-		case "Non-Rileks": indexKelas=-1;break;
+		case "Tidak Rileks": indexKelas=-1;break;
 		default:break;
 		}
 		return indexKelas;

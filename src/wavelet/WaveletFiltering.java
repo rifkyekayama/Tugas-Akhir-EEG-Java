@@ -1,6 +1,10 @@
 package wavelet;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import main.TulisFile;
+import view.Identifikasi;
 
 public class WaveletFiltering {
 	
@@ -113,27 +117,118 @@ public class WaveletFiltering {
 			BA = konvolusiLow(sinyalEEG);
 			A1_1 = downSamplingGanjil(BA);
 		}else if(samplingRate == 512){
+			try {
+				TulisFile.Tulis("sinyal Asli", sinyalEEG, 4);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			BA = konvolusiLow(sinyalEEG);
+			try {
+				TulisFile.Tulis("konvolusi low 1", BA, 4);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			BA_1 = downSamplingGanjil(BA);
+			try {
+				TulisFile.Tulis("down sampling ganjil 1", BA_1, 4);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			BA1 = konvolusiLow(BA_1);
+			try {
+				TulisFile.Tulis("konvolusi low 2", BA1, 4);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			BA1_1 = downSamplingGanjil(BA1);
+			try {
+				TulisFile.Tulis("down sampling ganjil 2", BA1_1, 4);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			BA2 = konvolusiLow(BA1_1);
+			try {
+				TulisFile.Tulis("konvolusi low 3", BA2, 4);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			A1_1 = downSamplingGanjil(BA2);
+			try {
+				TulisFile.Tulis("down sampling ganjil 3", A1_1, 4);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		AA2 = konvolusiLow(A1_1);
+		try {
+			TulisFile.Tulis("konvolusi low 4", AA2, 4);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		AA2_2 = downSamplingGanjil(AA2);
+		try {
+			TulisFile.Tulis("down sampling ganjil 4", AA2_2, 4);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		AAA3 = konvolusiLow(AA2_2);
+		try {
+			TulisFile.Tulis("konvolusi low 5", AAA3, 4);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		AAA3_3 = downSamplingGanjil(AAA3);
+		try {
+			TulisFile.Tulis("down sampling ganjil 5", AAA3_3, 4);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		AAA4 = konvolusiLow(AAA3_3);
+		try {
+			TulisFile.Tulis("konvolusi low 6", AAA4, 4);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		AAA4_4 = downSamplingGanjil(AAA4);
+		try {
+			TulisFile.Tulis("down sampling ganjil 6", AAA4_4, 4);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		DAAA5 = konvolusiHigh(AAA4_4);
+		try {
+			TulisFile.Tulis("konvolusi high 7", DAAA5, 4);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		DAAA5_5 = downSamplingGenap(DAAA5);
+		try {
+			TulisFile.Tulis("down sampling genap 7", DAAA5_5, 4);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return DAAA5_5;
 	}
@@ -146,24 +241,103 @@ public class WaveletFiltering {
 			BA = konvolusiLow(sinyalEEG);
 			A1_1 = downSamplingGanjil(BA);
 		}else if(samplingRate == 512){
+			try {
+				TulisFile.Tulis("sinyal asli", sinyalEEG, 5);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			BA = konvolusiLow(sinyalEEG);
+			try {
+				TulisFile.Tulis("konvolusi low 1", BA, 5);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			BA_1 = downSamplingGanjil(BA);
+			try {
+				TulisFile.Tulis("down sampling ganjil 1", BA_1, 5);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			BA1 = konvolusiLow(BA_1);
+			try {
+				TulisFile.Tulis("konvolusi low 2", BA1, 5);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			BA1_1 = downSamplingGanjil(BA1);
+			try {
+				TulisFile.Tulis("down sampling ganjil 2", BA1_1, 5);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			BA2 = konvolusiLow(BA1_1);
+			try {
+				TulisFile.Tulis("konvolusi low 3", BA2, 5);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			A1_1 = downSamplingGanjil(BA2);
+			try {
+				TulisFile.Tulis("down sampling ganjil 3", A1_1, 5);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		AA2 = konvolusiLow(A1_1);
+		try {
+			TulisFile.Tulis("konvolusi low 4", AA2, 5);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		AA2_2 = downSamplingGanjil(AA2);
+		try {
+			TulisFile.Tulis("down sampling ganjil 4", AA2_2, 5);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		AAA3 = konvolusiLow(AA2_2);
+		try {
+			TulisFile.Tulis("konvolusi low 5", AAA3, 5);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		AAA3_3 = downSamplingGanjil(AAA3);
+		try {
+			TulisFile.Tulis("down sampling ganjil 5", AAA3_3, 5);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		DAAA4 = konvolusiHigh(AAA3_3);
+		try {
+			TulisFile.Tulis("konvolusi low 6", DAAA4, 5);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		DAAA4_4 = downSamplingGenap(DAAA4);
+		try {
+			TulisFile.Tulis("down sampling ganjil 6", DAAA4_4, 5);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return DAAA4_4;
 	}
@@ -176,24 +350,103 @@ public class WaveletFiltering {
 			BA = konvolusiLow(sinyalEEG);
 			A1_1 = downSamplingGanjil(BA);
 		}else if(samplingRate == 512){
+			try {
+				TulisFile.Tulis("sinyal asli", sinyalEEG, 6);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			BA = konvolusiLow(sinyalEEG);
+			try {
+				TulisFile.Tulis("konvolusi low 1", BA, 6);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			BA_1 = downSamplingGanjil(BA);
+			try {
+				TulisFile.Tulis("down sampling ganjil 1", BA_1, 6);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			BA1 = konvolusiLow(BA_1);
+			try {
+				TulisFile.Tulis("konvolusi low 2", BA1, 6);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			BA1_1 = downSamplingGanjil(BA1);
+			try {
+				TulisFile.Tulis("down sampling ganjil 2", BA1_1, 6);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			BA2 = konvolusiLow(BA1_1);
+			try {
+				TulisFile.Tulis("konvolusi low 3", BA2, 6);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			A1_1 = downSamplingGanjil(BA2);
+			try {
+				TulisFile.Tulis("down sampling ganjil 3", A1_1, 6);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		AA2 = konvolusiLow(A1_1);
+		try {
+			TulisFile.Tulis("konvolusi low 4", AA2, 6);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		AA2_2 = downSamplingGanjil(AA2);
+		try {
+			TulisFile.Tulis("down sampling ganjil 4", AA2_2, 6);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		DAA3 = konvolusiHigh(AA2_2);
+		try {
+			TulisFile.Tulis("konvolusi high 5", DAA3, 6);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		DAA3_3 = downSamplingGenap(DAA3);
+		try {
+			TulisFile.Tulis("down sampling genap 5", DAA3_3, 6);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		ADAA4 = konvolusiLow(DAA3_3);
+		try {
+			TulisFile.Tulis("konvolusi low 6", ADAA4, 6);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		ADAA4_4 = downSamplingGenap(ADAA4);
+		try {
+			TulisFile.Tulis("down sampling ganjil 6", ADAA4_4, 6);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 			
 		return ADAA4_4;
 	}
@@ -206,27 +459,118 @@ public class WaveletFiltering {
 			BA = konvolusiLow(sinyalEEG);
 			A1_1 = downSamplingGanjil(BA);
 		}else if(samplingRate == 512){
+			try {
+				TulisFile.Tulis("Sinyal asli", sinyalEEG, 7);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			BA = konvolusiLow(sinyalEEG);
+			try {
+				TulisFile.Tulis("konvolusi low 1", BA, 7);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			BA_1 = downSamplingGanjil(BA);
+			try {
+				TulisFile.Tulis("down sampling ganjil 1", BA_1, 7);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			BA1 = konvolusiLow(BA_1);
+			try {
+				TulisFile.Tulis("konvolusi low 2", BA1, 7);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			BA1_1 = downSamplingGanjil(BA1);
+			try {
+				TulisFile.Tulis("down sampling ganjil 2", BA1_1, 7);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			BA2 = konvolusiLow(BA1_1);
+			try {
+				TulisFile.Tulis("konvolusi low 3", BA2, 7);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			A1_1 = downSamplingGanjil(BA2);
+			try {
+				TulisFile.Tulis("down sampling ganjil 3", A1_1, 7);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		AA2 = konvolusiLow(A1_1);
+		try {
+			TulisFile.Tulis("konvolusi low 4", AA2, 7);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		AA2_2 = downSamplingGanjil(AA2);
+		try {
+			TulisFile.Tulis("down sampling ganjil 4", AA2_2, 7);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		DAA3 = konvolusiHigh(AA2_2);
+		try {
+			TulisFile.Tulis("konvolusi high 5", DAA3, 7);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		DAA3_3 = downSamplingGenap(DAA3);
+		try {
+			TulisFile.Tulis("down sampling genap 5", DAA3_3, 7);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		DDAA4 = konvolusiHigh(DAA3_3);
+		try {
+			TulisFile.Tulis("konvolusi high 6", DDAA4, 7);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		DDAA4_4 = downSamplingGenap(DDAA4);
+		try {
+			TulisFile.Tulis("down sampling genap 6", DDAA4_4, 7);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		ADDAA4 = konvolusiLow(DDAA4_4);
+		try {
+			TulisFile.Tulis("konvolusi low 7", ADDAA4, 7);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		ADDAA4_4 = downSamplingGanjil(ADDAA4);
+		try {
+			TulisFile.Tulis("down sampling ganjil 7", ADDAA4_4, 7);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return ADDAA4_4;
 	}
@@ -239,30 +583,133 @@ public class WaveletFiltering {
 			BA = konvolusiLow(sinyalEEG);
 			A1_1 = downSamplingGanjil(BA);
 		}else if(samplingRate == 512){
+			try {
+				TulisFile.Tulis("sinyal asli", sinyalEEG, 8);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			BA = konvolusiLow(sinyalEEG);
+			try {
+				TulisFile.Tulis("konvolusi low 1", BA, 8);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			BA_1 = downSamplingGanjil(BA);
+			try {
+				TulisFile.Tulis("down sampling ganjil 1", BA_1, 8);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			BA1 = konvolusiLow(BA_1);
+			try {
+				TulisFile.Tulis("konvolusi low 2", BA1, 8);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			BA1_1 = downSamplingGanjil(BA1);
+			try {
+				TulisFile.Tulis("down sampling ganjil 2", BA1_1, 8);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			BA2 = konvolusiLow(BA1_1);
+			try {
+				TulisFile.Tulis("konvolusi low 3", BA2, 8);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			A1_1 = downSamplingGanjil(BA2);
+			try {
+				TulisFile.Tulis("down sampling ganjil 3", A1_1, 8);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		AA2 = konvolusiLow(A1_1);
+		try {
+			TulisFile.Tulis("konvolusi low 4", AA2, 8);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		AA2_2 = downSamplingGanjil(AA2);
+		try {
+			TulisFile.Tulis("down sampling ganjil 4", AA2_2, 8);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		DAA3 = konvolusiHigh(AA2_2);
+		try {
+			TulisFile.Tulis("konvolusi high 5", DAA3, 8);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		DAA3_3 = downSamplingGenap(DAA3);
+		try {
+			TulisFile.Tulis("down sampling genap 5", DAA3_3, 8);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		DDAA4 = konvolusiHigh(DAA3_3);
+		try {
+			TulisFile.Tulis("konvolusi high 6", DDAA4, 8);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		DDAA4_4 = downSamplingGenap(DDAA4);
+		try {
+			TulisFile.Tulis("down sampling genap 6", DDAA4_4, 8);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		DDDAA5 = konvolusiHigh(DDAA4_4);
+		try {
+			TulisFile.Tulis("konvolusi high 7", DDDAA5, 8);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		DDDAA5_5 = downSamplingGenap(DDDAA5);
+		try {
+			TulisFile.Tulis("down sampling genap 7", DDDAA5_5, 8);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		ADDDAA6 = konvolusiLow(DDDAA5_5);
+		try {
+			TulisFile.Tulis("konvolusi low 8", ADDDAA6, 8);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		ADDDAA6_6 = downSamplingGanjil(ADDDAA6);
+		try {
+			TulisFile.Tulis("down sampling ganjil 8", ADDDAA6_6, 8);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return ADDDAA6_6;
 	}
@@ -294,6 +741,13 @@ public class WaveletFiltering {
 		for(i=0;i<freq29to30.length;i++){
 			hasilSinyal[idx] = freq29to30[i];
 			idx++;
+		}
+		
+		try {
+			TulisFile.Tulis("penggabungan sinyal", hasilSinyal, 8);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return hasilSinyal;
 	}
@@ -395,6 +849,13 @@ public class WaveletFiltering {
 				sinyalEEG[minIndex] = tmp;
 			}
 		}
+		
+		try {
+			TulisFile.Tulis("pengurutan sinyal ", sinyalEEG, 8);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return sinyalEEG;
 	}
 	
@@ -414,6 +875,7 @@ public class WaveletFiltering {
 		int i=0;
 		
 		for(i=0;i<sinyalEEG.size();i++){
+			Identifikasi.txtAreaProgressMonitor.append("Ekstraksi Data Ke-"+(i+1)+"\n");
 			hasilFiltering = transformasiWavelet(sinyalEEG.get(i), true, true, true, true, true, samplingRate);
 			neuron[i] = getSinyalHasilFiltering(pengurutanSinyal(hasilFiltering));
 		}

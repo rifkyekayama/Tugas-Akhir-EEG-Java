@@ -36,6 +36,7 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import main.SoundNotification;
 import mysql.Database;
 import wavelet.Wavelet;
 
@@ -92,7 +93,7 @@ public class Ekstraksi extends JPanel {
 		panelFormWavelet.setBounds(0, 0, 450, 260);
 		panelFormWavelet.setBackground(Color.white);
 		
-		JLabel lblTitleEkstraksiWavelet = new JLabel("Ekstraksi Wavelet");
+		JLabel lblTitleEkstraksiWavelet = new JLabel("Form Ekstraksi Wavelet");
 		lblTitleEkstraksiWavelet.setForeground(new Color(68, 68, 68));
 		lblTitleEkstraksiWavelet.setBounds(15, 0, 150, 30);
 		panelFormWavelet.add(lblTitleEkstraksiWavelet);
@@ -175,7 +176,7 @@ public class Ekstraksi extends JPanel {
 		panelTabelWavelet.setBounds(460, 0, 450, 260);
 		panelTabelWavelet.setBackground(Color.white);
 		
-		JLabel lblTitleTableWavelet = new JLabel("Tabel Ekstraksi Wavelet");
+		JLabel lblTitleTableWavelet = new JLabel("Tabel Hasil Ekstraksi Wavelet");
 		lblTitleTableWavelet.setForeground(new Color(68, 68, 68));
 		lblTitleTableWavelet.setBounds(15, 0, 170, 30);
 		panelTabelWavelet.add(lblTitleTableWavelet);
@@ -244,7 +245,7 @@ public class Ekstraksi extends JPanel {
 		cbSinyalRileks.setEnabled(false);
 		panelChartWavelet.add(cbSinyalRileks);
 		
-		cbSinyalNonRileks = new JCheckBox("Non-Rileks");
+		cbSinyalNonRileks = new JCheckBox("Tidak Rileks");
 		cbSinyalNonRileks.setBackground(Color.white);
 		cbSinyalNonRileks.setBounds(90, 105, 100, 30);
 		cbSinyalNonRileks.setEnabled(false);
@@ -378,7 +379,7 @@ public class Ekstraksi extends JPanel {
 		}
 		
 		if(isUseNonRileks == true){
-			final XYSeries seriesNonRileks = new XYSeries("Sinyal Non Rileks");
+			final XYSeries seriesNonRileks = new XYSeries("Sinyal Tidak Rileks");
 			ArrayList<double[]> sinyalNonRileks = new ArrayList<double[]>();
 			sinyalNonRileks = database.getDataLatihNonRileks(naracoba);
 			int x=0;
@@ -496,7 +497,7 @@ public class Ekstraksi extends JPanel {
 //				}else if(!rdWaveletFilter.isSelected() && !rdWaveletGelombang.isSelected()){
 //					JOptionPane.showMessageDialog(null, "Pilih salah satu tipe wavelet!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
 //				}
-				
+				SoundNotification.playClick();
 				CoreWavelet coreWavelet = new CoreWavelet();
 				coreWavelet.execute();
 			}else if(e.getActionCommand().equals("cmbNaracoba")){
@@ -568,12 +569,16 @@ public class Ekstraksi extends JPanel {
 				int kelas = database.getKelasFromDataLatih(Integer.parseInt((String)cmbNaracoba.getSelectedItem()));
 				
 				if((String)cmbNaracoba.getSelectedItem() == "Pilih salah satu..."){
+					SoundNotification.playError();
 					JOptionPane.showMessageDialog(null, "Pilihan naracoba tidak boleh kosong!", "Peringatan", JOptionPane.WARNING_MESSAGE);
-				}else if((kelas == 1 && database.getNeuronRileks("gelombang").size() == 0) || (kelas == -1 && database.getNeuronNonRileks("gelombang").size() == 0)){
+				}else if((kelas == 1 && database.getNeuronRileks("gelombang").size() == 0) || (kelas == -1 && database.getNeuronTidakRileks("gelombang").size() == 0)){
+					SoundNotification.playError();
 					JOptionPane.showMessageDialog(null, "Data latih belum diekstraksi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else if((database.getDataLatih().size()*database.getDataLatih().get(0).size()) != database.getJumDataWavelet()){
+					SoundNotification.playError();
 					JOptionPane.showMessageDialog(null, "Data ekstraksi belum di update!", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}
+				SoundNotification.playClick();
 				
 				if(cbSinyalRileks.isSelected()){
 					isUseRileks = true;
@@ -665,6 +670,7 @@ public class Ekstraksi extends JPanel {
 			super.done();
 			ViewController.refreshAllElement();
 			progressEkstraksiWavelet.setValue(1000);
+			SoundNotification.playNotif();
 			JOptionPane.showMessageDialog(null, "Proses Ekstraksi Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
 			lblStatusLoading.setVisible(false);
 			progressEkstraksiWavelet.setValue(0);

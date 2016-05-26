@@ -137,7 +137,7 @@ public class LVQ {
 			if(jarak == 1){
 				hasil[i] = "Rileks";
 			}else{
-				hasil[i] = "Non-Rileks";
+				hasil[i] = "Tidak Rileks";
 			}
 		}
 		return hasil;
@@ -169,7 +169,7 @@ public class LVQ {
 		int jumlah=0, i=0;
 		
 		for(i=0;i<data.length;i++){
-			if(data[i] == "Non-Rileks"){
+			if(data[i] == "Tidak Rileks"){
 				jumlah++;
 			}
 		}

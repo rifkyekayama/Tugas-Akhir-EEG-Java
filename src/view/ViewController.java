@@ -17,7 +17,7 @@ public class ViewController extends JFrame {
 	private static final long serialVersionUID = 1L;
 	public static JPanel mainPanel;
 	
-	private static Dashboard dashboard = new Dashboard();
+	private static Beranda beranda = new Beranda();
 	private static KelolaDataLatih kelolaDataLatih = new KelolaDataLatih();
 	private static Ekstraksi ekstraksi = new Ekstraksi();
 	private static Pelatihan pelatihanLVQ = new Pelatihan();
@@ -36,7 +36,7 @@ public class ViewController extends JFrame {
 		
 		if(Main.koneksi != null){
 			mainPanel = new JPanel(new CardLayout());
-			mainPanel.add(dashboard, "panelDashboard");
+			mainPanel.add(beranda, "panelDashboard");
 			mainPanel.add(kelolaDataLatih, "panelKelolaDataLatih");
 			mainPanel.add(ekstraksi, "panelEkstraksiWavelet");
 			mainPanel.add(pelatihanLVQ, "panelPelatihanSistem");
@@ -47,10 +47,10 @@ public class ViewController extends JFrame {
 	}
 	
 	public static void refreshAllElement(){
-		dashboard.lblJumNaracoba.setText(Integer.toString(database.getJumNaracoba()));
-		dashboard.lblJumSegmentasi.setText(Integer.toString(database.getJumSegmentasi()));
-		dashboard.lblJumRileks.setText(Integer.toString(database.getJumRileks()));
-		dashboard.lblJumNonRileks.setText(Integer.toString(database.getJumNonRileks()));
+		beranda.lblJumNaracoba.setText(Integer.toString(database.getJumNaracoba()));
+		beranda.lblJumSegmentasi.setText(Integer.toString(database.getJumSegmentasi()));
+		beranda.lblJumRileks.setText(Integer.toString(database.getJumRileks()));
+		beranda.lblJumNonRileks.setText(Integer.toString(database.getJumTidakRileks()));
 		kelolaDataLatih.updateTableDataLatih();
 		kelolaDataLatih.updateStatusAlat();
 		kelolaDataLatih.updateStatusKanal();

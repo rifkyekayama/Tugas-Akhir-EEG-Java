@@ -30,6 +30,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import dataLatih.DataLatih;
+import main.SoundNotification;
 import mysql.Database;
 
 public class KelolaDataLatih extends JPanel {
@@ -658,14 +659,19 @@ public class KelolaDataLatih extends JPanel {
 				}
 			}else if(e.getActionCommand().equals("submitDataEEG")){
 				if(fullPathDataEEG == null){
+					SoundNotification.playError();
 					JOptionPane.showMessageDialog(null, "Sinyal EEG belum dipilih", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else if(cmbKelasInput.getSelectedIndex() == 0){
+					SoundNotification.playError();
 					JOptionPane.showMessageDialog(null, "Pilihan kelas tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else if(txtSegmentasi == null){
+					SoundNotification.playError();
 					JOptionPane.showMessageDialog(null, "Segmentasi tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else if(txtSamplingrate == null){
+					SoundNotification.playError();
 					JOptionPane.showMessageDialog(null, "Sampling Rate tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
 				}else{
+					SoundNotification.playClick();
 					if((String)cmbAlatPerekaman.getSelectedItem() == "Emotiv"){
 						if((String)cmbKanal1.getSelectedItem() == "Pilih salah satu..."){
 							JOptionPane.showMessageDialog(null, "Pilihan Kanal 1 tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -691,12 +697,14 @@ public class KelolaDataLatih extends JPanel {
 					}
 				}
 			}else if(e.getActionCommand().equals("btnUbahDataLatih")){
+				SoundNotification.playClick();
 				if(!panelFormEditDanHapusDataLatih.isVisible()){
 					menu.setTitle("Ubah/Hapus Data Latih");
 					panelFormEditDanHapusDataLatih.setVisible(true);
 					panelFormInputDataLatih.setVisible(false);
 				}
 			}else if(e.getActionCommand().equals("btnKelolaDataLatih")){
+				SoundNotification.playClick();
 				if(!panelFormInputDataLatih.isVisible()){
 					menu.setTitle("Tambah Data Latih");
 					panelFormInputDataLatih.setVisible(true);
@@ -793,6 +801,7 @@ public class KelolaDataLatih extends JPanel {
 			updateStatusKanal();
 			ViewController.refreshAllElement();
 			progressSubmitDataEEG.setValue(100);
+			SoundNotification.playNotif();
 			JOptionPane.showMessageDialog(null, "Proses Segmentasi Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
 			lblStatusLoading.setVisible(false);
 			progressSubmitDataEEG.setValue(0);
