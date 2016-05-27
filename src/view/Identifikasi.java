@@ -38,8 +38,6 @@ import lvq.LVQ;
 import main.SoundNotification;
 import mysql.Database;
 import wavelet.Wavelet;
-import wavelet.WaveletEkstraksi;
-import wavelet.WaveletFiltering;
 
 public class Identifikasi extends JPanel {
 
@@ -616,8 +614,6 @@ public class Identifikasi extends JPanel {
 	class CorePengujian extends SwingWorker<Void, Void>{
 		
 		Wavelet wavelet;
-		WaveletEkstraksi waveletEkstraksi;
-		WaveletFiltering waveletFiltering;
 		DataLatih dataLatih;
 		LVQ lvq = new LVQ();
 		double waktuMulai, waktuSelesai;
@@ -680,11 +676,9 @@ public class Identifikasi extends JPanel {
 			
 			if(database.getNeuronRileks().get(0)[0].length != database.getBobotPelatihan()[0].length){
 				if(database.getStatusWavelet().equals("gelombang")){
-//					waveletEkstraksi = new WaveletEkstraksi(sinyalEEGFiltering);
-					hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.waveletEkstraksi.getNeuronPengujian(wavelet.sinyalEEG, database.getSamplingRate()));
+					hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.getNeuronPengujian(wavelet.sinyalEEG, database.getSamplingRate(), false));
 				}else if(database.getStatusWavelet().equals("filter")){
-//					waveletFiltering = new WaveletFiltering(sinyalEEGFiltering);
-					hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.waveletFiltering.getNeuronPengujian(wavelet.sinyalEEG, database.getSamplingRate()));
+					hasilPengujian = lvq.pengujian(bobotPelatihan[0], bobotPelatihan[1], wavelet.getNeuronPengujian(wavelet.sinyalEEG, database.getSamplingRate(), true));
 				}
 			}else{
 				double[][] hasil = new double[wavelet.sinyalEEG.size()][wavelet.sinyalEEG.get(0).length];

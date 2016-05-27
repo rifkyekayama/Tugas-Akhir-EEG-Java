@@ -39,15 +39,15 @@ public class TulisFile {
 			namaFile = filter29to30;
 		}
 		
-		PrintWriter out = new PrintWriter(new BufferedWriter(
-	            new FileWriter(namaFile, true)));
-		out.println(judul+" :\n");
-		out.println("jumlah total ="+isi.length+"\n");
-		for(int i=0;i<isi.length;i++){
-			out.print(Double.toString(isi[i][0])+"--"+Integer.toString((int)isi[i][1])+", ");
-		}
-		out.print("\n\n\n");
-		out.close();
+//		PrintWriter out = new PrintWriter(new BufferedWriter(
+//	            new FileWriter(namaFile, true)));
+//		out.println(judul+" :\n");
+//		out.println("jumlah total ="+isi.length+"\n");
+//		for(int i=0;i<isi.length;i++){
+//			out.print(Double.toString(isi[i][0])+"--"+Integer.toString((int)isi[i][1])+", ");
+//		}
+//		out.print("\n\n\n");
+//		out.close();
 	}
 	
 	public static void TulisPengujian(String jenis, int naracoba, int dikenaliRileks, int dikenaliTidakRileks, String waktuEksekusi) throws IOException {

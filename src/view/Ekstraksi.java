@@ -32,6 +32,7 @@ import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -319,6 +320,14 @@ public class Ekstraksi extends JPanel {
 	
 	public void updateGrafikWavelet(XYDataset dataset){
 		chart = createChart(dataset);
+		
+		XYPlot plot = (XYPlot) chart.getPlot();
+		plot.getRenderer().setSeriesPaint(0, Color.black);
+		plot.getRenderer().setSeriesPaint(1, Color.blue);
+		plot.getRenderer().setSeriesPaint(2, Color.green);
+		plot.getRenderer().setSeriesPaint(3, Color.orange);
+		plot.getRenderer().setSeriesPaint(4, Color.magenta);
+		
 		chartPanel.removeAll();
 		chartPanel.setChart(chart);
 		chartPanel.setMouseWheelEnabled(true);
@@ -531,27 +540,14 @@ public class Ekstraksi extends JPanel {
 					btnLihatGrafik.setEnabled(false);
 				}else{
 					int kelas = database.getKelasFromDataLatih(Integer.parseInt((String)cmbNaracoba.getSelectedItem()));
-					
-//					if(database.getStatusWavelet() == "ekstraksi"){
-						cbGelAlfa.setEnabled(true);
-						cbGelAlfa.setSelected(false);
-						cbGelBeta.setEnabled(true);
-						cbGelBeta.setSelected(false);
-						cbGelTeta.setEnabled(true);
-						cbGelTeta.setSelected(false);
-						cbGelFilter.setEnabled(true);
-						cbGelFilter.setSelected(false);
-//					}else if(database.getStatusWavelet() == "filter"){
-//						cbGelAlfa.setEnabled(false);
-//						cbGelAlfa.setSelected(false);
-//						cbGelBeta.setEnabled(false);
-//						cbGelBeta.setSelected(false);
-//						cbGelTeta.setEnabled(false);
-//						cbGelTeta.setSelected(false);
-//						cbGelFilter.setEnabled(true);
-//						cbGelFilter.setSelected(false);
-//					}
-					
+					cbGelAlfa.setEnabled(true);
+					cbGelAlfa.setSelected(false);
+					cbGelBeta.setEnabled(true);
+					cbGelBeta.setSelected(false);
+					cbGelTeta.setEnabled(true);
+					cbGelTeta.setSelected(false);
+					cbGelFilter.setEnabled(true);
+					cbGelFilter.setSelected(false);
 					btnLihatGrafik.setEnabled(true);
 					if(kelas == 1){
 						cbSinyalRileks.setEnabled(true);
@@ -615,8 +611,7 @@ public class Ekstraksi extends JPanel {
 		
 		Wavelet wavelet;
 		List idOfDataLatih = database.getIdOfDataLatih();
-		double[][] alfa = null, beta = null, teta = null;
-		double[][] freq5to8=null, freq9to16=null, freq17to24=null, freq25to28=null, freq29to30=null, gabung=null, hasilUrut=null;
+		double[][] alfa = null, beta = null, teta = null, filter = null;
 		double[] hasilSinyal=null;
 		int i=0, progress=0, progressDistance;
 		
@@ -627,7 +622,7 @@ public class Ekstraksi extends JPanel {
 			lblStatusLoading.setVisible(true);
 			progressEkstraksiWavelet.setValue(0);
 			progressEkstraksiWavelet.setMaximum(1000);
-			progressDistance = 1000/(wavelet.sinyalEEG.size()*10);
+			progressDistance = 1000/(wavelet.sinyalEEG.size()*4);
 		}
 
 		@Override
@@ -636,29 +631,16 @@ public class Ekstraksi extends JPanel {
 			database.deleteEkstraksiWavelet();
 			updateTabelEkstraksiWavelet();
 			for(i=0;i<wavelet.sinyalEEG.size();i++){
-				alfa = wavelet.waveletEkstraksi.getAlfa(wavelet.sinyalEEG.get(i), database.getSamplingRate());
+				alfa = wavelet.getAlfa(wavelet.sinyalEEG.get(i), database.getSamplingRate());
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				beta = wavelet.waveletEkstraksi.getBeta(wavelet.sinyalEEG.get(i), database.getSamplingRate());
+				beta = wavelet.getBeta(wavelet.sinyalEEG.get(i), database.getSamplingRate());
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				teta = wavelet.waveletEkstraksi.getTeta(wavelet.sinyalEEG.get(i), database.getSamplingRate());
+				teta = wavelet.getTeta(wavelet.sinyalEEG.get(i), database.getSamplingRate());
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				
-				freq5to8 = wavelet.waveletFiltering.getFrekuensi5to8(wavelet.sinyalEEG.get(i), database.getSamplingRate());
-				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				freq9to16 = wavelet.waveletFiltering.getFrekuensi9to16(wavelet.sinyalEEG.get(i), database.getSamplingRate());
-				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				freq17to24 = wavelet.waveletFiltering.getFrekuensi17to24(wavelet.sinyalEEG.get(i), database.getSamplingRate());
-				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				freq25to28 = wavelet.waveletFiltering.getFrekuensi25to28(wavelet.sinyalEEG.get(i), database.getSamplingRate());
-				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				freq29to30 = wavelet.waveletFiltering.getFrekuensi29to30(wavelet.sinyalEEG.get(i), database.getSamplingRate());
-				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				gabung = wavelet.waveletFiltering.gabungkanSinyal(freq5to8, freq9to16, freq17to24, freq25to28, freq29to30);
-				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-				hasilUrut = wavelet.waveletFiltering.pengurutanSinyal(gabung);
+				filter = wavelet.getFiltering(alfa, beta, teta);
 				progressEkstraksiWavelet.setValue(progress+=progressDistance);
 				
-				database.inputEkstraksiWavelet(alfa, beta, teta, hasilUrut, Integer.parseInt(idOfDataLatih.getItem(i)));
+				database.inputEkstraksiWavelet(alfa, beta, teta, filter, Integer.parseInt(idOfDataLatih.getItem(i)));
 				updateTabelEkstraksiWavelet();
 			}
 			return null;
@@ -676,111 +658,4 @@ public class Ekstraksi extends JPanel {
 			progressEkstraksiWavelet.setValue(0);
 		}
 	}
-	
-//	class CoreEkstraksiWavelet extends SwingWorker<Void, Void>{
-//		
-//		WaveletEkstraksi waveletEkstraksi;
-//		ArrayList<ArrayList<double[]>> sinyalEEG;
-//		List idOfDataLatih = database.getIdOfDataLatih();
-//		double[][] alfa = null, beta = null, teta = null;
-//		int i=0, progress=0, progressDistance;
-//		
-//		public CoreEkstraksiWavelet() {
-//			// TODO Auto-generated constructor stub
-//			sinyalEEG = database.getDataLatih();
-//			waveletEkstraksi = new WaveletEkstraksi(sinyalEEG);
-//			idOfDataLatih = database.getIdOfDataLatih();
-//			lblStatusLoading.setVisible(true);
-//			progressEkstraksiWavelet.setValue(0);
-//			progressDistance = 1000/(waveletEkstraksi.sinyalEEG.size()*3);
-//		}
-//
-//		@Override
-//		protected Void doInBackground() throws Exception {
-//			// TODO Auto-generated method stub
-//			database.deleteEkstraksiWavelet();
-//			updateTabelEkstraksiWavelet();
-//			for(i=0;i<waveletEkstraksi.sinyalEEG.size();i++){
-//				alfa = waveletEkstraksi.getAlfa(waveletEkstraksi.sinyalEEG.get(i), database.getSamplingRate());
-//				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-//				beta = waveletEkstraksi.getBeta(waveletEkstraksi.sinyalEEG.get(i), database.getSamplingRate());
-//				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-//				teta = waveletEkstraksi.getTeta(waveletEkstraksi.sinyalEEG.get(i), database.getSamplingRate());
-//				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-//				database.inputEkstraksiWavelet(alfa, beta, teta, null, Integer.parseInt(idOfDataLatih.getItem(i)));
-//				updateTabelEkstraksiWavelet();
-//			}
-//			return null;
-//		}
-//		
-//		@Override
-//		protected void done() {
-//			// TODO Auto-generated method stub
-//			super.done();
-//			ViewController.refreshAllElement();
-//			progressEkstraksiWavelet.setValue(1000);
-//			JOptionPane.showMessageDialog(null, "Proses Ekstraksi Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-//			lblStatusLoading.setVisible(false);
-//			progressEkstraksiWavelet.setValue(0);
-//		}
-//	}
-//	
-//	class CoreFilteringWavelet extends SwingWorker<Void, Void>{
-//		
-//		WaveletFiltering waveletFilter;
-//		ArrayList<ArrayList<double[]>> sinyalEEG;
-//		List idOfDataLatih;
-//		double[][] freq5to8=null, freq9to16=null, freq17to24=null, freq25to28=null, freq29to30=null, gabung=null, hasilUrut=null;
-//		double[] hasilSinyal=null;
-//		int i=0, progress=0, progressDistance;
-//		
-//		public CoreFilteringWavelet() {
-//			// TODO Auto-generated constructor stub
-//			sinyalEEG = database.getDataLatih();
-//			waveletFilter = new WaveletFiltering(sinyalEEG);
-//			idOfDataLatih = database.getIdOfDataLatih();
-//			lblStatusLoading.setVisible(true);
-//			progressEkstraksiWavelet.setValue(0);
-//			progressDistance = 1000/(waveletFilter.sinyalEEG.size()*8);
-//		}
-//
-//		@Override
-//		protected Void doInBackground() throws Exception {
-//			// TODO Auto-generated method stub
-//			database.deleteEkstraksiWavelet();
-//			updateTabelEkstraksiWavelet();
-//			for(i=0;i<waveletFilter.sinyalEEG.size();i++){
-//				freq5to8 = waveletFilter.getFrekuensi5to8(waveletFilter.sinyalEEG.get(i), database.getSamplingRate());
-//				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-//				freq9to16 = waveletFilter.getFrekuensi9to16(waveletFilter.sinyalEEG.get(i), database.getSamplingRate());
-//				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-//				freq17to24 = waveletFilter.getFrekuensi17to24(waveletFilter.sinyalEEG.get(i), database.getSamplingRate());
-//				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-//				freq25to28 = waveletFilter.getFrekuensi25to28(waveletFilter.sinyalEEG.get(i), database.getSamplingRate());
-//				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-//				freq29to30 = waveletFilter.getFrekuensi29to30(waveletFilter.sinyalEEG.get(i), database.getSamplingRate());
-//				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-//				gabung = waveletFilter.gabungkanSinyal(freq5to8, freq9to16, freq17to24, freq25to28, freq29to30);
-//				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-//				hasilUrut = waveletFilter.pengurutanSinyal(gabung);
-//				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-////				hasilSinyal = waveletFilter.getSinyalHasilFiltering(hasilUrut);
-////				progressEkstraksiWavelet.setValue(progress+=progressDistance);
-//				database.inputEkstraksiWavelet(null, null, null, hasilUrut, Integer.parseInt(idOfDataLatih.getItem(i)));
-//				updateTabelEkstraksiWavelet();
-//			}
-//			return null;
-//		}
-//		
-//		@Override
-//		protected void done() {
-//			// TODO Auto-generated method stub
-//			super.done();
-//			ViewController.refreshAllElement();
-//			progressEkstraksiWavelet.setValue(1000);
-//			JOptionPane.showMessageDialog(null, "Proses Filtering Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-//			lblStatusLoading.setVisible(false);
-//			progressEkstraksiWavelet.setValue(0);
-//		}
-//	}
 }

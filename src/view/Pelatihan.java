@@ -32,6 +32,7 @@ import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -277,6 +278,10 @@ public class Pelatihan extends JPanel {
 	
 	public void updateGrafikLVQ(XYDataset dataset){
 		chart = createChart(dataset);
+		
+		XYPlot plot = (XYPlot) chart.getPlot();
+		plot.getRenderer().setSeriesPaint(0, Color.blue);
+		
 		chartPanel.removeAll();
 		chartPanel.setChart(chart);
 		chartPanel.setMouseWheelEnabled(true);
