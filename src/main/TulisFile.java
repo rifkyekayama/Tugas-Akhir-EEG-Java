@@ -10,7 +10,7 @@ public class TulisFile {
 	public static String alfa = "alfa.txt";
 	public static String beta = "beta.txt";
 	public static String teta = "teta.txt";
-	public static String filter5to8 = "filter5to8.txt";
+	public static String filter = "filter.txt";
 	public static String filter9to16 = "filter9to16.txt";
 	public static String filter17to24 = "filter17to24.txt";
 	public static String filter25to28 = "filter25to28.txt";
@@ -27,8 +27,6 @@ public class TulisFile {
 			namaFile = beta;
 		}else if(kodeFile == 3){
 			namaFile = teta;
-		}else if(kodeFile == 4){
-			namaFile = filter5to8;
 		}else if(kodeFile == 5){
 			namaFile = filter9to16;
 		}else if(kodeFile == 6){
@@ -37,6 +35,8 @@ public class TulisFile {
 			namaFile = filter25to28;
 		}else if(kodeFile == 8){
 			namaFile = filter29to30;
+		}else if(kodeFile == 9){
+			namaFile = filter;
 		}
 		
 //		PrintWriter out = new PrintWriter(new BufferedWriter(
@@ -52,13 +52,13 @@ public class TulisFile {
 	
 	public static void TulisPengujian(String jenis, int naracoba, int dikenaliRileks, int dikenaliTidakRileks, String waktuEksekusi) throws IOException {
 		// TODO Auto-generated constructor stub
-		
-		String namaFile = "Pengujian.txt";
-		
-		PrintWriter out = new PrintWriter(new BufferedWriter(
-	            new FileWriter(namaFile, true)));
-		out.println(jenis+"  |  "+"naracoba "+naracoba+"  |  rileks = "+dikenaliRileks+"  |  Tidak_Rileks = "+dikenaliTidakRileks+"  |  waktu_eksekusi = "+waktuEksekusi+"\n");
-		out.close();
+//		
+//		String namaFile = "Pengujian.txt";
+//		
+//		PrintWriter out = new PrintWriter(new BufferedWriter(
+//	            new FileWriter(namaFile, true)));
+//		out.println(jenis+"  |  "+"naracoba "+naracoba+"  |  rileks = "+dikenaliRileks+"  |  Tidak_Rileks = "+dikenaliTidakRileks+"  |  waktu_eksekusi = "+waktuEksekusi+"\n");
+//		out.close();
 	}
 	
 	public static void TulisEnterDoble() throws IOException {

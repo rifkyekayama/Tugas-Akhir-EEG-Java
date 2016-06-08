@@ -127,7 +127,7 @@ public class Menu extends JPanel {
 		btnEkstraksiWavelet.addActionListener(new ButtonController());
 		panelSidebar.add(btnEkstraksiWavelet);
 		
-		btnPelatihan = new JButton(" Pelatihan LVQ", new ImageIcon(getClass().getResource("/resource/iconPelatihan.png")));
+		btnPelatihan = new JButton(" Pelatihan", new ImageIcon(getClass().getResource("/resource/iconPelatihan.png")));
 		btnPelatihan.setForeground(Color.white);
 		btnPelatihan.setHorizontalAlignment(SwingConstants.LEFT);
 		btnPelatihan.setBackground(new Color(34, 45, 50));
@@ -138,7 +138,7 @@ public class Menu extends JPanel {
 		btnPelatihan.addActionListener(new ButtonController());
 		panelSidebar.add(btnPelatihan);
 		
-		btnPengujian = new JButton(" Identifikasi Rileks", new ImageIcon(getClass().getResource("/resource/iconIdentifikasi.png")));
+		btnPengujian = new JButton(" Identifikasi", new ImageIcon(getClass().getResource("/resource/iconIdentifikasi.png")));
 		btnPengujian.setForeground(Color.white);
 		btnPengujian.setHorizontalAlignment(SwingConstants.LEFT);
 		btnPengujian.setBackground(new Color(34, 45, 50));

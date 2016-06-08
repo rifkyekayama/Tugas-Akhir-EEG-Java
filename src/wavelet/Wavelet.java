@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import main.TulisFile;
-import view.Identifikasi;
+import view.FormIdentifikasi;
 
 public class Wavelet {
 	
@@ -16,6 +16,8 @@ public class Wavelet {
 	
 	public Wavelet(ArrayList<ArrayList<double[]>> sinyalEEG){
 		int i=0, j=0, k=0, x=0;
+		
+		System.out.println("pembentukan index");
 		
 		for(i=0;i<sinyalEEG.size();i++){
 			for(j=0;j<sinyalEEG.get(i).size();j++){
@@ -29,6 +31,8 @@ public class Wavelet {
 			}
 			x=0;
 		}
+		
+		System.out.println("index terbentuk");
 	}
 	
 	public double[][] downSamplingGenap(double[][] sinyalEEG){
@@ -430,6 +434,8 @@ public class Wavelet {
 	public double[][] getTeta(double[][] sinyalEEG, int samplingRate){
 		double[][] BA, BA1, BA1_1, BA2, A1_1 = null, AA2, AA2_2, AAA3, AAA3_3, AAAA4, AAAA4_4, DAAAA5, DAAAA5_5;
 		
+		filter(sinyalEEG);
+		
 		if(samplingRate == 128){
 //			A1_1 = downSamplingGanjil(sinyalEEG);
 			A1_1 = sinyalEEG;
@@ -648,13 +654,29 @@ public class Wavelet {
 		return urut;
 	}
 	
+	public void filter(double[][] sinyalEEG){
+		try {
+			TulisFile.Tulis("filter 5-8", get5to8(sinyalEEG), 9);
+			TulisFile.Tulis("filter 9-12", get9to12(sinyalEEG), 9);
+			TulisFile.Tulis("filter 13-14", get13to14(sinyalEEG), 9);
+			TulisFile.Tulis("filter 15-16", get15to16(sinyalEEG), 9);
+			TulisFile.Tulis("filter 17-32", get17to32(sinyalEEG), 9);
+			TulisFile.Tulis("Hasil Urut", pengurutanSinyal(gabungkanFilter(get5to8(sinyalEEG), get9to12(sinyalEEG), get13to14(sinyalEEG), get15to16(sinyalEEG), get17to32(sinyalEEG))), 9);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public double[][] getNeuronPengujian(ArrayList<double[][]> dataUji, int samplingRate, boolean isFiltering){
+		System.out.println("init array");
 		double[] hasilWavelet = new double[transformasiWavelet(dataUji.get(0), true, true, true, samplingRate, isFiltering).length];
+		System.out.println("init transformasi terbentuk");
 		double[][] neuron = new double[dataUji.size()][hasilWavelet.length];
 		int i=0;
 		
 		for(i=0;i<dataUji.size();i++){
-			Identifikasi.txtAreaProgressMonitor.append("Ekstraksi Data Ke-"+(i+1)+"\n");
+			FormIdentifikasi.txtAreaProgressMonitor.append("Ekstraksi Data Ke-"+(i+1)+"\n");
 			hasilWavelet = transformasiWavelet(dataUji.get(i), true, true, true, samplingRate, isFiltering);
 			neuron[i] = hasilWavelet;
 		}
@@ -669,5 +691,152 @@ public class Wavelet {
 			hasilSinyal[i] = sinyalEEG[i][0];
 		}
 		return hasilSinyal;
+	}
+	
+	public double[][] gabungkanFilter(double[][] s5to8, double[][] s9to12, double[][] s13to14, double[][] s15to16, double[][] s17to32){
+		double[][] hasil = new double[s5to8.length + s9to12.length + s13to14.length + s15to16.length + s17to32.length][2];
+		int i=0, idx = 0;
+		
+		for(i=0;i<s5to8.length;i++){
+			hasil[idx] = s5to8[i];
+			idx++;
+		}
+		
+		for(i=0;i<s9to12.length;i++){
+			hasil[idx] = s9to12[i];
+			idx++;
+		}
+		
+		for(i=0;i<s13to14.length;i++){
+			hasil[idx] = s13to14[i];
+			idx++;
+		}
+		
+		for(i=0;i<s15to16.length;i++){
+			hasil[idx] = s15to16[i];
+			idx++;
+		}
+		
+		for(i=0;i<s17to32.length;i++){
+			hasil[idx] = s17to32[i];
+			idx++;
+		}
+		
+		return hasil;
+	}
+	
+	public double[][] get5to8(double[][] sinyalEEG){
+		
+		double[][] A1 = konvolusiLow(sinyalEEG);
+		double[][] A1_1 = downSamplingGanjil(A1);
+		
+		double[][] AA2 = konvolusiLow(A1_1);
+		double[][] AA2_2 = downSamplingGanjil(AA2);
+		
+		double[][] AAA3 = konvolusiLow(AA2_2);
+		double[][] AAA3_3 = downSamplingGanjil(AAA3);
+		
+		double[][] AAAA4 = konvolusiLow(AAA3_3);
+		double[][] AAAA4_4 = downSamplingGanjil(AAAA4);
+		
+		double[][] AAAAA5 = konvolusiLow(AAAA4_4);
+		double[][] AAAAA5_5 = downSamplingGanjil(AAAAA5);
+		
+		double[][] DAAAAA6 = konvolusiHigh(AAAAA5_5);
+		double[][] DAAAAA6_6 = downSamplingGenap(DAAAAA6);
+		
+		return DAAAAA6_6;
+	}
+	
+	public double[][] get9to12(double[][] sinyalEEG){
+		
+		double[][] A1 = konvolusiLow(sinyalEEG);
+		double[][] A1_1 = downSamplingGanjil(A1);
+		
+		double[][] AA2 = konvolusiLow(A1_1);
+		double[][] AA2_2 = downSamplingGanjil(AA2);
+		
+		double[][] AAA3 = konvolusiLow(AA2_2);
+		double[][] AAA3_3 = downSamplingGanjil(AAA3);
+		
+		double[][] AAAA4 = konvolusiLow(AAA3_3);
+		double[][] AAAA4_4 = downSamplingGanjil(AAAA4);
+		
+		double[][] DAAAA5 = konvolusiHigh(AAAA4_4);
+		double[][] DAAAA5_5 = downSamplingGenap(DAAAA5);
+		
+		double[][] ADAAAA6 = konvolusiLow(DAAAA5_5);
+		double[][] ADAAAA6_6 = downSamplingGenap(ADAAAA6);
+		
+		return ADAAAA6_6;
+	}
+	
+public double[][] get13to14(double[][] sinyalEEG){
+		
+		double[][] A1 = konvolusiLow(sinyalEEG);
+		double[][] A1_1 = downSamplingGanjil(A1);
+		
+		double[][] AA2 = konvolusiLow(A1_1);
+		double[][] AA2_2 = downSamplingGanjil(AA2);
+		
+		double[][] AAA3 = konvolusiLow(AA2_2);
+		double[][] AAA3_3 = downSamplingGanjil(AAA3);
+		
+		double[][] AAAA4 = konvolusiLow(AAA3_3);
+		double[][] AAAA4_4 = downSamplingGanjil(AAAA4);
+		
+		double[][] DAAAA5 = konvolusiHigh(AAAA4_4);
+		double[][] DAAAA5_5 = downSamplingGenap(DAAAA5);
+		
+		double[][] DDAAAA6 = konvolusiHigh(DAAAA5_5);
+		double[][] DDAAAA6_6 = downSamplingGenap(DDAAAA6);
+		
+		double[][] ADDAAAA7 = konvolusiLow(DDAAAA6_6);
+		double[][] ADDAAAA7_7 = downSamplingGanjil(ADDAAAA7);
+		
+		return ADDAAAA7_7;
+	}
+
+	public double[][] get15to16(double[][] sinyalEEG){
+		
+		double[][] A1 = konvolusiLow(sinyalEEG);
+		double[][] A1_1 = downSamplingGanjil(A1);
+		
+		double[][] AA2 = konvolusiLow(A1_1);
+		double[][] AA2_2 = downSamplingGanjil(AA2);
+		
+		double[][] AAA3 = konvolusiLow(AA2_2);
+		double[][] AAA3_3 = downSamplingGanjil(AAA3);
+		
+		double[][] AAAA4 = konvolusiLow(AAA3_3);
+		double[][] AAAA4_4 = downSamplingGanjil(AAAA4);
+		
+		double[][] DAAAA5 = konvolusiHigh(AAAA4_4);
+		double[][] DAAAA5_5 = downSamplingGenap(DAAAA5);
+		
+		double[][] DDAAAA6 = konvolusiHigh(DAAAA5_5);
+		double[][] DDAAAA6_6 = downSamplingGenap(DDAAAA6);
+		
+		double[][] DDDAAAA7 = konvolusiHigh(DDAAAA6_6);
+		double[][] DDDAAAA7_7 = downSamplingGenap(DDDAAAA7);
+		
+		return DDDAAAA7_7;
+	}
+	
+public double[][] get17to32(double[][] sinyalEEG){
+		
+		double[][] A1 = konvolusiLow(sinyalEEG);
+		double[][] A1_1 = downSamplingGanjil(A1);
+		
+		double[][] AA2 = konvolusiLow(A1_1);
+		double[][] AA2_2 = downSamplingGanjil(AA2);
+		
+		double[][] AAA3 = konvolusiLow(AA2_2);
+		double[][] AAA3_3 = downSamplingGanjil(AAA3);
+		
+		double[][] DAAA4 = konvolusiLow(AAA3_3);
+		double[][] DAAA4_4 = downSamplingGanjil(DAAA4);
+		
+		return DAAA4_4;
 	}
 }

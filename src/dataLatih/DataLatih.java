@@ -28,7 +28,7 @@ public class DataLatih {
 		this.alatPerekaman = alatPerekaman;
 	}
 	
-	public List readFile(String pathFile) throws IOException{
+	public List bacaFile(String pathFile) throws IOException{
 		BufferedReader reader = new BufferedReader(new FileReader(pathFile));
 		List lines = new List();
 		String line = null;
@@ -128,11 +128,11 @@ public class DataLatih {
 		return hasil;
 	}
 	
-	public String[][] segmentasiEEG(List lineOfSinyal, int kanal, int segmentasi, int sampling, String alatPerekaman){
+	public String[][] segmentasiEEG(List lineOfSinyal, int kanal){
 		int fs=0, waktu=0, i=1, j=0, k=0, l=0, mulaiIterasi = 0;
-		int jumSegmen = (int) Math.floor(lineOfSinyal.getItemCount()/(sampling*segmentasi));
-		String[] temp = new String[sampling*segmentasi];
-		String[][] segmen = new String[jumSegmen][sampling*segmentasi];
+		int jumSegmen = (int) Math.floor(lineOfSinyal.getItemCount()/(samplingRate*segmentasi));
+		String[] temp = new String[samplingRate*segmentasi];
+		String[][] segmen = new String[jumSegmen][samplingRate*segmentasi];
 		String delimiter = null;
 		
 		if(alatPerekaman == "Emotiv"){
@@ -147,7 +147,7 @@ public class DataLatih {
 			temp[j] = lineOfSinyal.getItem(i).split(delimiter)[kanal];
 			j++;
 			fs++;
-			if(fs == sampling){
+			if(fs == samplingRate){
 				fs=0;
 				waktu++;
 			}

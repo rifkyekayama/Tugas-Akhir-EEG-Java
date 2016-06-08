@@ -18,10 +18,10 @@ public class ViewController extends JFrame {
 	public static JPanel mainPanel;
 	
 	private static Beranda beranda = new Beranda();
-	private static KelolaDataLatih kelolaDataLatih = new KelolaDataLatih();
-	private static Ekstraksi ekstraksi = new Ekstraksi();
-	private static Pelatihan pelatihanLVQ = new Pelatihan();
-	private static Identifikasi identifikasi = new Identifikasi();
+	private static FormKelolaDataLatih kelolaDataLatih = new FormKelolaDataLatih();
+	private static FormEkstraksi ekstraksi = new FormEkstraksi();
+	private static FormPelatihan pelatihanLVQ = new FormPelatihan();
+	private static FormIdentifikasi identifikasi = new FormIdentifikasi();
 	private static Bantuan bantuan = new Bantuan();
 	private static Database database = new Database();
 	

@@ -2,7 +2,7 @@ package lvq;
 
 import java.util.ArrayList;
 
-import view.Pelatihan;
+import view.FormPelatihan;
 
 public class LVQ {
 	
@@ -95,18 +95,18 @@ public class LVQ {
 			}
 			
 			epochTemp = epoch;
-			Pelatihan.txtAreaProgressMonitor.append("Epoch ke-"+(epochTemp+1)+"\t"+"Learning Rate = "+learningRate+"\n");
+			FormPelatihan.txtAreaProgressMonitor.append("Epoch ke-"+(epochTemp+1)+"\t"+"Learning Rate = "+learningRate+"\n");
 			
 			this.learningRate[epoch] = learningRate;
 			learningRate = learningRate - (pengurangLR * learningRate);
 			epoch++;
 		}
 		
-		Pelatihan.txtAreaProgressMonitor.append("Epoch ke-"+(epoch)+"\t"+"Learning Rate = "+learningRate+"\n");
+		FormPelatihan.txtAreaProgressMonitor.append("Epoch ke-"+(epoch)+"\t"+"Learning Rate = "+learningRate+"\n");
 		if(learningRate > error){
-			Pelatihan.txtAreaProgressMonitor.append(learningRate+" > "+error+" = "+"true"+"\n");
+			FormPelatihan.txtAreaProgressMonitor.append(learningRate+" > "+error+" = "+"true"+"\n");
 		}else{
-			Pelatihan.txtAreaProgressMonitor.append(learningRate+" > "+error+" = "+"false"+"\n");
+			FormPelatihan.txtAreaProgressMonitor.append(learningRate+" > "+error+" = "+"false"+"\n");
 		}
 		
 //		if(epoch<maxEpoch){
@@ -128,7 +128,7 @@ public class LVQ {
 		return this.learningRate;
 	}
 	
-	public String[] pengujian(double[] w1, double[] w2, double[][] data){
+	public String[] identifikasi(double[] w1, double[] w2, double[][] data){
 		String[] hasil = new String[data.length];
 		int i=0,jarak=0;
 		
